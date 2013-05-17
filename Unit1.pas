@@ -183,7 +183,7 @@ var
 begin
   case Card_Type of
     CT_KONTAKT: begin
-      AssignFile (F, '..\Гофы\CardsData\'+IntToStr(Card_Num)+'.txt');
+      AssignFile (F, '..\Gofy\CardsData\'+IntToStr(Card_Num)+'.txt');
       Reset(F);
       readln(F, s);
       CloseFile(F);
@@ -199,7 +199,7 @@ begin
       else
         File_Name := '1'+IntToStr(Card_Num)+'2.txt';
       try
-      AssignFile (F, '..\Гофы\CardsData\CommonItems\'+File_Name);
+      AssignFile (F, '..\Gofy\CardsData\CommonItems\'+File_Name);
       Reset(F);
       readln(F, s);
       CloseFile(F);
@@ -375,7 +375,7 @@ end;
 
 procedure TForm1.ComboBox1Change(Sender: TObject);
 begin
-  Image1.Picture.LoadFromFile('..\Гофы\CardsData\CommonItems\'+ComboBox1.Text+'.jpg');
+  Image1.Picture.LoadFromFile('..\Gofy\CardsData\CommonItems\'+ComboBox1.Text+'.jpg');
   Common_Items_Deck[ComboBox1.ItemIndex+1].Dejstvie_karti;
 end;
 
@@ -385,7 +385,10 @@ begin
   if ComboBox1.ItemIndex < 1 then
     ShowMessage('Выберите карту')
   else
+  begin
     gPlayer.Draw_Card(StrToInt(ComboBox1.Text));
+    Button1.Caption := IntToStr(ComboBox1.ItemIndex);
+  end;
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
