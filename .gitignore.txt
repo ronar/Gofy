@@ -1,7 +1,0 @@
-__history
-bin
-lib
-
-*.identcache
-*.~*
-*.res
