@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Jpeg;
+  Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls;
 
 type
   TForm1 = class(TForm)
@@ -12,10 +12,19 @@ type
     RadioGroup1: TRadioGroup;
     Button2: TButton;
     Button3: TButton;
+    GroupBox2: TGroupBox;
+    lblPlrStamina: TLabel;
+    Label1: TLabel;
+    lblPlrSanity: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    lblPlrFocus: TLabel;
+    ListBox1: TListBox;
+    Label2: TLabel;
+    Label7: TLabel;
+    TabControl1: TTabControl;
     GroupBox1: TGroupBox;
     Image1: TImage;
-    ComboBox1: TComboBox;
-    Button4: TButton;
     Label3: TLabel;
     lblPrm2: TLabel;
     lblPrm3: TLabel;
@@ -28,18 +37,10 @@ type
     Label12: TLabel;
     Label13: TLabel;
     lblPrm1: TLabel;
-    Button5: TButton;
     lblCardData: TLabel;
-    GroupBox2: TGroupBox;
-    lblPlrStamina: TLabel;
-    Label1: TLabel;
-    lblPlrSanity: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    lblPlrFocus: TLabel;
-    ListBox1: TListBox;
-    Label2: TLabel;
-    Label7: TLabel;
+    ComboBox1: TComboBox;
+    Button4: TButton;
+    Button5: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
