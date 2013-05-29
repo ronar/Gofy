@@ -49,6 +49,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button5Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -83,6 +84,7 @@ type
     function GetNom: integer;
     //procedure SetLok;
   public
+    constructor Create;
     function Get_Card_ID: integer;
     property Lokaciya: integer read GetLokation; // Локация карты (свойство)
     //property Nom: integer;
@@ -107,14 +109,18 @@ type
     function Get_Focus: integer;
     function Get_Item(indx: integer): integer;
   end;
+  TArrayOfCard = array [1..100] of TCard;
+  PArrayOfCard = ^TArrayOfCard;
 
 var
   Form1: TForm1;
   Current_phase: integer;
   Cards0, Cards1: array [1..100] of TCard; // Массивы карт
   Common_Items_Deck: array [1..100] of TCard;
+  Common_Items_Count: integer = 0;
+  Cards_Count: integer = 0;
   gPlayer: TPlayer;
-  function Load_Card(Card_Type: integer; Card_Num: integer): TCard;
+  function Load_Cards(Card_Type: integer; Cards: PArrayOfCard): integer;
 
 implementation
 
@@ -175,43 +181,61 @@ begin
 end;
 
 // Загрузка данных в карты из файла
-function Load_Card(Card_Type: integer; Card_Num: integer): TCard;
+function Load_Cards(Card_Type: integer; Cards: PArrayOfCard): integer;
 var
   F: TextFile;
   File_Name: string;
   s: string[80];
-  temp: TCard;
+  //temp: TCard;
+  SR: TSearchRec; // поисковая переменная
+  FindRes: Integer; // переменная для записи результата поиска
+  i: integer;
 begin
   case Card_Type of
     CT_KONTAKT: begin
-      AssignFile (F, '..\Гофы\CardsData\'+IntToStr(Card_Num)+'.txt');
-      Reset(F);
-      readln(F, s);
-      CloseFile(F);
-      temp := TCard.Create;
-      temp.Card_Data := s;
-      temp.Card_Type := CT_KONTAKT;
-      temp.Card_ID := StrToInt(Copy(s, 1, 3));
-      Load_Card := temp;
-    end;
-    CT_COMMON_ITEM: begin
-      if Card_Num < 10 then
-        File_Name := '10'+IntToStr(Card_Num)+'2.txt'
-      else
-        File_Name := '1'+IntToStr(Card_Num)+'2.txt';
-      try
-      AssignFile (F, '..\Гофы\CardsData\CommonItems\'+File_Name);
-      Reset(F);
-      readln(F, s);
-      CloseFile(F);
-      temp := TCard.Create;
-      temp.Card_Data := s;
-      temp.Card_Type := CT_COMMON_ITEM;
-      temp.Card_ID := StrToInt(Copy(File_Name, 1, 4));
-      Load_Card := temp;
-      except
-        ShowMessage('Нет карты с именем файла '+ File_Name + '.');
+      // задание условий поиска и начало поиска
+      FindRes := FindFirst('..\\Gofy\\CardsData\\*.txt', faAnyFile, SR);
+
+      i := 0;
+
+      while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+      begin
+        i := i + 1;
+        AssignFile (F, '..\\Gofy\\CardsData\\' + SR.Name);
+        Reset(F);
+        readln(F, s);
+        CloseFile(F);
+        Cards^[i].Card_Data := s;
+        Cards^[i].Card_Type := CT_KONTAKT;
+        Cards^[i].Card_ID := StrToInt(Copy(s, 1, 3));
+        FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+
       end;
+      FindClose(SR); // закрываем поиск
+      Load_Cards := i;
+    end;
+
+    CT_COMMON_ITEM: begin
+      // задание условий поиска и начало поиска
+      FindRes := FindFirst('..\\Gofy\\CardsData\\CommonItems\\*.txt', faAnyFile, SR);
+
+      i := 0;
+
+      while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+      begin
+        i := i + 1;
+        AssignFile (F, '..\\Gofy\\CardsData\\CommonItems\\' + SR.Name);
+        Reset(F);
+        readln(F, s);
+        CloseFile(F);
+        Cards^[i].Card_Data := s;
+        Cards^[i].Card_Type := CT_COMMON_ITEM;
+        Cards^[i].Card_ID := StrToInt(Copy(SR.Name, 1, 4));
+        FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+
+      end;
+      FindClose(SR); // закрываем поиск
+      Load_Cards := i;
     end;
   end;
 
@@ -239,6 +263,14 @@ end;
 function TCard.GetNom;
 begin
   GetNom := StrToInt(Copy(Card_Data, 2, 2));
+end;
+
+// Конструктор
+constructor TCard.Create;
+begin
+  Card_ID := 0;
+  Card_Type := 0;
+  Card_Data := '';
 end;
 
 // Получение ID карты
@@ -326,17 +358,16 @@ begin
   // Загрузка объекта игрока
   gPlayer := TPlayer.Create(False);
   //  TODO: Определять количество карт автоматом
-  // Загрузка карт 3-го типа (Контакты)
-  for i:= 1 to 13 do
-  begin
-    cards0[i] := Load_Card(CT_KONTAKT, i);
-  end;
+  // Загрузка карт n-го типа (Контакты)
+  //Cards_Count := Load_Cards(CT_KONTAKT, @Cards0);
 
   //SetLength(Common_Items_Deck, 13);
   // Загрузка карт обычных предметов
   //for i:= 1 to 100 do
   //begin
-    Common_Items_Deck[1] := Load_Card(CT_COMMON_ITEM, 1);
+  Common_Items_Count := Load_Cards(CT_COMMON_ITEM, @Common_Items_Deck);
+
+{    Common_Items_Deck[1] := Load_Card(CT_COMMON_ITEM, 1);
     Common_Items_Deck[2] := Load_Card(CT_COMMON_ITEM, 2);
     Common_Items_Deck[3] := Load_Card(CT_COMMON_ITEM, 3);
     Common_Items_Deck[4] := Load_Card(CT_COMMON_ITEM, 4);
@@ -357,7 +388,7 @@ begin
     Common_Items_Deck[19] := Load_Card(CT_COMMON_ITEM, 51);
     Common_Items_Deck[20] := Load_Card(CT_COMMON_ITEM, 52);
     Common_Items_Deck[21] := Load_Card(CT_COMMON_ITEM, 56);
-  //end;
+}  //end;
 
   // И т.д.
 end;
@@ -376,7 +407,7 @@ end;
 
 procedure TForm1.ComboBox1Change(Sender: TObject);
 begin
-  Image1.Picture.LoadFromFile('..\Гофы\CardsData\CommonItems\'+ComboBox1.Text+'.jpg');
+  Image1.Picture.LoadFromFile('..\Gofy\CardsData\CommonItems\'+ComboBox1.Text+'.jpg');
   Common_Items_Deck[ComboBox1.ItemIndex+1].Dejstvie_karti;
 end;
 
@@ -397,8 +428,15 @@ begin
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  i: integer;
 begin
   gPlayer.Free;
+  for i := 1 to 100 do
+  begin
+    Cards0[i].Free;
+    Common_Items_Deck[i].Free;
+  end;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -411,9 +449,21 @@ begin
   begin
     temp := Common_Items_Deck[i];
     r := random(21);
-    Common_Items_Deck[i] := Common_Items_Deck[r+1]; 
+    Common_Items_Deck[i] := Common_Items_Deck[r+1];
   end;
   //Common_Items_Deck.Shuffle;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  i: integer;
+begin
+  for i := 1 to 100 do
+  begin
+    Cards0[i] := TCard.Create;
+    Common_Items_Deck[i]:= TCard.Create;
+  end;
+
 end;
 
 end.
