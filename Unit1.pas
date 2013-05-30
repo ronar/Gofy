@@ -41,6 +41,17 @@ type
     ComboBox1: TComboBox;
     Button4: TButton;
     Button5: TButton;
+    imDie1: TImage;
+    lblRolls: TLabel;
+    imDie2: TImage;
+    imDie3: TImage;
+    imDie4: TImage;
+    imDie5: TImage;
+    imDie6: TImage;
+    imDie7: TImage;
+    btnRollADie: TButton;
+    Edit1: TEdit;
+    lblNRolls: TLabel;
     procedure RadioGroup1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -50,6 +61,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button5Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure btnRollADieClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -108,6 +120,7 @@ type
     function Get_Stamina(): integer;
     function Get_Focus: integer;
     function Get_Item(indx: integer): integer;
+    function RollADice: integer;
   end;
   TArrayOfCard = array [1..100] of TCard;
   PArrayOfCard = ^TArrayOfCard;
@@ -178,6 +191,15 @@ end;
 function TPlayer.Get_Item(indx: integer): integer;
 begin
   Get_Item := Cards[indx];
+end;
+
+// Бросок кубика
+function TPlayer.RollADice: integer;
+var
+  r: integer;
+begin
+  randomize;
+  RollADice := random(6)+1;
 end;
 
 // Загрузка данных в карты из файла
@@ -464,6 +486,23 @@ begin
     Common_Items_Deck[i]:= TCard.Create;
   end;
 
+end;
+
+procedure TForm1.btnRollADieClick(Sender: TObject);
+var
+  i: integer;
+begin
+  for i := 1 to StrToInt(Edit1.Text) do
+  begin
+    case gPlayer.RollADice of
+    1: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\1.jpg');
+    2: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\2.jpg');
+    3: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\3.jpg');
+    4: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\4.jpg');
+    5: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\5.jpg');
+    6: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\6.jpg');
+    end;
+  end;
 end;
 
 end.

@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 399
-  Top = 145
+  Left = 453
+  Top = 130
   Width = 710
   Height = 557
   Caption = 'Form1'
@@ -22,9 +22,65 @@ object Form1: TForm1
     Height = 13
     Caption = #1057#1085#1072#1095#1072#1083#1072' vvv '#1101#1090#1091' '#1082#1085#1086#1087#1082#1091
   end
-  object Button1: TButton
-    Left = 416
+  object imDie1: TImage
+    Left = 16
+    Top = 384
+    Width = 48
+    Height = 48
+  end
+  object lblRolls: TLabel
+    Left = 16
     Top = 360
+    Width = 40
+    Height = 13
+    Caption = #1041#1088#1086#1089#1082#1080':'
+  end
+  object imDie2: TImage
+    Left = 72
+    Top = 384
+    Width = 48
+    Height = 48
+  end
+  object imDie3: TImage
+    Left = 128
+    Top = 384
+    Width = 48
+    Height = 48
+  end
+  object imDie4: TImage
+    Left = 184
+    Top = 384
+    Width = 48
+    Height = 48
+  end
+  object imDie5: TImage
+    Left = 240
+    Top = 384
+    Width = 48
+    Height = 48
+  end
+  object imDie6: TImage
+    Left = 296
+    Top = 384
+    Width = 48
+    Height = 48
+  end
+  object imDie7: TImage
+    Left = 352
+    Top = 384
+    Width = 48
+    Height = 48
+  end
+  object lblNRolls: TLabel
+    Left = 408
+    Top = 368
+    Width = 37
+    Height = 13
+    Caption = #1050#1086#1083'-'#1074#1086':'
+  end
+  object Button1: TButton
+    Left = 560
+    Top = 472
     Width = 75
     Height = 25
     Caption = 'Button1'
@@ -32,8 +88,8 @@ object Form1: TForm1
     OnClick = Button1Click
   end
   object RadioGroup1: TRadioGroup
-    Left = 216
-    Top = 360
+    Left = 496
+    Top = 352
     Width = 185
     Height = 105
     Caption = 'RadioGroup1'
@@ -1180,5 +1236,22 @@ object Form1: TForm1
         OnClick = Button5Click
       end
     end
+  end
+  object btnRollADie: TButton
+    Left = 408
+    Top = 408
+    Width = 75
+    Height = 25
+    Caption = #1041#1088#1086#1089#1080#1090#1100
+    TabOrder = 6
+    OnClick = btnRollADieClick
+  end
+  object Edit1: TEdit
+    Left = 408
+    Top = 384
+    Width = 73
+    Height = 21
+    TabOrder = 7
+    Text = '1'
   end
 end
