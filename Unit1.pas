@@ -22,7 +22,20 @@ type
     ListBox1: TListBox;
     Label2: TLabel;
     Label7: TLabel;
-    TabControl1: TTabControl;
+    imDie1: TImage;
+    lblRolls: TLabel;
+    imDie2: TImage;
+    imDie3: TImage;
+    imDie4: TImage;
+    imDie5: TImage;
+    imDie6: TImage;
+    imDie7: TImage;
+    btnRollADie: TButton;
+    Edit1: TEdit;
+    lblNRolls: TLabel;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
     GroupBox1: TGroupBox;
     Image1: TImage;
     Label3: TLabel;
@@ -41,17 +54,24 @@ type
     ComboBox1: TComboBox;
     Button4: TButton;
     Button5: TButton;
-    imDie1: TImage;
-    lblRolls: TLabel;
-    imDie2: TImage;
-    imDie3: TImage;
-    imDie4: TImage;
-    imDie5: TImage;
-    imDie6: TImage;
-    imDie7: TImage;
-    btnRollADie: TButton;
-    Edit1: TEdit;
-    lblNRolls: TLabel;
+    GroupBox3: TGroupBox;
+    Image2: TImage;
+    Label9: TLabel;
+    lblPrm22: TLabel;
+    lblPrm23: TLabel;
+    Label15: TLabel;
+    lblPrm24: TLabel;
+    Label17: TLabel;
+    lblPrm25: TLabel;
+    Label19: TLabel;
+    lblPrm26: TLabel;
+    Label21: TLabel;
+    Label22: TLabel;
+    lblPrm21: TLabel;
+    lblCardData2: TLabel;
+    ComboBox2: TComboBox;
+    Button6: TButton;
+    Button7: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -62,6 +82,8 @@ type
     procedure Button5Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnRollADieClick(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
+    procedure ComboBox2Change(Sender: TObject);
   private
     { Private declarations }
   public
@@ -81,6 +103,7 @@ const
   CT_MYTHOS = 8; // Миф
   CT_HEADLINE = 9; // Слух
   CT_COMMON_ITEM = 1; // Простые предметы (первая цифра в ID)
+  CT_UNIQUE_ITEM = 2; // Уникальные предметы (первая цифра в ID)
   // Константы Действий
   AT_SPEC = 2;
   AT_WATCH_BUY = 3;
@@ -127,10 +150,12 @@ type
 
 var
   Form1: TForm1;
-  Current_phase: integer;
+  gCurrent_phase: integer;
   Cards0, Cards1: array [1..100] of TCard; // Массивы карт
   Common_Items_Deck: array [1..100] of TCard;
+  Unique_Items_Deck: array [1..100] of TCard;
   Common_Items_Count: integer = 0;
+  Unique_Items_Count: integer = 0;
   Cards_Count: integer = 0;
   gPlayer: TPlayer;
   function Load_Cards(Card_Type: integer; Cards: PArrayOfCard): integer;
@@ -229,7 +254,7 @@ begin
         CloseFile(F);
         Cards^[i].Card_Data := s;
         Cards^[i].Card_Type := CT_KONTAKT;
-        Cards^[i].Card_ID := StrToInt(Copy(s, 1, 3));
+        Cards^[i].Card_ID := StrToInt(Copy(SR.Name, 1, 4));
         FindRes := FindNext(SR); // продолжение поиска по заданным условиям
 
       end;
@@ -243,6 +268,9 @@ begin
 
       i := 0;
 
+      Form1.ComboBox1.Clear;
+      Form1.ComboBox1.Text := 'Choose a card';
+
       while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
       begin
         i := i + 1;
@@ -254,11 +282,38 @@ begin
         Cards^[i].Card_Type := CT_COMMON_ITEM;
         Cards^[i].Card_ID := StrToInt(Copy(SR.Name, 1, 4));
         FindRes := FindNext(SR); // продолжение поиска по заданным условиям
-
+        Form1.ComboBox1.Items.Add(IntToStr(Cards^[i].Card_ID));
       end;
       FindClose(SR); // закрываем поиск
       Load_Cards := i;
-    end;
+    end; // CT_COMMON_ITEM
+
+    CT_UNIQUE_ITEM: begin
+      // задание условий поиска и начало поиска
+      FindRes := FindFirst('..\\Gofy\\CardsData\\UniqueItems\\*.txt', faAnyFile, SR);
+
+      i := 0;
+
+      Form1.ComboBox2.Clear;
+      Form1.ComboBox2.Text := 'Choose a card';
+
+      while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+      begin
+        i := i + 1;
+        AssignFile (F, '..\\Gofy\\CardsData\\UniqueItems\\' + SR.Name);
+        Reset(F);
+        readln(F, s);
+        CloseFile(F);
+        Cards^[i].Card_Data := s;
+        Cards^[i].Card_Type := CT_UNIQUE_ITEM;
+        Cards^[i].Card_ID := StrToInt(Copy(SR.Name, 1, 4));
+        FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+        Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));
+      end;
+      FindClose(SR); // закрываем поиск
+      Load_Cards := i;
+    end; // CT_UNIQUE_ITEM
+
   end;
 
 end;
@@ -266,15 +321,15 @@ end;
 procedure TForm1.RadioGroup1Click(Sender: TObject);
 begin
   if RadioGroup1.ItemIndex = 0
-  then ShowMessage('Phase 1!');
+  then gCurrent_phase := 1;
   if RadioGroup1.ItemIndex = 1
-  then ShowMessage('Phase 2!');
+  then gCurrent_phase := 2;
   if RadioGroup1.ItemIndex = 2
-  then ShowMessage('Phase 3!');
+  then gCurrent_phase := 3;
   if RadioGroup1.ItemIndex = 3
-  then ShowMessage('Phase 4!');
+  then gCurrent_phase := 4;
   if RadioGroup1.ItemIndex = 4
-  then ShowMessage('Phase 5!');
+  then gCurrent_phase := 5;
 end;
 
 function TCard.GetLokation;
@@ -360,7 +415,24 @@ begin
       end;
       Form1.lblPrm6.Caption := Card_Data[7];
       Form1.lblCardData.Caption := Card_Data;
-    end;
+    end; // CT_COMMON_ITEM
+
+    CT_UNIQUE_ITEM: begin
+      Form1.lblPrm21.Caption := Form1.ComboBox2.Text;
+      Form1.lblPrm22.Caption := Copy(Form1.ComboBox2.Text, 2, 2);
+      Form1.lblPrm23.Caption := Card_Data[1];
+      Form1.lblPrm24.Caption := Card_Data[4];
+      //lblPrm5.Caption := Card_Data[6];
+      case StrToInt(Card_Data[6]) of
+        0: Form1.lblPrm25.Caption := 'Уход';
+        1: Form1.lblPrm25.Caption := 'Битва';
+        2: Form1.lblPrm25.Caption := 'Очки движения';
+        3: Form1.lblPrm25.Caption := 'Удача';
+        4: Form1.lblPrm25.Caption := 'Проверка ужаса';
+      end;
+      Form1.lblPrm26.Caption := Card_Data[7];
+      Form1.lblCardData2.Caption := Card_Data;
+    end; // CT_COMMON_ITEM
   end;
 end;
 
@@ -379,38 +451,14 @@ var
 begin
   // Загрузка объекта игрока
   gPlayer := TPlayer.Create(False);
-  //  TODO: Определять количество карт автоматом
-  // Загрузка карт n-го типа (Контакты)
-  //Cards_Count := Load_Cards(CT_KONTAKT, @Cards0);
 
-  //SetLength(Common_Items_Deck, 13);
+  // Загрузка карт n-го типа (Контакты)
+
   // Загрузка карт обычных предметов
-  //for i:= 1 to 100 do
-  //begin
   Common_Items_Count := Load_Cards(CT_COMMON_ITEM, @Common_Items_Deck);
 
-{    Common_Items_Deck[1] := Load_Card(CT_COMMON_ITEM, 1);
-    Common_Items_Deck[2] := Load_Card(CT_COMMON_ITEM, 2);
-    Common_Items_Deck[3] := Load_Card(CT_COMMON_ITEM, 3);
-    Common_Items_Deck[4] := Load_Card(CT_COMMON_ITEM, 4);
-    Common_Items_Deck[5] := Load_Card(CT_COMMON_ITEM, 6);
-    Common_Items_Deck[6] := Load_Card(CT_COMMON_ITEM, 7);
-    Common_Items_Deck[7] := Load_Card(CT_COMMON_ITEM, 8);
-    Common_Items_Deck[8] := Load_Card(CT_COMMON_ITEM, 9);
-    Common_Items_Deck[9] := Load_Card(CT_COMMON_ITEM, 10);
-    Common_Items_Deck[10] := Load_Card(CT_COMMON_ITEM, 11);
-    Common_Items_Deck[11] := Load_Card(CT_COMMON_ITEM, 14);
-    Common_Items_Deck[12] := Load_Card(CT_COMMON_ITEM, 18);
-    Common_Items_Deck[13] := Load_Card(CT_COMMON_ITEM, 19);
-    Common_Items_Deck[14] := Load_Card(CT_COMMON_ITEM, 21);
-    Common_Items_Deck[15] := Load_Card(CT_COMMON_ITEM, 29);
-    Common_Items_Deck[16] := Load_Card(CT_COMMON_ITEM, 31);
-    Common_Items_Deck[17] := Load_Card(CT_COMMON_ITEM, 41);
-    Common_Items_Deck[18] := Load_Card(CT_COMMON_ITEM, 48);
-    Common_Items_Deck[19] := Load_Card(CT_COMMON_ITEM, 51);
-    Common_Items_Deck[20] := Load_Card(CT_COMMON_ITEM, 52);
-    Common_Items_Deck[21] := Load_Card(CT_COMMON_ITEM, 56);
-}  //end;
+  // Загрузка карт уникальных предметов
+  Unique_Items_Count := Load_Cards(CT_UNIQUE_ITEM, @Unique_Items_Deck);
 
   // И т.д.
 end;
@@ -458,6 +506,7 @@ begin
   begin
     Cards0[i].Free;
     Common_Items_Deck[i].Free;
+    Unique_Items_Deck[i].Free;
   end;
 end;
 
@@ -484,6 +533,7 @@ begin
   begin
     Cards0[i] := TCard.Create;
     Common_Items_Deck[i]:= TCard.Create;
+    Unique_Items_Deck[i]:= TCard.Create;
   end;
 
 end;
@@ -503,6 +553,20 @@ begin
     6: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\6.jpg');
     end;
   end;
+end;
+
+procedure TForm1.Button6Click(Sender: TObject);
+begin
+  if ComboBox2.ItemIndex < 1 then
+    ShowMessage('Выберите карту')
+  else
+    gPlayer.Draw_Card(StrToInt(ComboBox2.Text));
+end;
+
+procedure TForm1.ComboBox2Change(Sender: TObject);
+begin
+  Image2.Picture.LoadFromFile('..\Gofy\CardsData\UniqueItems\'+ComboBox2.Text+'.jpg');
+  Unique_Items_Deck[ComboBox2.ItemIndex+1].Dejstvie_karti;
 end;
 
 end.
