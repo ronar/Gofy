@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 453
-  Top = 130
-  Width = 710
+  Left = 330
+  Top = 138
+  Width = 885
   Height = 557
   Caption = 'Form1'
   Color = clBtnFace
@@ -77,6 +77,42 @@ object Form1: TForm1
     Width = 37
     Height = 13
     Caption = #1050#1086#1083'-'#1074#1086':'
+  end
+  object Label11: TLabel
+    Left = 208
+    Top = 8
+    Width = 102
+    Height = 13
+    Caption = #1055#1077#1088#1077#1081#1090#1080' '#1074' '#1083#1086#1082#1072#1094#1080#1102':'
+  end
+  object lblSkillCheck: TLabel
+    Left = 208
+    Top = 56
+    Width = 94
+    Height = 13
+    Caption = #1055#1088#1086#1074#1077#1088#1082#1072' '#1085#1072#1074#1099#1082#1072':'
+  end
+  object lblNSuccesses: TLabel
+    Left = 208
+    Top = 72
+    Width = 80
+    Height = 13
+    Caption = #1050#1086#1083'-'#1074#1086' '#1091#1089#1087#1077#1093#1086#1074':'
+  end
+  object lblSkill: TLabel
+    Left = 345
+    Top = 56
+    Width = 29
+    Height = 13
+    Alignment = taRightJustify
+    Caption = 'lblSkill'
+  end
+  object lblNumSuccesses: TLabel
+    Left = 296
+    Top = 72
+    Width = 84
+    Height = 13
+    Caption = 'lblNumSuccesses'
   end
   object Button1: TButton
     Left = 560
@@ -207,7 +243,7 @@ object Form1: TForm1
     Text = '1'
   end
   object PageControl1: TPageControl
-    Left = 208
+    Left = 384
     Top = 8
     Width = 473
     Height = 337
@@ -2213,5 +2249,15 @@ object Form1: TForm1
         end
       end
     end
+  end
+  object cbLocation: TComboBox
+    Left = 208
+    Top = 24
+    Width = 169
+    Height = 21
+    ItemHeight = 13
+    TabOrder = 8
+    Text = 'cbLocation'
+    OnChange = cbLocationChange
   end
 end

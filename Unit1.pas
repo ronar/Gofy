@@ -72,6 +72,12 @@ type
     ComboBox2: TComboBox;
     Button6: TButton;
     Button7: TButton;
+    cbLocation: TComboBox;
+    Label11: TLabel;
+    lblSkillCheck: TLabel;
+    lblNSuccesses: TLabel;
+    lblSkill: TLabel;
+    lblNumSuccesses: TLabel;
     procedure RadioGroup1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -84,6 +90,7 @@ type
     procedure btnRollADieClick(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure ComboBox2Change(Sender: TObject);
+    procedure cbLocationChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -104,17 +111,26 @@ const
   CT_HEADLINE = 9; // Слух
   CT_COMMON_ITEM = 1; // Простые предметы (первая цифра в ID)
   CT_UNIQUE_ITEM = 2; // Уникальные предметы (первая цифра в ID)
+  CT_LOCATION = 3; // Уникальные предметы (первая цифра в ID)
   // Константы Действий
   AT_SPEC = 2;
   AT_WATCH_BUY = 3;
+  TLocationName: array [1..16] of string = ('607 Water St.', '7th House on the Left',
+        'Administration Building', 'Arkham Asylum',
+        'Artists'' Colony', 'Bank of Arkham', 'Bishop''s Brook Bridge', 'Black Cave',
+        'Cold Spring Glen', 'Congregational Hospital', 'Curiositie Shoppe',
+        'Darke''s Carnival', 'Devil Reef', 'Devil''s Hopyard', 'Dunwich Village',
+        'Esoteric Order of Dragon');
+
 
 type
+
   TCard = class(TObject) // Карты
   private
     Card_ID: integer;
     Card_Type: integer; // Тип карты (слух, миф, контакт и т.д.)
     Card_Data: string; // Строка с данными о карте в зависимости от типа
-                       // "Знать", что делать с картой будет функция Dejstvie_karti
+                       // "Знать", что делать с картой будет функция ProcessCard
     function GetLokation: integer;
     function GetNom: integer;
     //procedure SetLok;
@@ -122,6 +138,8 @@ type
     constructor Create;
     function Get_Card_ID: integer;
     property Lokaciya: integer read GetLokation; // Локация карты (свойство)
+    function Get_Card_Data: string;
+
     //property Nom: integer;
     procedure Dejstvie_karti; // Выполнение необходимых действий карты
     procedure Shuffle();
@@ -132,6 +150,8 @@ type
     Sanity: integer;
     Stamina: integer;
     Focus: integer;
+    Stats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
+    Location: integer;
     Cards: array [1..100] of integer; // Предметы игрока
     Items_Count: integer; // Кол-во предметов у игрока
     bFirst_Player: boolean; // Флаг первого игрока
@@ -154,8 +174,10 @@ var
   Cards0, Cards1: array [1..100] of TCard; // Массивы карт
   Common_Items_Deck: array [1..100] of TCard;
   Unique_Items_Deck: array [1..100] of TCard;
+  Locations_Deck: array [1..100] of TCard;
   Common_Items_Count: integer = 0;
   Unique_Items_Count: integer = 0;
+  Locations_Count: integer = 0;
   Cards_Count: integer = 0;
   gPlayer: TPlayer;
   function Load_Cards(Card_Type: integer; Cards: PArrayOfCard): integer;
@@ -225,6 +247,11 @@ var
 begin
   randomize;
   RollADice := random(6)+1;
+end;
+
+function TCard.Get_Card_Data: string;
+begin
+  Get_Card_Data := Card_Data;
 end;
 
 // Загрузка данных в карты из файла
@@ -313,6 +340,29 @@ begin
       FindClose(SR); // закрываем поиск
       Load_Cards := i;
     end; // CT_UNIQUE_ITEM
+
+    CT_LOCATION: begin
+      // Задание условий поиска и начало поиска
+      FindRes := FindFirst('..\\Gofy\\CardsData\\Locations\\*.txt', faAnyFile, SR);
+
+      i := 0;
+
+      while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+      begin
+        i := i + 1;
+        AssignFile (F, '..\\Gofy\\CardsData\\Locations\\' + SR.Name);
+        Reset(F);
+        readln(F, s);
+        CloseFile(F);
+        Cards^[i].Card_Data := s;
+        Cards^[i].Card_Type := CT_COMMON_ITEM;
+        Cards^[i].Card_ID := StrToInt(Copy(SR.Name, 1, 4));
+        FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+        //Form1.ComboBox1.Items.Add(IntToStr(Cards^[i].Card_ID));
+      end;
+      FindClose(SR); // закрываем поиск
+      Load_Cards := i;
+    end; // CT_LOCATION
 
   end;
 
@@ -433,6 +483,23 @@ begin
       Form1.lblPrm26.Caption := Card_Data[7];
       Form1.lblCardData2.Caption := Card_Data;
     end; // CT_COMMON_ITEM
+
+    CT_LOCATION: begin
+      Form1.lblPrm21.Caption := Form1.ComboBox2.Text;
+      Form1.lblPrm22.Caption := Copy(Form1.ComboBox2.Text, 2, 2);
+      Form1.lblPrm23.Caption := Card_Data[1];
+      Form1.lblPrm24.Caption := Card_Data[4];
+      //lblPrm5.Caption := Card_Data[6];
+      case StrToInt(Card_Data[6]) of
+        0: Form1.lblPrm25.Caption := 'Уход';
+        1: Form1.lblPrm25.Caption := 'Битва';
+        2: Form1.lblPrm25.Caption := 'Очки движения';
+        3: Form1.lblPrm25.Caption := 'Удача';
+        4: Form1.lblPrm25.Caption := 'Проверка ужаса';
+      end;
+      Form1.lblPrm26.Caption := Card_Data[7];
+      Form1.lblCardData2.Caption := Card_Data;
+    end; // CT_COMMON_ITEM
   end;
 end;
 
@@ -459,6 +526,9 @@ begin
 
   // Загрузка карт уникальных предметов
   Unique_Items_Count := Load_Cards(CT_UNIQUE_ITEM, @Unique_Items_Deck);
+
+  // Загрузка карт локаций
+  Locations_Count := Load_Cards(CT_LOCATION, @Locations_Deck);
 
   // И т.д.
 end;
@@ -495,6 +565,19 @@ var
   pl: TPlayer;
 begin
   //pl := TPlayer.Create(False);
+  {if gPlayer.Stats[1]>0 then
+  begin
+    for i:=1 to personag.stat[1] do
+    begin
+      broskub.resbroskub[i]:=random(6)+1;
+      if broskub.resbroskub[i]>=personag.uspex then
+      begin
+        broskub.usp:=true;
+        broskub.kolusp:=broskub.kolusp+1;
+        if broskub.resbroskub[i]=6 then broskub.kolusp6:=broskub.kolusp6+1;
+      end;
+    end;
+  end;        }
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -507,6 +590,7 @@ begin
     Cards0[i].Free;
     Common_Items_Deck[i].Free;
     Unique_Items_Deck[i].Free;
+    Locations_Deck[i].Free;
   end;
 end;
 
@@ -534,8 +618,13 @@ begin
     Cards0[i] := TCard.Create;
     Common_Items_Deck[i]:= TCard.Create;
     Unique_Items_Deck[i]:= TCard.Create;
+    Locations_Deck[i]:= TCard.Create;
   end;
 
+  for i := 1 to 16 do
+  begin
+    cbLocation.Items.Add(TLocationName[i]);
+  end;
 end;
 
 procedure TForm1.btnRollADieClick(Sender: TObject);
@@ -567,6 +656,11 @@ procedure TForm1.ComboBox2Change(Sender: TObject);
 begin
   Image2.Picture.LoadFromFile('..\Gofy\CardsData\UniqueItems\'+ComboBox2.Text+'.jpg');
   Unique_Items_Deck[ComboBox2.ItemIndex+1].Dejstvie_karti;
+end;
+
+procedure TForm1.cbLocationChange(Sender: TObject);
+begin
+  lblNumSuccesses.Caption := Copy(Locations_Deck[cbLocation.ItemIndex + 1].Get_Card_Data, 9, 3);
 end;
 
 end.
