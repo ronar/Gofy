@@ -78,6 +78,25 @@ type
     lblNSuccesses: TLabel;
     lblSkill: TLabel;
     lblNumSuccesses: TLabel;
+    Button8: TButton;
+    Button9: TButton;
+    lblLocIDCaption: TLabel;
+    lblLocID: TLabel;
+    lblLocCardDataCaption: TLabel;
+    lblLocCardData: TLabel;
+    imEncounter: TImage;
+    lblStatSpeed: TLabel;
+    Label16: TLabel;
+    lblStatSneak: TLabel;
+    Label18: TLabel;
+    lblStatFight: TLabel;
+    Label23: TLabel;
+    lblStatWill: TLabel;
+    Label25: TLabel;
+    Label26: TLabel;
+    lblStatLore: TLabel;
+    Label28: TLabel;
+    lblStatLuck: TLabel;
     procedure RadioGroup1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -91,6 +110,7 @@ type
     procedure Button6Click(Sender: TObject);
     procedure ComboBox2Change(Sender: TObject);
     procedure cbLocationChange(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -98,6 +118,13 @@ type
   end;
 
 const
+  // Статы
+  ST_SPEED = 1;
+  ST_SNEAK = 2;
+  ST_FIGHT = 3;
+  ST_WILL = 4;
+  ST_LORE = 5;
+  ST_LUCK = 6;
   // Константы фаз
   PH_PEREDISHKA = 1;
   PH_DVIJENIE = 2;
@@ -143,9 +170,10 @@ type
     //property Nom: integer;
     procedure Dejstvie_karti; // Выполнение необходимых действий карты
     procedure Shuffle();
+    //function Get_Card_By_ID(id: integer): TCard; // Нахождение карты по ее ID
   end;
 
-  TPlayer = class(TObject)
+  TPlayer = class
   private
     Sanity: integer;
     Stamina: integer;
@@ -156,14 +184,16 @@ type
     Items_Count: integer; // Кол-во предметов у игрока
     bFirst_Player: boolean; // Флаг первого игрока
   public
-    constructor Create(First_Player: boolean);
+    constructor Create(InitStats: array of integer; First_Player: boolean); virtual;
     procedure Draw_Card(Card_ID: integer);
     function Get_Items_Count(): integer;
     function Get_Sanity(): integer;
     function Get_Stamina(): integer;
     function Get_Focus: integer;
+    function Get_Stat(n: integer): integer;
     function Get_Item(indx: integer): integer;
-    function RollADice: integer;
+    function RollADice(Sender: TPlayer; stat: integer): integer;
+    property Speed: integer read Stats[1] write Stats[1];
   end;
   TArrayOfCard = array [1..100] of TCard;
   PArrayOfCard = ^TArrayOfCard;
@@ -186,14 +216,30 @@ implementation
 
 {$R *.dfm}
 
+function Get_Card_By_ID(Cards: PArrayOfCard; id: integer): TCard;
+var
+  i: integer;
+begin
+  for i:= 1 to 100 do
+    if Cards^[i].Card_ID = id then
+      Get_Card_By_ID := Cards^[i];
+end;
+
 // Конструктор игрока
-constructor TPlayer.Create(First_Player: boolean);
+constructor TPlayer.Create(InitStats: array of integer; First_Player: boolean);
 var
   i: integer;
 begin
   Stamina := 0;
   Sanity := 0;
   Focus := 0;
+  Stats[1] := InitStats[0];
+  Stats[2] := InitStats[1];
+  Stats[3] := InitStats[2];
+  Stats[4] := InitStats[3];
+  Stats[5] := InitStats[4];
+  Stats[6] := InitStats[5];
+
   //SetLength(Cards, 0);
   for i := 1 to 100 do
     Cards[i] := 0;
@@ -233,6 +279,12 @@ begin
   Get_Focus := Focus;
 end;
 
+// Функция: получение значние 1 из 6 статов
+function TPlayer.Get_Stat(n: integer): integer;
+begin
+  Get_Stat := Stats[n];
+end;
+
 // Функция: получение предмета по индексу.
 // Достаем предметы по одному, а не массивом
 function TPlayer.Get_Item(indx: integer): integer;
@@ -240,13 +292,41 @@ begin
   Get_Item := Cards[indx];
 end;
 
-// Бросок кубика
-function TPlayer.RollADice: integer;
+// Бросок кубика (Возвращает число успехов, 0 - провал)
+function TPlayer.RollADice(Sender: TPlayer; stat: integer): integer;
 var
-  r: integer;
+  r, i: integer;
+  Roll_results: array [1..12] of integer;
+  Successes: integer;
 begin
   randomize;
-  RollADice := random(6)+1;
+  Successes := 0;
+  //RollADice := random(6)+1;
+    //pl := TPlayer.Create(False);
+  if Stats[stat]>0 then
+  begin
+    for i:=1 to Stats[stat] do
+    begin
+      Roll_results[i]:=random(6)+1;
+      case Roll_results[i] of
+      1: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\1.jpg');
+      2: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\2.jpg');
+      3: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\3.jpg');
+      4: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\4.jpg');
+      5: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\5.jpg');
+      6: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\6.jpg');
+      end;
+      
+      if Roll_results[i]>=5 then
+      begin
+        Successes := Successes + 1;
+        //broskub.usp:=true;
+        //broskub.kolusp:=broskub.kolusp+1;
+        //if broskub.resbroskub[i]=6 then broskub.kolusp6:=broskub.kolusp6+1;
+      end;
+    end;
+  end;
+  RollADice := Successes;
 end;
 
 function TCard.Get_Card_Data: string;
@@ -347,6 +427,9 @@ begin
 
       i := 0;
 
+      Form1.cbLocation.Clear;
+      Form1.cbLocation.Text := 'Choose a card';
+
       while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
       begin
         i := i + 1;
@@ -358,7 +441,7 @@ begin
         Cards^[i].Card_Type := CT_COMMON_ITEM;
         Cards^[i].Card_ID := StrToInt(Copy(SR.Name, 1, 4));
         FindRes := FindNext(SR); // продолжение поиска по заданным условиям
-        //Form1.ComboBox1.Items.Add(IntToStr(Cards^[i].Card_ID));
+        Form1.cbLocation.Items.Add(IntToStr(Cards^[i].Card_ID));
       end;
       FindClose(SR); // закрываем поиск
       Load_Cards := i;
@@ -515,9 +598,16 @@ end;
 procedure TForm1.Button2Click(Sender: TObject);
 var
   i: integer;
+  PlStats: array [1..6] of integer;
 begin
+  PlStats[1] := 5; // Speed
+  PlStats[2] := 1; // Sneak
+  PlStats[3] := 4; // Fight
+  PlStats[4] := 0; // Will
+  PlStats[5] := 5; // Lore
+  PlStats[6] := 0; // Luck
   // Загрузка объекта игрока
-  gPlayer := TPlayer.Create(False);
+  gPlayer := TPlayer.Create(PlStats, False);
 
   // Загрузка карт n-го типа (Контакты)
 
@@ -540,9 +630,15 @@ begin
   lblPlrStamina.Caption := IntToStr(gPlayer.Get_Stamina);
   lblPlrSanity.Caption := IntToStr(gPlayer.Get_Sanity);
   lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus);
+  {lblStatSpeed.Caption := IntToStr(gPlayer.Get_Speed);
+  lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus);
+  lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus);
+  lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus);
+  lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus);
+  lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus); }
   ListBox1.Clear;
-  for i := 1 to gPlayer.Get_Items_Count do
-    ListBox1.Items.Add(IntToStr(gPlayer.Get_Item(i)));
+  //for i := 1 to gPlayer.Get_Items_Count do
+  //  ListBox1.Items.Add(IntToStr(gPlayer.Get_Item(i)));
 end;
 
 procedure TForm1.ComboBox1Change(Sender: TObject);
@@ -564,20 +660,7 @@ procedure TForm1.Button1Click(Sender: TObject);
 var
   pl: TPlayer;
 begin
-  //pl := TPlayer.Create(False);
-  {if gPlayer.Stats[1]>0 then
-  begin
-    for i:=1 to personag.stat[1] do
-    begin
-      broskub.resbroskub[i]:=random(6)+1;
-      if broskub.resbroskub[i]>=personag.uspex then
-      begin
-        broskub.usp:=true;
-        broskub.kolusp:=broskub.kolusp+1;
-        if broskub.resbroskub[i]=6 then broskub.kolusp6:=broskub.kolusp6+1;
-      end;
-    end;
-  end;        }
+
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -631,17 +714,8 @@ procedure TForm1.btnRollADieClick(Sender: TObject);
 var
   i: integer;
 begin
-  for i := 1 to StrToInt(Edit1.Text) do
-  begin
-    case gPlayer.RollADice of
-    1: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\1.jpg');
-    2: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\2.jpg');
-    3: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\3.jpg');
-    4: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\4.jpg');
-    5: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\5.jpg');
-    6: (FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\6.jpg');
-    end;
-  end;
+  //gPlayer.RollADice(gPlayer, 1);
+  ShowMessage(IntToStr(gPlayer.Speed));
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
@@ -659,8 +733,47 @@ begin
 end;
 
 procedure TForm1.cbLocationChange(Sender: TObject);
+var
+  LocNum: integer;
 begin
+  LocNum := StrToInt(Copy(cbLocation.Text, 2, 1));
+  lblLocID.Caption := IntToStr(LocNum);
+  lblLocCardData.Caption := Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data;
   lblNumSuccesses.Caption := Copy(Locations_Deck[cbLocation.ItemIndex + 1].Get_Card_Data, 9, 3);
+  case StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 9, 1)) of
+  1: lblSkill.Caption := 'Скорость';
+  2: lblSkill.Caption := 'Скрытность';
+  3: lblSkill.Caption := 'Сила';
+  4: lblSkill.Caption := 'Воля';
+  5: lblSkill.Caption := 'Знание';
+  6: lblSkill.Caption := 'Удача';
+  7: lblSkill.Caption := 'Уход';
+  8: lblSkill.Caption := 'Битва';
+  end;
+  imEncounter.Picture.LoadFromFile('..\\Gofy\\CardsData\\Locations\\'+cbLocation.Text[1]+'0'+cbLocation.Text[3]+cbLocation.Text[4]+'.jpg');
+end;
+
+procedure TForm1.Button9Click(Sender: TObject);
+begin
+  case cbLocation.ItemIndex of
+  0: ShowMessage('''Listen!'' An old man with a piercing gaze locks eyes with you, and you feel strange information squirming around in your head. Pass a Will (-1) check to gain 1 Spell.');
+  1: ;//ShowMessage('''Listen!'' An old man with a piercing gaze locks eyes with you, and you feel strange information squirming around in your head. Pass a Will (-1) check to gain 1 Spell.');
+  2: ;
+  3:  ;
+  4:   ;
+  5:    ;
+  6:     ;
+  7:      ;
+  8:       ;
+  9:       ;
+  10:       ;
+  11:        ;
+  12:         ;
+  13:          ;
+  14:           ;
+  15:            ;
+  16:             ;
+  end;
 end;
 
 end.
