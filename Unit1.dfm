@@ -1,8 +1,8 @@
 object Form1: TForm1
-  Left = 463
-  Top = 135
-  Width = 876
-  Height = 557
+  Left = 305
+  Top = 96
+  Width = 874
+  Height = 539
   Caption = 'Form1'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -74,9 +74,9 @@ object Form1: TForm1
   object lblNRolls: TLabel
     Left = 408
     Top = 400
-    Width = 37
+    Width = 26
     Height = 13
-    Caption = #1050#1086#1083'-'#1074#1086':'
+    Caption = #1057#1090#1072#1090':'
   end
   object Label11: TLabel
     Left = 192
@@ -2822,7 +2822,7 @@ object Form1: TForm1
           Top = 24
           Width = 153
           Height = 21
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           Text = #1042#1099#1073#1077#1088#1080' '#1082#1072#1088#1090#1091
           OnChange = ComboBox1Change

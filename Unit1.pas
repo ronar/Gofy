@@ -163,6 +163,7 @@ type
     //procedure SetLok;
   public
     constructor Create;
+    destructor Destroy; override;
     function Get_Card_ID: integer;
     property Lokaciya: integer read GetLokation; // Локация карты (свойство)
     function Get_Card_Data: string;
@@ -175,16 +176,18 @@ type
 
   TPlayer = class
   private
-    Sanity: integer;
-    Stamina: integer;
-    Focus: integer;
-    Stats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
+
     Location: integer;
     Cards: array [1..100] of integer; // Предметы игрока
     Items_Count: integer; // Кол-во предметов у игрока
     bFirst_Player: boolean; // Флаг первого игрока
   public
-    constructor Create(InitStats: array of integer; First_Player: boolean); virtual;
+    Sanity: integer;
+    Stamina: integer;
+    Focus: integer;
+    Stats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
+    constructor Create(var InitStats: array of integer; First_Player: boolean);
+    destructor Destroy; override;
     procedure Draw_Card(Card_ID: integer);
     function Get_Items_Count(): integer;
     function Get_Sanity(): integer;
@@ -193,7 +196,7 @@ type
     function Get_Stat(n: integer): integer;
     function Get_Item(indx: integer): integer;
     function RollADice(Sender: TPlayer; stat: integer): integer;
-    property Speed: integer read Stats[1] write Stats[1];
+    //property Speed: integer read Stats[1] write Stats[1];
   end;
   TArrayOfCard = array [1..100] of TCard;
   PArrayOfCard = ^TArrayOfCard;
@@ -226,7 +229,7 @@ begin
 end;
 
 // Конструктор игрока
-constructor TPlayer.Create(InitStats: array of integer; First_Player: boolean);
+constructor TPlayer.Create(var InitStats: array of integer; First_Player: boolean);
 var
   i: integer;
 begin
@@ -245,6 +248,12 @@ begin
     Cards[i] := 0;
   bFirst_Player := False;
   Items_Count := 0;
+end;
+
+// Деструктор объекта TPlayer
+destructor TPlayer.Destroy;
+begin
+  inherited;
 end;
 
 // Функция: взятие карты из колоды
@@ -303,7 +312,7 @@ begin
   Successes := 0;
   //RollADice := random(6)+1;
     //pl := TPlayer.Create(False);
-  if Stats[stat]>0 then
+  if Stats[stat] > 0 then
   begin
     for i:=1 to Stats[stat] do
     begin
@@ -483,6 +492,12 @@ begin
   Card_Data := '';
 end;
 
+// Деструктор TCard
+destructor TCard.Destroy;
+begin
+  inherited;
+end;
+
 // Получение ID карты
 function TCard.Get_Card_ID;
 begin
@@ -608,6 +623,7 @@ begin
   PlStats[6] := 0; // Luck
   // Загрузка объекта игрока
   gPlayer := TPlayer.Create(PlStats, False);
+  
 
   // Загрузка карт n-го типа (Контакты)
 
@@ -630,12 +646,12 @@ begin
   lblPlrStamina.Caption := IntToStr(gPlayer.Get_Stamina);
   lblPlrSanity.Caption := IntToStr(gPlayer.Get_Sanity);
   lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus);
-  {lblStatSpeed.Caption := IntToStr(gPlayer.Get_Speed);
-  lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus);
-  lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus);
-  lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus);
-  lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus);
-  lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus); }
+  lblStatSpeed.Caption := IntToStr(gPlayer.Stats[1]);
+  lblStatSneak.Caption := IntToStr(gPlayer.Stats[2]);
+  lblStatFight.Caption := IntToStr(gPlayer.Stats[3]);
+  lblStatWill.Caption := IntToStr(gPlayer.Stats[4]);
+  lblStatLore.Caption := IntToStr(gPlayer.Stats[5]);
+  lblStatLuck.Caption := IntToStr(gPlayer.Stats[6]);
   ListBox1.Clear;
   //for i := 1 to gPlayer.Get_Items_Count do
   //  ListBox1.Items.Add(IntToStr(gPlayer.Get_Item(i)));
@@ -667,13 +683,13 @@ procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   i: integer;
 begin
-  gPlayer.Free;
+//  gPlayer.Free;
   for i := 1 to 100 do
   begin
-    Cards0[i].Free;
-    Common_Items_Deck[i].Free;
-    Unique_Items_Deck[i].Free;
-    Locations_Deck[i].Free;
+    //Cards0[i].Free;
+    //Common_Items_Deck[i].Free;
+    //Unique_Items_Deck[i].Free;
+    //Locations_Deck[i].Free;
   end;
 end;
 
@@ -713,9 +729,12 @@ end;
 procedure TForm1.btnRollADieClick(Sender: TObject);
 var
   i: integer;
+  s, ns: integer;
 begin
-  //gPlayer.RollADice(gPlayer, 1);
-  ShowMessage(IntToStr(gPlayer.Speed));
+  s := gPlayer.RollADice(gPlayer, StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 9, 1)));
+  ns := StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 10, 1));
+  if s >= ns then
+    ShowMessage('Success!');
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
