@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 305
-  Top = 96
+  Left = 339
+  Top = 136
   Width = 874
   Height = 539
   Caption = 'Form1'
@@ -86,21 +86,21 @@ object Form1: TForm1
     Caption = #1055#1077#1088#1077#1081#1090#1080' '#1074' '#1083#1086#1082#1072#1094#1080#1102':'
   end
   object lblSkillCheck: TLabel
-    Left = 192
+    Left = 264
     Top = 72
     Width = 94
     Height = 13
     Caption = #1055#1088#1086#1074#1077#1088#1082#1072' '#1085#1072#1074#1099#1082#1072':'
   end
   object lblNSuccesses: TLabel
-    Left = 192
+    Left = 264
     Top = 88
     Width = 80
     Height = 13
     Caption = #1050#1086#1083'-'#1074#1086' '#1091#1089#1087#1077#1093#1086#1074':'
   end
   object lblSkill: TLabel
-    Left = 345
+    Left = 417
     Top = 72
     Width = 29
     Height = 13
@@ -108,21 +108,21 @@ object Form1: TForm1
     Caption = 'lblSkill'
   end
   object lblNumSuccesses: TLabel
-    Left = 296
+    Left = 368
     Top = 88
     Width = 84
     Height = 13
     Caption = 'lblNumSuccesses'
   end
   object lblLocIDCaption: TLabel
-    Left = 192
+    Left = 264
     Top = 56
     Width = 56
     Height = 13
     Caption = 'id '#1083#1086#1082#1072#1094#1080#1080':'
   end
   object lblLocID: TLabel
-    Left = 335
+    Left = 407
     Top = 56
     Width = 39
     Height = 13
@@ -130,14 +130,14 @@ object Form1: TForm1
     Caption = 'lblLocID'
   end
   object lblLocCardDataCaption: TLabel
-    Left = 192
+    Left = 264
     Top = 104
     Width = 54
     Height = 13
     Caption = 'Card_Data:'
   end
   object lblLocCardData: TLabel
-    Left = 328
+    Left = 400
     Top = 104
     Width = 51
     Height = 13
@@ -151,7 +151,7 @@ object Form1: TForm1
     ParentFont = False
   end
   object imEncounter: TImage
-    Left = 192
+    Left = 264
     Top = 120
     Width = 169
     Height = 249
@@ -1668,7 +1668,7 @@ object Form1: TForm1
   object GroupBox2: TGroupBox
     Left = 16
     Top = 88
-    Width = 169
+    Width = 209
     Height = 297
     Caption = #1048#1075#1088#1086#1082
     TabOrder = 4
@@ -1822,6 +1822,78 @@ object Form1: TForm1
       ItemHeight = 13
       TabOrder = 0
     end
+    object edPlrSanity: TEdit
+      Left = 160
+      Top = 40
+      Width = 41
+      Height = 21
+      TabOrder = 1
+      Text = 'edPlrSanity'
+    end
+    object edPlrStamina: TEdit
+      Left = 160
+      Top = 24
+      Width = 41
+      Height = 21
+      TabOrder = 2
+      Text = 'Edit2'
+    end
+    object edPlrFocus: TEdit
+      Left = 160
+      Top = 56
+      Width = 41
+      Height = 21
+      TabOrder = 3
+      Text = 'Edit2'
+    end
+    object edStatSpeed: TEdit
+      Left = 160
+      Top = 72
+      Width = 41
+      Height = 21
+      TabOrder = 4
+      Text = 'Edit2'
+    end
+    object edStatSneak: TEdit
+      Left = 160
+      Top = 88
+      Width = 41
+      Height = 21
+      TabOrder = 5
+      Text = 'Edit2'
+    end
+    object edStatFight: TEdit
+      Left = 160
+      Top = 104
+      Width = 41
+      Height = 21
+      TabOrder = 6
+      Text = 'Edit2'
+    end
+    object edStatWill: TEdit
+      Left = 160
+      Top = 120
+      Width = 41
+      Height = 21
+      TabOrder = 7
+      Text = 'Edit2'
+    end
+    object edStatLore: TEdit
+      Left = 160
+      Top = 136
+      Width = 41
+      Height = 21
+      TabOrder = 8
+      Text = 'Edit2'
+    end
+    object edStatLuck: TEdit
+      Left = 160
+      Top = 152
+      Width = 41
+      Height = 21
+      TabOrder = 9
+      Text = 'Edit2'
+    end
   end
   object btnRollADie: TButton
     Left = 408
@@ -1841,7 +1913,7 @@ object Form1: TForm1
     Text = '1'
   end
   object PageControl1: TPageControl
-    Left = 384
+    Left = 544
     Top = 8
     Width = 473
     Height = 337
@@ -3849,7 +3921,7 @@ object Form1: TForm1
     end
   end
   object cbLocation: TComboBox
-    Left = 192
+    Left = 264
     Top = 24
     Width = 169
     Height = 21
@@ -3859,7 +3931,7 @@ object Form1: TForm1
     OnChange = cbLocationChange
   end
   object Button8: TButton
-    Left = 288
+    Left = 360
     Top = 376
     Width = 75
     Height = 25
@@ -3867,7 +3939,7 @@ object Form1: TForm1
     TabOrder = 9
   end
   object Button9: TButton
-    Left = 192
+    Left = 264
     Top = 376
     Width = 75
     Height = 25
