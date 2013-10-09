@@ -97,9 +97,9 @@ type
     lblStatLore: TLabel;
     Label28: TLabel;
     lblStatLuck: TLabel;
-    edPlrSanity: TEdit;
-    edPlrStamina: TEdit;
-    edPlrFocus: TEdit;
+    edPlaSanity: TEdit;
+    edPlaStamina: TEdit;
+    edPlaFocus: TEdit;
     edStatSpeed: TEdit;
     edStatSneak: TEdit;
     edStatFight: TEdit;
@@ -122,6 +122,7 @@ type
     procedure Button9Click(Sender: TObject);
     procedure DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure edPlaStaminaChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -787,6 +788,7 @@ var
 begin
   // TODO: таблицу с картами | N | ID_Card |, чтобы находить карты для условия
   // и добавлять новые
+
   // Получили данные карты
   c_data := Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data;
   for i := 0 to Length(c_data)-1 do
@@ -810,19 +812,33 @@ begin
   case c_Cond1 of
   1: begin // Проверка скила
     //ShowMessage('Проверка');
-    if gPlayer.RollADice(gPlayer, c_Choise) = 1 then // c_Choise - номер скилла
+    if gPlayer.RollADice(gPlayer, c_Choise) + c_N >= c_NSccssMin then // c_Choise - номер скилла
          ShowMessage('Прошел проверку!!')
        else
          ShowMessage('Провал!!')
   end;
   2: begin // Проверка наличия
-    if gPlayer.CheckAvailability(c_Choise, c_N) then // Денег
+    if gPlayer.CheckAvailability(c_Choise, c_N) then //
       ShowMessage('Есть нужное кол-во!!')
     else
       ShowMessage('Не хватает!!')
     //ShowMessage('Проверка наличия');
   end;
-  3: ShowMessage('Получить'); // Проверка наличия
+  3: begin // Получить что-либо
+    if c_Choise = 8 then
+      gPlayer.Money := gPlayer.Money + c_N;
+
+    if c_Choise = 9 then
+      gPlayer.Clue_Token := gPlayer.Clue_Token + c_N;
+
+    if c_Choise = 10 then
+      gPlayer.Monster_Trophies := gPlayer.Monster_Trophies + c_N;
+
+    if (c_Choise = 11) or (c_Choise = 12) then
+      gPlayer.Draw_Card(c_N);
+
+  end;
+
   4: ShowMessage('Заплатить'); // Проверка наличия
   end;
   //s := gPlayer.RollADice(gPlayer, StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 9, 1)));
@@ -894,6 +910,19 @@ procedure TForm1.DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
 begin
   if key = VK_MULTIPLY then
     showmessage ('iwr');
+end;
+
+procedure TForm1.edPlaStaminaChange(Sender: TObject);
+begin
+  try
+    gPlayer.Stamina := StrToInt(edPlaStamina.Text);
+  except
+    on EConvertError do
+    begin
+      gPlayer.Stamina := 0;
+      edPlaStamina.Text := '0';
+    end;
+  end;
 end;
 
 end.

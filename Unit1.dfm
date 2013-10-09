@@ -1,8 +1,8 @@
 object Form1: TForm1
-  Left = 339
-  Top = 136
-  Width = 874
-  Height = 539
+  Left = 1
+  Top = 1
+  Width = 798
+  Height = 568
   Caption = 'Form1'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -1822,29 +1822,30 @@ object Form1: TForm1
       ItemHeight = 13
       TabOrder = 0
     end
-    object edPlrSanity: TEdit
+    object edPlaSanity: TEdit
       Left = 160
       Top = 40
       Width = 41
       Height = 21
       TabOrder = 1
-      Text = 'edPlrSanity'
+      Text = 'edPlaSanity'
     end
-    object edPlrStamina: TEdit
+    object edPlaStamina: TEdit
       Left = 160
       Top = 24
       Width = 41
       Height = 21
       TabOrder = 2
-      Text = 'Edit2'
+      Text = 'edPlaStamina'
+      OnChange = edPlaStaminaChange
     end
-    object edPlrFocus: TEdit
+    object edPlaFocus: TEdit
       Left = 160
       Top = 56
       Width = 41
       Height = 21
       TabOrder = 3
-      Text = 'Edit2'
+      Text = 'edPlaFocus'
     end
     object edStatSpeed: TEdit
       Left = 160
@@ -1852,7 +1853,7 @@ object Form1: TForm1
       Width = 41
       Height = 21
       TabOrder = 4
-      Text = 'Edit2'
+      Text = 'edStatSpeed'
     end
     object edStatSneak: TEdit
       Left = 160
@@ -1860,7 +1861,7 @@ object Form1: TForm1
       Width = 41
       Height = 21
       TabOrder = 5
-      Text = 'Edit2'
+      Text = 'edStatSneak'
     end
     object edStatFight: TEdit
       Left = 160
@@ -1868,7 +1869,7 @@ object Form1: TForm1
       Width = 41
       Height = 21
       TabOrder = 6
-      Text = 'Edit2'
+      Text = 'edStatFight'
     end
     object edStatWill: TEdit
       Left = 160
@@ -1876,7 +1877,7 @@ object Form1: TForm1
       Width = 41
       Height = 21
       TabOrder = 7
-      Text = 'Edit2'
+      Text = 'edStatWill'
     end
     object edStatLore: TEdit
       Left = 160
@@ -1884,7 +1885,7 @@ object Form1: TForm1
       Width = 41
       Height = 21
       TabOrder = 8
-      Text = 'Edit2'
+      Text = 'edStatLore'
     end
     object edStatLuck: TEdit
       Left = 160
@@ -1892,7 +1893,7 @@ object Form1: TForm1
       Width = 41
       Height = 21
       TabOrder = 9
-      Text = 'Edit2'
+      Text = 'edStatLuck'
     end
   end
   object btnRollADie: TButton
