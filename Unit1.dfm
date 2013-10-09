@@ -2895,7 +2895,7 @@ object Form1: TForm1
           Top = 24
           Width = 153
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           Text = #1042#1099#1073#1077#1088#1080' '#1082#1072#1088#1090#1091
           OnChange = ComboBox1Change
