@@ -780,7 +780,7 @@ var
   c_data: string;
   c_Cond1, c_Cond2: integer;
   c_Choise, c_Choise2: integer;
-  c_N: integer;
+  c_N, c_N2: integer;
   c_NSccssMin, c_NSccssMax: integer;
   c_Action1, c_Action2, c_Action3: integer;
   c_Action1Value, c_Action2Value, c_Action3Value: integer;
@@ -799,6 +799,7 @@ begin
   c_Choise := StrToInt(copy(c_data, 3, 2));
   c_Choise2 := StrToInt(copy(c_data, 29, 2));
   c_N := StrToInt(copy(c_data, 5, 1));
+  c_N2 := StrToInt(copy(c_data, 31, 1));
   c_NSccssMin := StrToInt(copy(c_data, 6, 1));
   c_NSccssMax := StrToInt(copy(c_data, 7, 1));
   c_Action1 := StrToInt(copy(c_data, 8, 2));
@@ -847,7 +848,7 @@ begin
   //ns := StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 10, 1));
   //if s >= ns then
   //  ShowMessage('Success!');
-  ShowMessage('c_Cond2 '+ IntToStr(c_Cond2));
+  ShowMessage('c_N2 '+ IntToStr(c_N2));
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
