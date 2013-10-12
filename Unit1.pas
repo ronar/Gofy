@@ -781,10 +781,13 @@ var
   c_Cond1, c_Cond2: integer;
   c_Choise, c_Choise2: integer;
   c_N, c_N2: integer;
-  c_NSccssMin, c_NSccssMax: integer;
-  c_Action1, c_Action2, c_Action3: integer;
-  c_Action1Value, c_Action2Value, c_Action3Value: integer;
-  c_Act1Cond, c_Act2Cond, c_Act3Cond: integer;
+  c_NSccssMin, c_NSccssMax, c_NSccssMin2, c_NSccssMax2: integer;
+  c_Action1, c_Action2, c_Action3, c_Action21, c_Action22, c_Action23: integer;
+  c_Action1Value, c_Action2Value, c_Action3Value,
+  c_Action21Value, c_Action22Value, c_Action23Value: integer;
+  c_Act1Cond, c_Act2Cond, c_Act21Cond, c_Act22Cond, c_Else1Cond, c_Else2Cond: integer;
+  c_Else1, c_Else2, c_Else21, c_Else22: integer;
+  c_Else1Value, c_Else2Value, c_Else21Value, c_Else22Value: integer;
 begin
   // TODO: таблицу с картами | N | ID_Card |, чтобы находить карты для условия
   // и добавлять новые
@@ -795,27 +798,52 @@ begin
     a[i] := StrToInt(c_data[i+1]);
 
   c_Cond1 := StrToInt(copy(c_data, 1, 2));
-  c_Cond2 := StrToInt(copy(c_data, 27, 2));
   c_Choise := StrToInt(copy(c_data, 3, 2));
-  c_Choise2 := StrToInt(copy(c_data, 29, 2));
   c_N := StrToInt(copy(c_data, 5, 1));
-  c_N2 := StrToInt(copy(c_data, 31, 1));
   c_NSccssMin := StrToInt(copy(c_data, 6, 1));
   c_NSccssMax := StrToInt(copy(c_data, 7, 1));
+
   c_Action1 := StrToInt(copy(c_data, 8, 2));
   c_Action1Value := StrToInt(copy(c_data, 10, 1));
   c_Act1Cond := StrToInt(copy(c_data, 11, 1));
   c_Action2 := StrToInt(copy(c_data, 12, 2));
-  c_Action2Value := StrToInt(copy(c_data, 13, 1));
-  c_Act2Cond := StrToInt(copy(c_data, 14, 1));
-  c_Action3 := StrToInt(copy(c_data, 15, 2));
-  c_Action3Value := StrToInt(copy(c_data, 16, 1));
-  c_Act3Cond := StrToInt(copy(c_data, 17, 1));
+  c_Action2Value := StrToInt(copy(c_data, 14, 1));
+  c_Act2Cond := StrToInt(copy(c_data, 15, 1));
+
+  c_Action3 := StrToInt(copy(c_data, 16, 2));
+  c_Action3Value := StrToInt(copy(c_data, 18, 1));
+  c_Else1 := StrToInt(copy(c_data, 19, 2));
+  c_Else1Value := StrToInt(copy(c_data, 21, 1));
+  c_Else1Cond := StrToInt(copy(c_data, 22, 1));
+  c_Else2 := StrToInt(copy(c_data, 23, 2));
+  c_Else2Value := StrToInt(copy(c_data, 25, 1));
+
+  c_Cond2 := StrToInt(copy(c_data, 27, 2));
+  c_Choise2 := StrToInt(copy(c_data, 29, 2));
+  c_N2 := StrToInt(copy(c_data, 31, 1));
+  c_NSccssMin2 := StrToInt(copy(c_data, 32, 1));
+  c_NSccssMax2 := StrToInt(copy(c_data, 33, 1));
+
+  c_Action21 := StrToInt(copy(c_data, 34, 2));
+  c_Action21Value := StrToInt(copy(c_data, 36, 1));
+  c_Act21Cond := StrToInt(copy(c_data, 37, 1));
+  c_Action22 := StrToInt(copy(c_data, 38, 2));
+  c_Action22Value := StrToInt(copy(c_data, 41, 1));
+  c_Act22Cond := StrToInt(copy(c_data, 42, 1));
+
+  c_Action23 := StrToInt(copy(c_data, 43, 2));
+  c_Action23Value := StrToInt(copy(c_data, 45, 1));
+  c_Else21 := StrToInt(copy(c_data, 46, 2));
+  c_Else21Value := StrToInt(copy(c_data, 48, 1));
+  c_Else2Cond := StrToInt(copy(c_data, 49, 1));
+  c_Else22 := StrToInt(copy(c_data, 50, 2));
+  //c_Else22Value := StrToInt(copy(c_data, 52, 1));
 
   case c_Cond1 of
   1: begin // Проверка скила
     //ShowMessage('Проверка');
-    if gPlayer.RollADice(gPlayer, c_Choise) + c_N >= c_NSccssMin then // c_Choise - номер скилла
+    if (gPlayer.RollADice(gPlayer, c_Choise) + c_N >= c_NSccssMin) and
+       (gPlayer.RollADice(gPlayer, c_Choise) + c_N <= c_NSccssMax) then // c_Choise - номер скилла
          ShowMessage('Прошел проверку!!')
        else
          ShowMessage('Провал!!')
@@ -848,6 +876,45 @@ begin
   //ns := StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 10, 1));
   //if s >= ns then
   //  ShowMessage('Success!');
+
+  if c_Else1 = 33 then
+    if c_Cond1 <> c_Cond2 and c_Choise1 <> c_Choise2 then
+  begin
+    case c_Cond2 of
+  1: begin // Проверка скила
+    //ShowMessage('Проверка');
+    if (gPlayer.RollADice(gPlayer, c_Choise2) + c_N >= c_NSccssMin2) and
+       (gPlayer.RollADice(gPlayer, c_Choise2) + c_N <= c_NSccssMax2) then // c_Choise - номер скилла
+         ShowMessage('Прошел проверку!!')
+       else
+         ShowMessage('Провал!!')
+  end;
+  2: begin // Проверка наличия
+    if gPlayer.CheckAvailability(c_Choise2, c_N2) then //
+      ShowMessage('Есть нужное кол-во!!')
+    else
+      ShowMessage('Не хватает!!')
+    //ShowMessage('Проверка наличия');
+  end;
+  3: begin // Получить что-либо
+    if c_Choise2 = 8 then
+      gPlayer.Money := gPlayer.Money + c_N2;
+
+    if c_Choise2 = 9 then
+      gPlayer.Clue_Token := gPlayer.Clue_Token + c_N2;
+
+    if c_Choise2 = 10 then
+      gPlayer.Monster_Trophies := gPlayer.Monster_Trophies + c_N2;
+
+    if (c_Choise2 = 11) or (c_Choise2 = 12) then
+      gPlayer.Draw_Card(c_N2);
+
+  end;
+
+  4: ShowMessage('Заплатить'); // Проверка наличия
+  end;
+  end;
+
   ShowMessage('c_N2 '+ IntToStr(c_N2));
 end;
 

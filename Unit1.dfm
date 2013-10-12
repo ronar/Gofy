@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 1
-  Top = 1
-  Width = 798
+  Left = 196
+  Top = 110
+  Width = 1039
   Height = 568
   Caption = 'Form1'
   Color = clBtnFace
@@ -24,56 +24,56 @@ object Form1: TForm1
   end
   object imDie1: TImage
     Left = 16
-    Top = 416
+    Top = 440
     Width = 48
     Height = 48
   end
   object lblRolls: TLabel
     Left = 16
-    Top = 392
+    Top = 416
     Width = 40
     Height = 13
     Caption = #1041#1088#1086#1089#1082#1080':'
   end
   object imDie2: TImage
     Left = 72
-    Top = 416
+    Top = 440
     Width = 48
     Height = 48
   end
   object imDie3: TImage
     Left = 128
-    Top = 416
+    Top = 440
     Width = 48
     Height = 48
   end
   object imDie4: TImage
     Left = 184
-    Top = 416
+    Top = 440
     Width = 48
     Height = 48
   end
   object imDie5: TImage
     Left = 240
-    Top = 416
+    Top = 440
     Width = 48
     Height = 48
   end
   object imDie6: TImage
     Left = 296
-    Top = 416
+    Top = 440
     Width = 48
     Height = 48
   end
   object imDie7: TImage
     Left = 352
-    Top = 416
+    Top = 440
     Width = 48
     Height = 48
   end
   object lblNRolls: TLabel
     Left = 408
-    Top = 400
+    Top = 424
     Width = 26
     Height = 13
     Caption = #1057#1090#1072#1090':'
@@ -137,9 +137,9 @@ object Form1: TForm1
     Caption = 'Card_Data:'
   end
   object lblLocCardData: TLabel
-    Left = 400
-    Top = 104
-    Width = 51
+    Left = 232
+    Top = 120
+    Width = 449
     Height = 13
     Alignment = taRightJustify
     Caption = 'Card_Data'
@@ -152,7 +152,7 @@ object Form1: TForm1
   end
   object imEncounter: TImage
     Left = 264
-    Top = 120
+    Top = 144
     Width = 169
     Height = 249
     Picture.Data = {
@@ -1898,7 +1898,7 @@ object Form1: TForm1
   end
   object btnRollADie: TButton
     Left = 408
-    Top = 440
+    Top = 464
     Width = 75
     Height = 25
     Caption = #1041#1088#1086#1089#1080#1090#1100
@@ -1907,14 +1907,14 @@ object Form1: TForm1
   end
   object Edit1: TEdit
     Left = 408
-    Top = 416
+    Top = 440
     Width = 73
     Height = 21
     TabOrder = 6
     Text = '1'
   end
   object PageControl1: TPageControl
-    Left = 544
+    Left = 688
     Top = 8
     Width = 473
     Height = 337
@@ -2895,7 +2895,7 @@ object Form1: TForm1
           Top = 24
           Width = 153
           Height = 21
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           Text = #1042#1099#1073#1077#1088#1080' '#1082#1072#1088#1090#1091
           OnChange = ComboBox1Change
@@ -3925,15 +3925,15 @@ object Form1: TForm1
     Left = 264
     Top = 24
     Width = 169
-    Height = 21
+    Height = 19
+    Style = csOwnerDrawFixed
     ItemHeight = 13
     TabOrder = 8
-    Text = 'cbLocation'
     OnChange = cbLocationChange
   end
   object Button8: TButton
     Left = 360
-    Top = 376
+    Top = 400
     Width = 75
     Height = 25
     Caption = 'Resolve'
@@ -3941,7 +3941,7 @@ object Form1: TForm1
   end
   object Button9: TButton
     Left = 264
-    Top = 376
+    Top = 400
     Width = 75
     Height = 25
     Caption = 'Show'
