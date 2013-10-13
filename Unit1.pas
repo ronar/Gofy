@@ -106,6 +106,9 @@ type
     edStatWill: TEdit;
     edStatLore: TEdit;
     edStatLuck: TEdit;
+    Label14: TLabel;
+    lblPlaLoc: TLabel;
+    edtPlaLoc: TEdit;
     procedure RadioGroup1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -115,7 +118,6 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button5Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure btnRollADieClick(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure ComboBox2Change(Sender: TObject);
     procedure cbLocationChange(Sender: TObject);
@@ -123,6 +125,7 @@ type
     procedure DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edPlaStaminaChange(Sender: TObject);
+    procedure Button8Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -189,7 +192,7 @@ type
   TPlayer = class
   private
 
-    Location: integer;
+
     Cards: array [1..100] of integer; // Предметы игрока
     Items_Count: integer; // Кол-во предметов у игрока
     bFirst_Player: boolean; // Флаг первого игрока
@@ -200,6 +203,7 @@ type
     Money: integer;
     Clue_Token: integer;
     Monster_Trophies: integer;
+    Location: integer; // id локации в виде xxy, где (хх - номер улицы, y - номер локации)
     Stats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
     constructor Create(var InitStats: array of integer; First_Player: boolean);
     destructor Destroy; override;
@@ -211,6 +215,8 @@ type
     function Get_Stat(n: integer): integer;
     function Get_Item(indx: integer): integer;
     function RollADice(Sender: TPlayer; stat: integer): integer;
+    procedure Encounter;
+    procedure Take_Action(c_Action1: integer; c_Action1Value: integer);
     function CheckAvailability(grade: integer; param: integer): boolean;
     function HasItem(ID: integer): boolean;
     //property Speed: integer read Stats[1] write Stats[1];
@@ -233,6 +239,8 @@ var
   function Load_Cards(Card_Type: integer; Cards: PArrayOfCard): integer;
 
 implementation
+
+uses Unit2;
 
 {$R *.dfm}
 
@@ -364,6 +372,25 @@ begin
   RollADice := Successes;
 end;
 
+// Выполнение действие согласно карте
+procedure TPlayer.Take_Action(c_Action1: integer; c_Action1Value: integer);
+var
+  i: integer;
+begin
+  case c_Action1 of
+  1: Money := Money + c_Action1Value;
+  2: Money := Money - c_Action1Value;
+  11:
+    if c_Action1Value = 0 then
+    begin
+      Form2.Show;
+      
+    end
+    else
+      Location := StrToInt(IntToStr(Round(c_Action1Value / 3 + 0.4)) + IntToStr(c_Action1Value - (Round(c_Action1Value / 3 + 0.4) - 1) * 3));
+  end;
+end;
+
 function TPlayer.CheckAvailability(grade: integer; param: integer): boolean;
 begin
   if (grade = 8) and (money >= param) then
@@ -485,6 +512,9 @@ begin
       Form1.cbLocation.Clear;
       Form1.cbLocation.Text := 'Choose a card';
 
+      Form2.cbb1.Clear;
+      Form2.cbb1.Text := 'Choose a card';
+
       while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
       begin
         i := i + 1;
@@ -497,6 +527,7 @@ begin
         Cards^[i].Card_ID := StrToInt(Copy(SR.Name, 1, 4));
         FindRes := FindNext(SR); // продолжение поиска по заданным условиям
         Form1.cbLocation.Items.Add(IntToStr(Cards^[i].Card_ID));
+        Form2.cbb1.Items.Add(IntToStr(Cards^[i].Card_ID));
       end;
       FindClose(SR); // закрываем поиск
       Load_Cards := i;
@@ -698,6 +729,7 @@ begin
   lblStatWill.Caption := IntToStr(gPlayer.Stats[4]);
   lblStatLore.Caption := IntToStr(gPlayer.Stats[5]);
   lblStatLuck.Caption := IntToStr(gPlayer.Stats[6]);
+  lblPlaLoc.Caption := IntToStr(gPlayer.Location);
   ListBox1.Clear;
   //for i := 1 to gPlayer.Get_Items_Count do
   //  ListBox1.Items.Add(IntToStr(gPlayer.Get_Item(i)));
@@ -722,7 +754,7 @@ procedure TForm1.Button1Click(Sender: TObject);
 var
   pl: TPlayer;
 begin
-
+  gPlayer.Take_Action(11,0);
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -772,11 +804,11 @@ begin
   end;
 end;
 
-procedure TForm1.btnRollADieClick(Sender: TObject);
+procedure TPlayer.Encounter();
 var
   i: integer;
   s, ns: integer;
-  a: array [0..71] of integer;
+  card_data: array [0..71] of integer;
   c_data: string;
   c_Cond1, c_Cond2: integer;
   c_Choise, c_Choise2: integer;
@@ -788,14 +820,15 @@ var
   c_Act1Cond, c_Act2Cond, c_Act21Cond, c_Act22Cond, c_Else1Cond, c_Else2Cond: integer;
   c_Else1, c_Else2, c_Else21, c_Else22: integer;
   c_Else1Value, c_Else2Value, c_Else21Value, c_Else22Value: integer;
+  skill_test: integer;
 begin
   // TODO: таблицу с картами | N | ID_Card |, чтобы находить карты для условия
   // и добавлять новые
 
   // Получили данные карты
-  c_data := Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data;
+  c_data := Get_Card_By_ID(@Locations_Deck, Location).Get_Card_Data;
   for i := 0 to Length(c_data)-1 do
-    a[i] := StrToInt(c_data[i+1]);
+    card_data[i] := StrToInt(c_data[i+1]);
 
   c_Cond1 := StrToInt(copy(c_data, 1, 2));
   c_Choise := StrToInt(copy(c_data, 3, 2));
@@ -840,63 +873,43 @@ begin
   //c_Else22Value := StrToInt(copy(c_data, 52, 1));
 
   case c_Cond1 of
-  1: begin // Проверка скила
+  1: begin // Если True
+    gPlayer.Take_Action(c_Action1, c_Action1Value);
+  end;
+  2: begin // Проверка скила
     //ShowMessage('Проверка');
-    if (gPlayer.RollADice(gPlayer, c_Choise) + c_N >= c_NSccssMin) and
-       (gPlayer.RollADice(gPlayer, c_Choise) + c_N <= c_NSccssMax) then // c_Choise - номер скилла
+    skill_test := gPlayer.RollADice(gPlayer, c_Choise);
+    if (skill_test + c_N >= c_NSccssMin) and
+       (skill_test + c_N <= c_NSccssMax) then // c_Choise - номер скилла
          ShowMessage('Прошел проверку!!')
        else
-         ShowMessage('Провал!!')
-  end;
-  2: begin // Проверка наличия
-    if gPlayer.CheckAvailability(c_Choise, c_N) then //
-      ShowMessage('Есть нужное кол-во!!')
-    else
-      ShowMessage('Не хватает!!')
-    //ShowMessage('Проверка наличия');
-  end;
-  3: begin // Получить что-либо
-    if c_Choise = 8 then
-      gPlayer.Money := gPlayer.Money + c_N;
-
-    if c_Choise = 9 then
-      gPlayer.Clue_Token := gPlayer.Clue_Token + c_N;
-
-    if c_Choise = 10 then
-      gPlayer.Monster_Trophies := gPlayer.Monster_Trophies + c_N;
-
-    if (c_Choise = 11) or (c_Choise = 12) then
-      gPlayer.Draw_Card(c_N);
-
-  end;
-
-  4: ShowMessage('Заплатить'); // Проверка наличия
-  end;
-  //s := gPlayer.RollADice(gPlayer, StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 9, 1)));
-  //ns := StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 10, 1));
-  //if s >= ns then
-  //  ShowMessage('Success!');
+       begin
 
   if c_Else1 = 33 then
-    if c_Cond1 <> c_Cond2 and c_Choise1 <> c_Choise2 then
+    //if (c_Cond1 <> c_Cond2) and (c_Choise <> c_Choise2) then
   begin
     case c_Cond2 of
-  1: begin // Проверка скила
+  1: begin
+    ;
+  end;
+    //end;
+  //end;
+  2: begin // Проверка скила
     //ShowMessage('Проверка');
-    if (gPlayer.RollADice(gPlayer, c_Choise2) + c_N >= c_NSccssMin2) and
-       (gPlayer.RollADice(gPlayer, c_Choise2) + c_N <= c_NSccssMax2) then // c_Choise - номер скилла
+    if (skill_test + c_N >= c_NSccssMin2) and
+       (skill_test + c_N <= c_NSccssMax2) then // c_Choise - номер скилла
          ShowMessage('Прошел проверку!!')
        else
          ShowMessage('Провал!!')
   end;
-  2: begin // Проверка наличия
+  3: begin // Проверка наличия
     if gPlayer.CheckAvailability(c_Choise2, c_N2) then //
       ShowMessage('Есть нужное кол-во!!')
     else
       ShowMessage('Не хватает!!')
     //ShowMessage('Проверка наличия');
   end;
-  3: begin // Получить что-либо
+  4: begin // Получить что-либо
     if c_Choise2 = 8 then
       gPlayer.Money := gPlayer.Money + c_N2;
 
@@ -911,11 +924,43 @@ begin
 
   end;
 
-  4: ShowMessage('Заплатить'); // Проверка наличия
+  5: ShowMessage('Заплатить'); // Проверка наличия
   end;
+  end;
+         ShowMessage('Провал!!')
+       end;
+  end;
+  3: begin // Проверка наличия
+    if gPlayer.CheckAvailability(c_Choise, c_N) then //
+      ShowMessage('Есть нужное кол-во!!')
+    else
+      ShowMessage('Не хватает!!')
+    //ShowMessage('Проверка наличия');
+  end;
+  4: begin // Получить что-либо
+    if c_Choise = 8 then
+      gPlayer.Money := gPlayer.Money + c_N;
+
+    if c_Choise = 9 then
+      gPlayer.Clue_Token := gPlayer.Clue_Token + c_N;
+
+    if c_Choise = 10 then
+      gPlayer.Monster_Trophies := gPlayer.Monster_Trophies + c_N;
+
+    if (c_Choise = 11) or (c_Choise = 12) then
+      gPlayer.Draw_Card(c_N);
+
   end;
 
-  ShowMessage('c_N2 '+ IntToStr(c_N2));
+  5: ShowMessage('Заплатить'); // Проверка наличия
+  end;
+  //s := gPlayer.RollADice(gPlayer, StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 9, 1)));
+  //ns := StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 10, 1));
+  //if s >= ns then
+  //  ShowMessage('Success!');
+
+
+  //ShowMessage('c_N2 '+ IntToStr(c_N2));
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
@@ -994,6 +1039,11 @@ begin
       edPlaStamina.Text := '0';
     end;
   end;
+end;
+
+procedure TForm1.Button8Click(Sender: TObject);
+begin
+  gPlayer.Encounter;
 end;
 
 end.

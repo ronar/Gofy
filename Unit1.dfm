@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 196
-  Top = 110
+  Left = 208
+  Top = 134
   Width = 1039
   Height = 568
   Caption = 'Form1'
@@ -137,9 +137,9 @@ object Form1: TForm1
     Caption = 'Card_Data:'
   end
   object lblLocCardData: TLabel
-    Left = 232
+    Left = 630
     Top = 120
-    Width = 449
+    Width = 51
     Height = 13
     Alignment = taRightJustify
     Caption = 'Card_Data'
@@ -1669,7 +1669,7 @@ object Form1: TForm1
     Left = 16
     Top = 88
     Width = 209
-    Height = 297
+    Height = 321
     Caption = #1048#1075#1088#1086#1082
     TabOrder = 4
     object lblPlrStamina: TLabel
@@ -1719,7 +1719,7 @@ object Form1: TForm1
     end
     object Label2: TLabel
       Left = 16
-      Top = 176
+      Top = 200
       Width = 35
       Height = 13
       Caption = #1050#1072#1088#1090#1099':'
@@ -1814,9 +1814,24 @@ object Form1: TForm1
       Alignment = taRightJustify
       Caption = 'lblStatLuck'
     end
+    object Label14: TLabel
+      Left = 16
+      Top = 168
+      Width = 47
+      Height = 13
+      Caption = #1051#1086#1082#1072#1094#1080#1103':'
+    end
+    object lblPlaLoc: TLabel
+      Left = 114
+      Top = 168
+      Width = 43
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'lblPlaLoc'
+    end
     object ListBox1: TListBox
       Left = 16
-      Top = 192
+      Top = 216
       Width = 121
       Height = 89
       ItemHeight = 13
@@ -1895,6 +1910,14 @@ object Form1: TForm1
       TabOrder = 9
       Text = 'edStatLuck'
     end
+    object edtPlaLoc: TEdit
+      Left = 160
+      Top = 168
+      Width = 41
+      Height = 21
+      TabOrder = 10
+      Text = 'edtPlaLoc'
+    end
   end
   object btnRollADie: TButton
     Left = 408
@@ -1903,7 +1926,6 @@ object Form1: TForm1
     Height = 25
     Caption = #1041#1088#1086#1089#1080#1090#1100
     TabOrder = 5
-    OnClick = btnRollADieClick
   end
   object Edit1: TEdit
     Left = 408
@@ -3938,6 +3960,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'Resolve'
     TabOrder = 9
+    OnClick = Button8Click
   end
   object Button9: TButton
     Left = 264
