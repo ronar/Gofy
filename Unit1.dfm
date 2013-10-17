@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 208
-  Top = 134
+  Left = 230
+  Top = 127
   Width = 1039
   Height = 568
   Caption = 'Form1'
@@ -1940,7 +1940,7 @@ object Form1: TForm1
     Top = 8
     Width = 473
     Height = 337
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     TabOrder = 7
     object TabSheet1: TTabSheet
       Caption = 'Common Items'
