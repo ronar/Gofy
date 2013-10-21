@@ -22,15 +22,15 @@ var
 
 implementation
 
-uses Unit1;
+uses MainForm;
 
 {$R *.dfm}
 
 procedure TForm2.btn1Click(Sender: TObject);
 begin
   Close;
-  gPlayer.Location := StrToInt(cbb1.Text);
-  gPlayer.Encounter;
+  //gPlayer.Location := StrToInt(cbb1.Text);
+  //gPlayer.Encounter;
 end;
 
 end.
