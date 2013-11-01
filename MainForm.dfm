@@ -1,6 +1,6 @@
 object Main_frm: TMain_frm
-  Left = 234
-  Top = 153
+  Left = 623
+  Top = 335
   Width = 1194
   Height = 625
   Caption = 'Main_frm'
@@ -1632,8 +1632,8 @@ object Main_frm: TMain_frm
     OnClick = Button1Click
   end
   object RadioGroup1: TRadioGroup
-    Left = 496
-    Top = 352
+    Left = 680
+    Top = 464
     Width = 185
     Height = 105
     Caption = 'RadioGroup1'
@@ -3917,7 +3917,7 @@ object Main_frm: TMain_frm
           Top = 24
           Width = 153
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           Text = #1042#1099#1073#1077#1088#1080' '#1082#1072#1088#1090#1091
           OnChange = ComboBox2Change
@@ -3953,7 +3953,7 @@ object Main_frm: TMain_frm
     OnChange = cbLocationChange
   end
   object Button8: TButton
-    Left = 360
+    Left = 536
     Top = 400
     Width = 75
     Height = 25
@@ -3962,12 +3962,30 @@ object Main_frm: TMain_frm
     OnClick = Button8Click
   end
   object Button9: TButton
-    Left = 264
+    Left = 256
     Top = 400
     Width = 75
     Height = 25
     Caption = 'Show'
     TabOrder = 10
     OnClick = Button9Click
+  end
+  object Button10: TButton
+    Left = 344
+    Top = 400
+    Width = 89
+    Height = 25
+    Caption = 'Draw a card/Enc'
+    TabOrder = 11
+    OnClick = Button10Click
+  end
+  object Button11: TButton
+    Left = 448
+    Top = 400
+    Width = 75
+    Height = 25
+    Caption = 'Shuffle'
+    TabOrder = 12
+    OnClick = Button11Click
   end
 end

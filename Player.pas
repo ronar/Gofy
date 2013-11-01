@@ -2,7 +2,7 @@ unit Player;
 
 interface
 uses
-  SysUtils, Dialogs, Card_deck;
+  SysUtils, Dialogs, Card_deck, Unit2;
 
 type
   TPlayer = class
@@ -29,6 +29,7 @@ type
     function Get_Stat(n: integer): integer;
     function Get_Item(indx: integer): integer;
     function RollADice(stat: integer): integer;
+    procedure EvtMoveToLocation(c_N: integer; c_data: string);
     procedure Encounter(var Locations_Deck: TCardDeck);
     procedure Take_Action(c_Action1: integer; c_Action1Value: integer);
     function CheckAvailability(grade: integer; param: integer): boolean;
@@ -157,6 +158,27 @@ begin
   RollADice := Successes;
 end;
 
+procedure TPlayer.EvtMoveToLocation(c_N: integer; c_data: string);
+var
+ c_Action1, c_Action1Value: integer;
+begin
+  // refer to xls file to locs table (n, id)
+  if c_N = 0 then
+  begin
+    form2.ShowModal; // Move to any location
+  end
+  else
+  begin
+    Location := 2103;
+  end;
+
+  c_Action1 := StrToInt(copy(c_data, 9, 2));
+  c_Action1Value := StrToInt(copy(c_data, 14, 2));
+
+  if c_Action1 = 35 then
+    ShowMessage('Encounter!');
+end;
+
 // Разрешить контакт
 procedure TPlayer.Encounter(var Locations_Deck: TCardDeck);
 var
@@ -180,7 +202,7 @@ begin
   // и добавлять новые
 
   // Получили данные карты
-  c_data := Locations_Deck.Get_Card_Data(Location);
+  c_data := Locations_Deck.Get_Card_By_ID(Location).Data;
   for i := 0 to Length(c_data)-1 do
     card_data[i] := StrToInt(c_data[i+1]);
 
@@ -235,54 +257,49 @@ begin
     skill_test := RollADice(c_Choise);
     if (skill_test + c_N >= c_NSccssMin) and
        (skill_test + c_N <= c_NSccssMax) then // c_Choise - номер скилла
-         ShowMessage('Прошел проверку!!')
-       else
-       begin
-
-  if c_Else1 = 33 then
-    //if (c_Cond1 <> c_Cond2) and (c_Choise <> c_Choise2) then
-  begin
-    case c_Cond2 of
-  1: begin
-    ;
-  end;
-    //end;
-  //end;
-  2: begin // Проверка скила
-    //ShowMessage('Проверка');
-    if (skill_test + c_N >= c_NSccssMin2) and
-       (skill_test + c_N <= c_NSccssMax2) then // c_Choise - номер скилла
-         ShowMessage('Прошел проверку!!')
-       else
-         ShowMessage('Провал!!')
-  end;
-  3: begin // Проверка наличия
-    if CheckAvailability(c_Choise2, c_N2) then //
-      ShowMessage('Есть нужное кол-во!!')
+      ShowMessage('Прошел проверку!!')
     else
-      ShowMessage('Не хватает!!')
-    //ShowMessage('Проверка наличия');
-  end;
-  4: begin // Получить что-либо
-    if c_Choise2 = 8 then
-      Money := Money + c_N2;
+    begin
+      if c_Else1 = 33 then
+      begin
+        case c_Cond2 of
+        1: begin
+          ;
+        end;
+        2: begin // Проверка скила
+          //ShowMessage('Проверка');
+          if (skill_test + c_N >= c_NSccssMin2) and
+            (skill_test + c_N <= c_NSccssMax2) then // c_Choise - номер скилла
+           ShowMessage('Прошел проверку!!')
+          else
+            ShowMessage('Провал!!')
+        end;
+        3: begin // Проверка наличия
+          if CheckAvailability(c_Choise2, c_N2) then //
+            ShowMessage('Есть нужное кол-во!!')
+          else
+            ShowMessage('Не хватает!!')
+          //ShowMessage('Проверка наличия');
+        end;
+        4: begin // Получить что-либо
+          if c_Choise2 = 8 then
+            Money := Money + c_N2;
 
-    if c_Choise2 = 9 then
-      Clue_Token := Clue_Token + c_N2;
+          if c_Choise2 = 9 then
+            Clue_Token := Clue_Token + c_N2;
 
-    if c_Choise2 = 10 then
-      Monster_Trophies := Monster_Trophies + c_N2;
+          if c_Choise2 = 10 then
+            Monster_Trophies := Monster_Trophies + c_N2;
 
-    if (c_Choise2 = 11) or (c_Choise2 = 12) then
-      Draw_Card(c_N2);
+          if (c_Choise2 = 11) or (c_Choise2 = 12) then
+            Draw_Card(c_N2);
+        end;
 
-  end;
-
-  5: ShowMessage('Заплатить'); // Проверка наличия
-  end;
-  end;
-         ShowMessage('Провал!!')
-       end;
+        5: ShowMessage('Заплатить'); // Проверка наличия
+      end;
+    end;
+      ShowMessage('Провал!!')
+    end;
   end;
   3: begin // Проверка наличия
     if CheckAvailability(c_Choise, c_N) then //
@@ -307,14 +324,15 @@ begin
   end;
 
   5: ShowMessage('Заплатить'); // Проверка наличия
+
+  6: begin // Move to location
+    if (c_Choise = 13) then
+      EvtMoveToLocation(c_N, c_data);
+        //Location := Locations_Deck.Get_Card_ID(c_Action1Value);
+        //if c_Action2 <> 0 then
+
   end;
-  //s := gPlayer.RollADice(gPlayer, StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 9, 1)));
-  //ns := StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 10, 1));
-  //if s >= ns then
-  //  ShowMessage('Success!');
-
-
-  //ShowMessage('c_N2 '+ IntToStr(c_N2));
+  end;
 end;
 
 // Выполнение действие согласно карте

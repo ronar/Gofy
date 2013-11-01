@@ -109,6 +109,8 @@ type
     Label14: TLabel;
     lblPlaLoc: TLabel;
     edtPlaLoc: TEdit;
+    Button10: TButton;
+    Button11: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -125,6 +127,8 @@ type
       Shift: TShiftState);
     procedure edPlaStaminaChange(Sender: TObject);
     procedure Button8Click(Sender: TObject);
+    procedure Button10Click(Sender: TObject);
+    procedure Button11Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -375,6 +379,7 @@ var
 begin
   LocNum := StrToInt(Copy(cbLocation.Text, 2, 1));
   lblLocID.Caption := IntToStr(LocNum);
+  gPlayer.Location := StrToInt(cbLocation.Text);
   {lblLocCardData.Caption := Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data;
   lblNumSuccesses.Caption := Copy(Locations_Deck[cbLocation.ItemIndex + 1].Get_Card_Data, 9, 3);
   case StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 9, 1)) of
@@ -436,6 +441,17 @@ end;
 procedure TMain_frm.Button8Click(Sender: TObject);
 begin
   gPlayer.Encounter(Locations_Deck);
+end;
+
+procedure TMain_frm.Button10Click(Sender: TObject);
+begin
+  //gPlayer.Location := Locations_Deck.Draw_card;
+  gPlayer.Encounter(Locations_Deck);
+end;
+
+procedure TMain_frm.Button11Click(Sender: TObject);
+begin
+  Locations_Deck.Shuffle;
 end;
 
 end.

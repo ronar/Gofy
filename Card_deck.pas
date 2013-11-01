@@ -13,6 +13,7 @@ type
 
   TCardDeck = class(TObject) // Карты
   private
+    Count: integer;
     Cards: array [1..100] of CCard; // Данные о каждой карте
     Card_Type: integer; // Тип карты (слух, миф, контакт и т.д.)
                        // "Знать", что делать с картой будет функция ProcessCard
@@ -27,7 +28,7 @@ type
     function Get_Card_ID(i: integer): Integer;
     function Get_Card_Data(id: integer): string;
     function Find_Cards(file_path: string): integer;
-    //function Draw_Card(): Integer;
+    function Draw_Card(): Integer;
     //property Nom: integer;
     procedure Dejstvie_karti; // Выполнение необходимых действий карты
     procedure Shuffle();
@@ -48,6 +49,8 @@ const
   AT_WATCH_BUY = 3;
 
 implementation
+
+uses Classes;
 
 // Конструктор
 constructor TCardDeck.Create;
@@ -71,7 +74,7 @@ function TCardDeck.Get_Card_By_ID(id: integer): CCard;
 var
   i: integer;
 begin
-  for i:= 1 to 100 do
+  for i:= 1 to Count do
     if Cards[i].ID = id then
       Get_Card_By_ID := Cards[i];
 end;
@@ -96,6 +99,11 @@ end;
 function TCardDeck.Get_Card_Data(id: integer): string;
 begin
   Get_Card_Data := Cards[id].Data;
+end;
+
+function TCardDeck.Draw_Card(): Integer;
+begin
+  Draw_Card := cards[Count].ID;
 end;
 
 // Поиск файлов в картами
@@ -127,6 +135,7 @@ begin
   end;
   FindClose(SR); // закрываем поиск
   Find_Cards := i;
+  Count := i;
 end;
 
 // Выполнение действия карты
@@ -228,8 +237,18 @@ end;
 
 // Тасовка колоды
 procedure TCardDeck.Shuffle();
+var
+  i,r: integer;
+  temp: CCard;
 begin
-
+  randomize;
+  for i := 1 to Count do
+  begin
+    temp := Cards[i];
+    r := random(Count);
+    Cards[i] := Cards[r+1];
+    Cards[r+1] := temp;
+  end;
 end;
 
 end.

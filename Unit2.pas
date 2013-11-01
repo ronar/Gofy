@@ -8,8 +8,9 @@ uses
 
 type
   TForm2 = class(TForm)
-    cbb1: TComboBox;
     btn1: TButton;
+    Edit1: TEdit;
+    cbb1: TComboBox;
     procedure btn1Click(Sender: TObject);
   private
     { Private declarations }
@@ -28,8 +29,9 @@ uses MainForm;
 
 procedure TForm2.btn1Click(Sender: TObject);
 begin
+
+  gPlayer.Location := StrToInt(Edit1.Text);
   Close;
-  //gPlayer.Location := StrToInt(cbb1.Text);
   //gPlayer.Encounter;
 end;
 
