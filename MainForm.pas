@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, Player, Card_deck;
+  Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, Player, Card_deck, Choise;
 
 type
   TMain_frm = class(TForm)
@@ -218,7 +218,7 @@ begin
 
     CT_ENCOUNTER: begin
       // Задание условий поиска и начало поиска
-      Locations_Count := Locations_Deck.Find_Cards('..\\Gofy\\CardsData\\Locations\\');
+      Locations_Count := Locations_Deck.Find_Cards('..\\Gofy\\CardsData\\Locations\\Downtown\\');
 
       Main_frm.cbLocation.Clear;
       Main_frm.cbLocation.Text := 'Choose a card';
@@ -299,8 +299,8 @@ begin
   lblStatLuck.Caption := IntToStr(gPlayer.Stats[6]);
   lblPlaLoc.Caption := IntToStr(gPlayer.Location);
   ListBox1.Clear;
-  //for i := 1 to gPlayer.Get_Items_Count do
-  //  ListBox1.Items.Add(IntToStr(gPlayer.Get_Item(i)));
+  for i := 1 to gPlayer.Get_Items_Count do
+    ListBox1.Items.Add(IntToStr(gPlayer.Get_Item(i)));
 end;
 
 procedure TMain_frm.ComboBox1Change(Sender: TObject);
@@ -438,11 +438,6 @@ begin
   end;
 end;
 
-procedure TMain_frm.Button8Click(Sender: TObject);
-begin
-  gPlayer.Encounter(Locations_Deck);
-end;
-
 procedure TMain_frm.Button10Click(Sender: TObject);
 begin
   //gPlayer.Location := Locations_Deck.Draw_card;
@@ -452,6 +447,187 @@ end;
 procedure TMain_frm.Button11Click(Sender: TObject);
 begin
   Locations_Deck.Shuffle;
+end;
+
+// Проверка выполнилось ли условие на карте
+function Act_Condition(cond: integer; choise: integer; N:integer; min: integer; max: integer): boolean;
+var
+  skill_test: integer;
+begin
+  Act_Condition := False;
+  case Cond of
+  1: begin // Если True
+    Act_Condition := True;
+  end;
+  2: begin // Проверка скила
+    skill_test := gPlayer.RollADice(Choise); // Choise - номер скилла
+    if (skill_test + N >= min) and
+       (skill_test + N <= max) then
+      Act_Condition := True
+    else
+      Act_Condition := False;
+  end;
+  3: begin // Проверка наличия
+    if gPlayer.CheckAvailability(Choise, N) then //
+      Act_Condition := True
+    else
+      Act_Condition := False;
+    //ShowMessage('Проверка наличия');
+  end;
+  end;
+end;
+
+function Choise1: integer;
+begin
+  ChoiseForm.ShowModal;
+end;
+
+function Choise2: integer;
+begin
+  ChoiseForm.ShowModal;
+end;
+
+// Выполнение действие согласно карте
+procedure Take_Action(action: integer; action_value: integer);
+var
+  i: integer;
+begin
+  case action of
+  1: gPlayer.Money := gPlayer.Money + action_value;
+  2: gPlayer.Money := gPlayer.Money - action_value;
+  3: gPlayer.Stamina := gPlayer.Stamina + action_value;
+  8: begin // Draw unique item
+    gPlayer.cards_count := gPlayer.cards_count + 1;
+    gPlayer.Cards[gPlayer.cards_count] := Unique_Items_Deck.Draw_Card;
+  end; // case 8
+  18: begin // Move to street
+      gPlayer.Location := gPlayer.Location div 100 * 100;
+  end; // case 18
+
+  28: // Move to lockation, enc
+    if action_value = 0 then
+    begin
+      Form2.ShowModal;
+
+    end
+    else
+      gPlayer.Location := StrToInt(IntToStr(Round(action_value / 3 + 0.4)) + IntToStr(action_value - (Round(action_value / 3 + 0.4) - 1) * 3));
+  end;
+end;
+
+
+// Разрешить контакт
+procedure Encounter(var Locations_Deck: TCardDeck);
+var
+  i: integer;
+  s, ns: integer;
+  card_data: array [0..71] of integer;
+  c_data: string;
+  c_Cond1, c_Cond2: integer;
+  c_Choise, c_Choise2: integer;
+  c_N, c_N2: integer;
+  c_NSccssMin, c_NSccssMax, c_NSccssMin2, c_NSccssMax2: integer;
+  c_Action1, c_Action2, c_Action3, c_Action21, c_Action22, c_Action23: integer;
+  c_Action1Value, c_Action2Value, c_Action3Value,
+  c_Action21Value, c_Action22Value, c_Action23Value: integer;
+  c_Act1Cond, c_Act2Cond, c_Act21Cond, c_Act22Cond, c_Else1Cond, c_Else2Cond: integer;
+  c_Else1, c_Else2, c_Else21, c_Else22: integer;
+  c_Else1Value, c_Else2Value, c_Else21Value, c_Else22Value: integer;
+  skill_test: integer;
+  choise: integer;
+begin
+  // TODO: таблицу с картами | N | ID_Card |, чтобы находить карты для условия
+  // и добавлять новые
+
+  // Получили данные карты
+  c_data := Locations_Deck.Get_Card_By_ID(gPlayer.Location).Data;
+  for i := 0 to Length(c_data)-1 do
+    card_data[i] := StrToInt(c_data[i+1]);
+
+  c_Cond1 := StrToInt(copy(c_data, 1, 2));
+  c_Choise := StrToInt(copy(c_data, 3, 2));
+  c_N := StrToInt(copy(c_data, 5, 2));
+  c_NSccssMin := StrToInt(copy(c_data, 7, 1));
+  c_NSccssMax := StrToInt(copy(c_data, 8, 1));
+
+  c_Action1 := StrToInt(copy(c_data, 9, 2));
+  c_Action1Value := StrToInt(copy(c_data, 11, 2));
+  c_Act1Cond := StrToInt(copy(c_data, 13, 1));
+  c_Action2 := StrToInt(copy(c_data, 14, 2));
+  c_Action2Value := StrToInt(copy(c_data, 16, 2));
+  c_Act2Cond := StrToInt(copy(c_data, 18, 1));
+  c_Action3 := StrToInt(copy(c_data, 19, 2));
+  c_Action3Value := StrToInt(copy(c_data, 21, 2));
+
+  c_Else1 := StrToInt(copy(c_data, 23, 2));
+  c_Else1Value := StrToInt(copy(c_data, 25, 2));
+  c_Else1Cond := StrToInt(copy(c_data, 27, 1));
+  c_Else2 := StrToInt(copy(c_data, 28, 2));
+  c_Else2Value := StrToInt(copy(c_data, 30, 2));
+
+  c_Cond2 := StrToInt(copy(c_data, 27, 2));
+  c_Choise2 := StrToInt(copy(c_data, 29, 2));
+  c_N2 := StrToInt(copy(c_data, 31, 1));
+  c_NSccssMin2 := StrToInt(copy(c_data, 32, 1));
+  c_NSccssMax2 := StrToInt(copy(c_data, 33, 1));
+
+  c_Action21 := StrToInt(copy(c_data, 34, 2));
+  c_Action21Value := StrToInt(copy(c_data, 36, 1));
+  c_Act21Cond := StrToInt(copy(c_data, 37, 1));
+  c_Action22 := StrToInt(copy(c_data, 38, 2));
+  c_Action22Value := StrToInt(copy(c_data, 41, 1));
+  c_Act22Cond := StrToInt(copy(c_data, 42, 1));
+
+  c_Action23 := StrToInt(copy(c_data, 43, 2));
+  c_Action23Value := StrToInt(copy(c_data, 45, 1));
+  c_Else21 := StrToInt(copy(c_data, 46, 2));
+  c_Else21Value := StrToInt(copy(c_data, 48, 1));
+  c_Else2Cond := StrToInt(copy(c_data, 49, 1));
+  c_Else22 := StrToInt(copy(c_data, 50, 2));
+  //c_Else22Value := StrToInt(copy(c_data, 52, 1));
+
+  // Condition
+  if Act_Condition(c_Cond1, c_Choise, c_N, c_NSccssMin, c_NSccssMax) then
+  begin
+    //Action
+    if (c_Act1Cond = 2) then// 1 OR
+    begin
+      if (c_Act2Cond = 2) then // 2 ORs
+        choise := Choise2
+      else // 1 OR
+        choise := Choise1;
+      case choise of
+      1: Take_Action(c_Action1, c_Action1Value);
+      2: Take_Action(c_Action2, c_Action2Value);
+      3: Take_Action(c_Action3, c_Action3Value);
+      end;
+    end
+    else // No ORs
+      Take_Action(c_Action1, c_Action1Value);
+  end
+  else // else1
+  begin
+    if (c_Else1Cond = 2) then// 1 OR
+    begin
+      choise := Choise1;
+      case choise of
+      1: Take_Action(c_Else1, c_Else1Value);
+      2: Take_Action(c_Else1, c_Else1Value);
+      end;
+    end
+    else // No ORs
+      Take_Action(c_Else1, c_Else1Value);
+  end;
+
+  // Choise1 proto
+  // Dialog window: choose 1 OR 2, if 1 then take_action ... if 2 ...
+
+
+end;
+
+procedure TMain_frm.Button8Click(Sender: TObject);
+begin
+  Encounter(Locations_Deck);
 end;
 
 end.

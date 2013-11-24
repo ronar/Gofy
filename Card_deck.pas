@@ -104,6 +104,7 @@ end;
 function TCardDeck.Draw_Card(): Integer;
 begin
   Draw_Card := cards[Count].ID;
+  Shuffle;
 end;
 
 // Поиск файлов в картами

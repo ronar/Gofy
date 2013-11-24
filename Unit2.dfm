@@ -38,5 +38,6 @@ object Form2: TForm2
     ItemHeight = 13
     TabOrder = 2
     Text = 'cbb1'
+    Visible = False
   end
 end
