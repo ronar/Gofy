@@ -1,4 +1,4 @@
-unit Card_deck;
+unit uCardDeck;
 
 interface
 
@@ -23,12 +23,12 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Get_Card_By_ID(id: integer): CCard;
+    function GetCardByID(id: integer): CCard;
     property Lokaciya: integer read GetLokation; // Локация карты (свойство)
     function Get_Card_ID(i: integer): Integer;
     function Get_Card_Data(id: integer): string;
     function Find_Cards(file_path: string): integer;
-    function Draw_Card(): Integer;
+    function DrawCard(): Integer;
     //property Nom: integer;
     procedure Dejstvie_karti; // Выполнение необходимых действий карты
     procedure Shuffle();
@@ -70,13 +70,13 @@ begin
   inherited;
 end;
 
-function TCardDeck.Get_Card_By_ID(id: integer): CCard;
+function TCardDeck.GetCardByID(id: integer): CCard;
 var
   i: integer;
 begin
   for i:= 1 to Count do
     if Cards[i].ID = id then
-      Get_Card_By_ID := Cards[i];
+      GetCardByID := Cards[i];
 end;
 
 function TCardDeck.GetLokation: integer;
@@ -101,9 +101,9 @@ begin
   Get_Card_Data := Cards[id].Data;
 end;
 
-function TCardDeck.Draw_Card(): Integer;
+function TCardDeck.DrawCard(): Integer;
 begin
-  Draw_Card := cards[Count].ID;
+  DrawCard := cards[Count].ID;
   Shuffle;
 end;
 

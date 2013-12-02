@@ -2,11 +2,12 @@ program Project1;
 
 uses
   Forms,
-  MainForm in 'MainForm.pas' {Main_frm},
+  uMainForm in 'uMainForm.pas' {Main_frm},
   Unit2 in 'Unit2.pas' {Form2},
-  Player in 'Player.pas',
-  Card_deck in 'Card_deck.pas',
-  Choise in 'Choise.pas' {ChoiseForm};
+  uPlayer in 'uPlayer.pas',
+  uCardDeck in 'uCardDeck.pas',
+  Choise in 'Choise.pas' {ChoiseForm},
+  uInvChsForm in 'uInvChsForm.pas' {InvFrm};
 
 {$R *.res}
 
@@ -15,5 +16,6 @@ begin
   Application.CreateForm(TMain_frm, Main_frm);
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TChoiseForm, ChoiseForm);
+  Application.CreateForm(TInvFrm, InvFrm);
   Application.Run;
 end.

@@ -1,15 +1,17 @@
-unit Player;
+unit uPlayer;
 
 interface
 uses
-  SysUtils, Dialogs, Card_deck, Unit2;
+  SysUtils, Dialogs, uCardDeck, Unit2;
 
 type
   TPlayer = class
   private
     //Items_Count: integer; // Кол-во предметов у игрока
-    bFirst_Player: boolean; // Флаг первого игрока
+
   public
+    bFirst_Player: boolean; // Флаг первого игрока
+    investigator: integer;
     Cards: array [1..100] of integer; // Предметы игрока
     cards_count: integer; // Amt. of player's items
     Sanity: integer;

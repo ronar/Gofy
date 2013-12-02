@@ -1,10 +1,10 @@
-unit MainForm;
+unit uMainForm;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, Player, Card_deck, Choise;
+  Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, uPlayer, uCardDeck, Choise;
 
 type
   TMain_frm = class(TForm)
@@ -21,7 +21,6 @@ type
     lblPlrFocus: TLabel;
     ListBox1: TListBox;
     Label2: TLabel;
-    Label7: TLabel;
     imDie1: TImage;
     lblRolls: TLabel;
     imDie2: TImage;
@@ -33,45 +32,6 @@ type
     btnRollADie: TButton;
     Edit1: TEdit;
     lblNRolls: TLabel;
-    PageControl1: TPageControl;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
-    GroupBox1: TGroupBox;
-    Image1: TImage;
-    Label3: TLabel;
-    lblPrm2: TLabel;
-    lblPrm3: TLabel;
-    Label6: TLabel;
-    lblPrm4: TLabel;
-    Label8: TLabel;
-    lblPrm5: TLabel;
-    Label10: TLabel;
-    lblPrm6: TLabel;
-    Label12: TLabel;
-    Label13: TLabel;
-    lblPrm1: TLabel;
-    lblCardData: TLabel;
-    ComboBox1: TComboBox;
-    Button4: TButton;
-    Button5: TButton;
-    GroupBox3: TGroupBox;
-    Image2: TImage;
-    Label9: TLabel;
-    lblPrm22: TLabel;
-    lblPrm23: TLabel;
-    Label15: TLabel;
-    lblPrm24: TLabel;
-    Label17: TLabel;
-    lblPrm25: TLabel;
-    Label19: TLabel;
-    lblPrm26: TLabel;
-    Label21: TLabel;
-    Label22: TLabel;
-    lblPrm21: TLabel;
-    lblCardData2: TLabel;
-    ComboBox2: TComboBox;
-    Button6: TButton;
-    Button7: TButton;
     cbLocation: TComboBox;
     Label11: TLabel;
     lblSkillCheck: TLabel;
@@ -111,6 +71,20 @@ type
     edtPlaLoc: TEdit;
     Button10: TButton;
     Button11: TButton;
+    Label20: TLabel;
+    lblPlaClue: TLabel;
+    edtPlaClue: TEdit;
+    Label27: TLabel;
+    lblPlaMoney: TLabel;
+    edtPlaMoney: TEdit;
+    LabeledEdit1: TLabeledEdit;
+    lblCurrentPlayer: TLabel;
+    lblCurPlayer: TLabel;
+    Button4: TButton;
+    Button5: TButton;
+    lblPlaInv: TLabel;
+    edtPlaInv: TEdit;
+    Label6: TLabel;
     procedure RadioGroup1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -129,6 +103,7 @@ type
     procedure Button8Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
     procedure Button11Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -144,11 +119,11 @@ const
   ST_LORE = 5;
   ST_LUCK = 6;
   // Константы фаз
-  PH_PEREDISHKA = 1;
-  PH_DVIJENIE = 2;
-  PH_KONTAKTI_V_ARKHEME = 3;
+  PH_UPKEEP = 1;
+  PH_MOVE = 2;
+  PH_ENCOUNTER = 3;
   PH_KONTAKTI_V_INIH_MIRAH = 4;
-  PH_MIF = 5;
+  PH_MYTHOS = 5;
   // Константы Типов Карт
   CT_DEJSTVIE = 6;
   CT_KONTAKT = 7;
@@ -166,6 +141,20 @@ const
         'Cold Spring Glen', 'Congregational Hospital', 'Curiositie Shoppe',
         'Darke''s Carnival', 'Devil Reef', 'Devil''s Hopyard', 'Dunwich Village',
         'Esoteric Order of Dragon');
+  crd_ally: array [1..1] of string = ('Anna Kaslow');
+  investigators: array [1..49] of string = ('Agnes Baker', 'Akachi Onyele',
+        'Amanda Sharpe', '"Ashcan" Pete', 'Bob Jenkins', 'Calvin Wright',
+        'Carolyn Fern', 'Charlie Kane', 'Daisy Walker', 'Darrell Simmons',
+        'Dexter Drake', 'Diana Stanley', 'Finn Edwards', 'George Barnaby',
+        'Gloria Goldberg', 'Hank Samson', 'Harvey Walters', 'Jacqueline Fine',
+        'Jenny Barnes', 'Jim Culver', 'Joe Diamond', 'Kate Winthrop',
+        'Leo Anderson', 'Lily Chen', 'Lola Hayes', 'Luke Robinson',
+        'Mandy Thompson', 'Marie Lambeau', 'Mark Harrigan', 'Michael McGlen',
+        'Minh Thi Phan', 'Monterey Jack', 'Norman Withers', 'Patrice Hathaway',
+        'Rex Murphy', 'Rita Young', 'Roland Banks', 'Silas Marsh',
+        'Sister Mary', '"Skids" O''Toole', 'Tommy Muldoon', 'Tony Morgan',
+        'Trish Scarborough', 'Ursula Downs', 'Vincent Lee', 'Wendy Adams',
+        'William Yorick', 'Wilson Richards', 'Zoey Samara');
 
 
 type
@@ -183,12 +172,17 @@ var
   Unique_Items_Count: integer = 0;
   Locations_Count: integer = 0;
   Cards_Count: integer = 0;
-  gPlayer: TPlayer;
+  players: array [1..8] of TPlayer;
+  gPlayer, gCurrentPlayer: TPlayer;
+  player_count: integer;
   procedure Load_Cards(Card_Type: integer);
+  procedure Encounter(player: TPlayer; var Locations_Deck: TCardDeck; card: integer);
+  function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
 
-implementation
 
-uses Unit2;
+implementation                  { TODO : Начальное меню (кол-во игроков, сколько сыщиков) }
+
+uses Unit2, Math, uInvChsForm;
 
 {$R *.dfm}
 
@@ -201,10 +195,10 @@ begin
     CT_COMMON_ITEM: begin
       // Загружаем все карты, находящиеся в каталоге
       Common_Items_Count :=  Common_Items_Deck.Find_Cards('..\\Gofy\\CardsData\\CommonItems\\');
-      Main_frm.ComboBox2.Clear;
-      Main_frm.ComboBox2.Text := 'Choose a card';
-      for i := 1 to Common_Items_Count do
-        Main_frm.ComboBox1.Items.Add(IntToStr(Common_Items_Deck.Get_Card_ID(i)));
+      //Main_frm.ComboBox2.Clear;
+      //Main_frm.ComboBox2.Text := 'Choose a card';
+      //for i := 1 to Common_Items_Count do
+      //  Main_frm.ComboBox1.Items.Add(IntToStr(Common_Items_Deck.Get_Card_ID(i)));
     end; // CT_COMMON_ITEM
 
     CT_UNIQUE_ITEM: begin
@@ -241,7 +235,7 @@ end;
 procedure TMain_frm.RadioGroup1Click(Sender: TObject);
 begin
   if RadioGroup1.ItemIndex = 0
-  then gCurrent_phase := 1;
+  then gCurrent_phase := PH_UPKEEP;
   if RadioGroup1.ItemIndex = 1
   then gCurrent_phase := 2;
   if RadioGroup1.ItemIndex = 2
@@ -266,9 +260,20 @@ begin
   PlStats[4] := 0; // Will
   PlStats[5] := 5; // Lore
   PlStats[6] := 0; // Luck
-  // Загрузка объекта игрока
-  gPlayer := TPlayer.Create(PlStats, False);
-  
+
+  player_count := StrToInt(LabeledEdit1.Text);
+
+  for i := 1 to player_count do
+  begin
+    // Загрузка объекта игрока
+    players[i] := TPlayer.Create(PlStats, False);
+    players[i].investigator := 0;
+  end;
+  players[1].bFirst_Player := True;
+
+  gPlayer := players[1];
+  gCurrentPlayer := players[GetFirstPlayer];
+  lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
 
   // Загрузка карт n-го типа (Контакты)
 
@@ -288,41 +293,62 @@ procedure TMain_frm.Button3Click(Sender: TObject);
 var
   i: integer;
 begin
-  lblPlrStamina.Caption := IntToStr(gPlayer.Get_Stamina);
-  lblPlrSanity.Caption := IntToStr(gPlayer.Get_Sanity);
-  lblPlrFocus.Caption := IntToStr(gPlayer.Get_Focus);
-  lblStatSpeed.Caption := IntToStr(gPlayer.Stats[1]);
-  lblStatSneak.Caption := IntToStr(gPlayer.Stats[2]);
-  lblStatFight.Caption := IntToStr(gPlayer.Stats[3]);
-  lblStatWill.Caption := IntToStr(gPlayer.Stats[4]);
-  lblStatLore.Caption := IntToStr(gPlayer.Stats[5]);
-  lblStatLuck.Caption := IntToStr(gPlayer.Stats[6]);
-  lblPlaLoc.Caption := IntToStr(gPlayer.Location);
+  lblPlrStamina.Caption := IntToStr(gCurrentPlayer.Get_Stamina);
+  lblPlrSanity.Caption := IntToStr(gCurrentPlayer.Get_Sanity);
+  lblPlrFocus.Caption := IntToStr(gCurrentPlayer.Get_Focus);
+  lblStatSpeed.Caption := IntToStr(gCurrentPlayer.Stats[1]);
+  lblStatSneak.Caption := IntToStr(gCurrentPlayer.Stats[2]);
+  lblStatFight.Caption := IntToStr(gCurrentPlayer.Stats[3]);
+  lblStatWill.Caption := IntToStr(gCurrentPlayer.Stats[4]);
+  lblStatLore.Caption := IntToStr(gCurrentPlayer.Stats[5]);
+  lblStatLuck.Caption := IntToStr(gCurrentPlayer.Stats[6]);
+  lblPlaLoc.Caption := IntToStr(gCurrentPlayer.Location);
+  lblPlaClue.Caption := IntToStr(gCurrentPlayer.Clue_Token);
+  lblPlaMoney.Caption := IntToStr(gCurrentPlayer.Money);
+  lblPlaInv.Caption := investigators[gCurrentPlayer.investigator];
   ListBox1.Clear;
   for i := 1 to gPlayer.Get_Items_Count do
-    ListBox1.Items.Add(IntToStr(gPlayer.Get_Item(i)));
+    ListBox1.Items.Add(IntToStr(gCurrentPlayer.Get_Item(i)));
 end;
 
 procedure TMain_frm.ComboBox1Change(Sender: TObject);
 begin
-  Image1.Picture.LoadFromFile('..\Gofy\CardsData\CommonItems\'+ComboBox1.Text+'.jpg');
+  //Image1.Picture.LoadFromFile('..\Gofy\CardsData\CommonItems\'+ComboBox1.Text+'.jpg');
   //Common_Items_Deck.Cards[ComboBox1.ItemIndex+1].Dejstvie_karti;
 end;
 
 procedure TMain_frm.Button4Click(Sender: TObject);
+var
+  fp, i: integer;
 begin
-//  cards0[StrToInt(ComboBox1.Text)].Dejstvie_karti;
-  if ComboBox1.ItemIndex < 1 then
-    ShowMessage('Выберите карту')
+  if GetFirstPlayer < player_count then
+  begin
+    fp := GetFirstPlayer;
+    players[fp].bFirst_Player := False;
+    players[fp + 1].bFirst_Player := true;
+  end
   else
-    gPlayer.Draw_Card(StrToInt(ComboBox1.Text));
+  begin
+    players[1].bFirst_Player := true;
+    for i := 2 to player_count do
+      players[i].bFirst_Player := false;
+  end;
+
+  lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
+  gCurrentPlayer := players[GetFirstPlayer];
+
+//  cards0[StrToInt(ComboBox1.Text)].Dejstvie_karti;
+  //if ComboBox1.ItemIndex < 1 then
+  //  ShowMessage('Выберите карту')
+  //else
+  //  gPlayer.Draw_Card(StrToInt(ComboBox1.Text));
 end;
 
 procedure TMain_frm.Button1Click(Sender: TObject);
 var
   pl: TPlayer;
 begin
-  gPlayer.Take_Action(11,0);
+  gPlayer.Take_Action(11, 0);
 end;
 
 procedure TMain_frm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -361,15 +387,15 @@ end;
 
 procedure TMain_frm.Button6Click(Sender: TObject);
 begin
-  if ComboBox2.ItemIndex < 1 then
-    ShowMessage('Выберите карту')
-  else
-    gPlayer.Draw_Card(StrToInt(ComboBox2.Text));
+  //if ComboBox2.ItemIndex < 1 then
+  //  ShowMessage('Выберите карту')
+  //else
+  //  gPlayer.Draw_Card(StrToInt(ComboBox2.Text));
 end;
 
 procedure TMain_frm.ComboBox2Change(Sender: TObject);
 begin
-  Image2.Picture.LoadFromFile('..\Gofy\CardsData\UniqueItems\'+ComboBox2.Text+'.jpg');
+  //Image2.Picture.LoadFromFile('..\Gofy\CardsData\UniqueItems\'+ComboBox2.Text+'.jpg');
   //Unique_Items_Deck[ComboBox2.ItemIndex+1].Dejstvie_karti;
 end;
 
@@ -379,25 +405,43 @@ var
 begin
   LocNum := StrToInt(Copy(cbLocation.Text, 2, 1));
   lblLocID.Caption := IntToStr(LocNum);
-  gPlayer.Location := StrToInt(cbLocation.Text);
+  //gPlayer.Location := StrToInt(cbLocation.Text);
   {lblLocCardData.Caption := Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data;
   lblNumSuccesses.Caption := Copy(Locations_Deck[cbLocation.ItemIndex + 1].Get_Card_Data, 9, 3);
-  case StrToInt(Copy(Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data, 9, 1)) of
-  1: lblSkill.Caption := 'Скорость';
-  2: lblSkill.Caption := 'Скрытность';
-  3: lblSkill.Caption := 'Сила';
-  4: lblSkill.Caption := 'Воля';
-  5: lblSkill.Caption := 'Знание';
-  6: lblSkill.Caption := 'Удача';
-  7: lblSkill.Caption := 'Уход';
-  8: lblSkill.Caption := 'Битва';
+  }
+  lblLocCardData.Caption := Locations_Deck.GetCardByID(StrToInt(cbLocation.Text)).Data;
+  case StrToInt(Copy(Locations_Deck.GetCardByID(StrToInt(cbLocation.Text)).Data, 3, 2)) of
+  //1: lblSkill.Caption := ;
+  2: lblSkill.Caption := 'Скорость';
+  3: lblSkill.Caption := 'Скрытность';
+  4: lblSkill.Caption := 'Битва';
+  5: lblSkill.Caption := 'Воля';
+  6: lblSkill.Caption := 'Знание';
+  7: lblSkill.Caption := 'Удача';
+  8: lblSkill.Caption := 'Уход';
   end;
-  imEncounter.Picture.LoadFromFile('..\\Gofy\\CardsData\\Locations\\'+cbLocation.Text[1]+'0'+cbLocation.Text[3]+cbLocation.Text[4]+'.jpg');
-}end;
+  imEncounter.Picture.LoadFromFile('..\\Gofy\\CardsData\\Locations\\Downtown\\'+cbLocation.Text[1]+'0'+cbLocation.Text[3]+cbLocation.Text[4]+'.jpg');
+end;
 
 procedure TMain_frm.Button9Click(Sender: TObject);
 begin
-  case cbLocation.ItemIndex of
+  case gCurrent_phase of
+    PH_UPKEEP: begin
+      gCurrent_phase := PH_MOVE;
+    end;
+    PH_MOVE: begin
+
+    end;
+    PH_ENCOUNTER: begin
+      
+      Encounter(gCurrentPlayer, Locations_Deck, Locations_Deck.DrawCard);
+    end;
+    PH_KONTAKTI_V_INIH_MIRAH: begin
+    end;
+    PH_MYTHOS: begin
+    end;
+  end;
+{  case cbLocation.ItemIndex of
   0: ShowMessage('''Listen!'' An old man with a piercing gaze locks eyes with you, and you feel strange information squirming around in your head. Pass a Will (-1) check to gain 1 Spell.');
   1: ;//ShowMessage('''Listen!'' An old man with a piercing gaze locks eyes with you, and you feel strange information squirming around in your head. Pass a Will (-1) check to gain 1 Spell.');
   2: ;
@@ -416,6 +460,7 @@ begin
   15:            ;
   16:             ;
   end;
+}
 end;
 
 procedure TMain_frm.DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
@@ -440,8 +485,14 @@ end;
 
 procedure TMain_frm.Button10Click(Sender: TObject);
 begin
-  //gPlayer.Location := Locations_Deck.Draw_card;
-  gPlayer.Encounter(Locations_Deck);
+  if gCurrent_phase = PH_MOVE then
+  begin
+    gCurrentPlayer.Location := StrToInt(cbLocation.Text);//Locations_Deck.DrawCard;
+    //gCurrent_phase := PH_ENCOUNTER;
+  end
+  else
+    ShowMessage('Wrong phase.');
+  //gPlayer.Encounter(Locations_Deck);
 end;
 
 procedure TMain_frm.Button11Click(Sender: TObject);
@@ -460,7 +511,7 @@ begin
     Act_Condition := True;
   end;
   2: begin // Проверка скила
-    skill_test := gPlayer.RollADice(Choise); // Choise - номер скилла
+    skill_test := gPlayer.RollADice(Choise - 1); // Choise - номер скилла
     if (skill_test + N >= min) and
        (skill_test + N <= max) then
       Act_Condition := True
@@ -473,17 +524,30 @@ begin
     else
       Act_Condition := False;
     //ShowMessage('Проверка наличия');
+  end; // case 3
+  7: begin // Spec. card
+    if MessageDlg('Confirm?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+      skill_test := gPlayer.RollADice(Choise - 2); // Choise - номер скилла
+      if (skill_test + N >= min) and
+        (skill_test + N <= max) then
+        Act_Condition := True
+      else
+        Act_Condition := False;
+    end;
   end;
   end;
 end;
 
-function Choise1: integer;
+function Choise1(act1: integer; act2: integer): integer;
 begin
+  ChoiseForm.Choise1(act1, act2);
   ChoiseForm.ShowModal;
 end;
 
-function Choise2: integer;
+function Choise2(act1: integer; act2: integer; act3: integer): integer;
 begin
+  ChoiseForm.Choise2(act1, act2, act3);
   ChoiseForm.ShowModal;
 end;
 
@@ -498,7 +562,7 @@ begin
   3: gPlayer.Stamina := gPlayer.Stamina + action_value;
   8: begin // Draw unique item
     gPlayer.cards_count := gPlayer.cards_count + 1;
-    gPlayer.Cards[gPlayer.cards_count] := Unique_Items_Deck.Draw_Card;
+    gPlayer.Cards[gPlayer.cards_count] := Unique_Items_Deck.DrawCard;
   end; // case 8
   18: begin // Move to street
       gPlayer.Location := gPlayer.Location div 100 * 100;
@@ -517,7 +581,7 @@ end;
 
 
 // Разрешить контакт
-procedure Encounter(var Locations_Deck: TCardDeck);
+procedure Encounter(player: TPlayer; var Locations_Deck: TCardDeck; card: integer);
 var
   i: integer;
   s, ns: integer;
@@ -531,8 +595,8 @@ var
   c_Action1Value, c_Action2Value, c_Action3Value,
   c_Action21Value, c_Action22Value, c_Action23Value: integer;
   c_Act1Cond, c_Act2Cond, c_Act21Cond, c_Act22Cond, c_Else1Cond, c_Else2Cond: integer;
-  c_Else1, c_Else2, c_Else21, c_Else22: integer;
-  c_Else1Value, c_Else2Value, c_Else21Value, c_Else22Value: integer;
+  c_Else1, c_Else2, c_Else3, c_Else21, c_Else22: integer;
+  c_Else1Value, c_Else2Value, c_Else3Value, c_Else21Value, c_Else22Value: integer;
   skill_test: integer;
   choise: integer;
 begin
@@ -540,7 +604,7 @@ begin
   // и добавлять новые
 
   // Получили данные карты
-  c_data := Locations_Deck.Get_Card_By_ID(gPlayer.Location).Data;
+  c_data := Locations_Deck.GetCardByID(gPlayer.Location).Data;
   for i := 0 to Length(c_data)-1 do
     card_data[i] := StrToInt(c_data[i+1]);
 
@@ -564,6 +628,9 @@ begin
   c_Else1Cond := StrToInt(copy(c_data, 27, 1));
   c_Else2 := StrToInt(copy(c_data, 28, 2));
   c_Else2Value := StrToInt(copy(c_data, 30, 2));
+  c_Else2Cond := StrToInt(copy(c_data, 32, 1));
+  c_Else3 := StrToInt(copy(c_data, 33, 2));
+  c_Else3Value := StrToInt(copy(c_data, 35, 2));
 
   c_Cond2 := StrToInt(copy(c_data, 27, 2));
   c_Choise2 := StrToInt(copy(c_data, 29, 2));
@@ -593,9 +660,15 @@ begin
     if (c_Act1Cond = 2) then// 1 OR
     begin
       if (c_Act2Cond = 2) then // 2 ORs
-        choise := Choise2
+        choise := Choise2(c_Action1, c_Action2, c_Action3)
       else // 1 OR
-        choise := Choise1;
+        if (c_Act2Cond = 1) then // OR / AND
+        begin
+          choise := Choise1(c_Action1, c_Action2);
+          Take_Action(c_Action3, c_Action3Value);
+        end
+        else
+          choise := Choise1(c_Action1, c_Action2);
       case choise of
       1: Take_Action(c_Action1, c_Action1Value);
       2: Take_Action(c_Action2, c_Action2Value);
@@ -603,31 +676,83 @@ begin
       end;
     end
     else // No ORs
-      Take_Action(c_Action1, c_Action1Value);
+    begin
+      if (c_Act1Cond = 1) then// 1 AND
+      begin
+        if (c_Act2Cond = 1) then // 2 AND
+        begin
+          Take_Action(c_Action1, c_Action1Value);
+          Take_Action(c_Action2, c_Action2Value);
+          Take_Action(c_Action3, c_Action3Value);
+        end
+        else // 2 AND
+        //begin
+          if (c_Act2Cond = 2) then // AND / OR
+          begin
+            Take_Action(c_Action1, c_Action1Value);
+            choise := Choise1(c_Action2, c_Action3);
+          end
+          else
+          begin
+            Take_Action(c_Action1, c_Action1Value);
+            Take_Action(c_Action2, c_Action2Value);
+          end;
+      end
+      else // 1 AND
+        Take_Action(c_Action1, c_Action1Value);
+    end; // else No ORs
   end
   else // else1
   begin
-    if (c_Else1Cond = 2) then// 1 OR
+    if (c_Else1Cond = 2) then // 1 OR
     begin
-      choise := Choise1;
+      if (c_Else2Cond = 2) then // 2 OR
+        choise := Choise2(c_Else1, c_Else2, c_Else3)
+      else
+        choise := Choise1(c_Else1, c_Else2);
       case choise of
       1: Take_Action(c_Else1, c_Else1Value);
-      2: Take_Action(c_Else1, c_Else1Value);
+      2: Take_Action(c_Else2, c_Else2Value);
+      3: Take_Action(c_Else3, c_Else3Value);
       end;
     end
     else // No ORs
-      Take_Action(c_Else1, c_Else1Value);
+    begin
+      if (c_Else1Cond = 1) then// 1 AND
+      begin
+        Take_Action(c_Else1, c_Else1Value);
+        Take_Action(c_Else2, c_Else2Value);
+      end
+      else
+        Take_Action(c_Else1, c_Else1Value);
+    end;
   end;
 
   // Choise1 proto
   // Dialog window: choose 1 OR 2, if 1 then take_action ... if 2 ...
 
-
 end;
 
 procedure TMain_frm.Button8Click(Sender: TObject);
 begin
-  Encounter(Locations_Deck);
+  Encounter(players[GetFirstPlayer], Locations_Deck, Locations_Deck.DrawCard);
+end;
+
+function GetFirstPlayer;
+var
+  i: integer;
+begin
+  for i := 1 to player_count do
+  begin
+    if players[i].bFirst_Player then
+      Result := i;
+  end;
+end;
+
+procedure TMain_frm.Button5Click(Sender: TObject);
+begin
+  InvFrm.ShowModal;
+  gPlayer.investigator := InvFrm.ComboBox1.ItemIndex + 1;
 end;
 
 end.

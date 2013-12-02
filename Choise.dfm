@@ -1,7 +1,7 @@
 object ChoiseForm: TChoiseForm
-  Left = 543
-  Top = 313
-  Width = 448
+  Left = 687
+  Top = 401
+  Width = 679
   Height = 208
   Caption = 'Choise'
   Color = clBtnFace
@@ -22,34 +22,34 @@ object ChoiseForm: TChoiseForm
     Caption = 'Choise:'
   end
   object RadioButton1: TRadioButton
-    Left = 64
+    Left = 8
     Top = 56
-    Width = 113
+    Width = 201
     Height = 17
     Caption = '1'
     TabOrder = 0
     OnClick = RadioButton1Click
   end
   object RadioButton2: TRadioButton
-    Left = 184
+    Left = 216
     Top = 56
-    Width = 113
+    Width = 209
     Height = 17
     Caption = '2'
     TabOrder = 1
     OnClick = RadioButton2Click
   end
   object RadioButton3: TRadioButton
-    Left = 304
+    Left = 432
     Top = 56
-    Width = 113
+    Width = 217
     Height = 17
     Caption = '3'
     TabOrder = 2
     OnClick = RadioButton3Click
   end
   object Button1: TButton
-    Left = 176
+    Left = 288
     Top = 112
     Width = 75
     Height = 25

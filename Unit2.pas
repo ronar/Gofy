@@ -23,7 +23,7 @@ var
 
 implementation
 
-uses MainForm;
+uses uMainForm;
 
 {$R *.dfm}
 
