@@ -1,6 +1,6 @@
 object Main_frm: TMain_frm
-  Left = 353
-  Top = 75
+  Left = 499
+  Top = 108
   Width = 861
   Height = 625
   Caption = 'Main_frm'
@@ -146,8 +146,9 @@ object Main_frm: TMain_frm
   object imEncounter: TImage
     Left = 496
     Top = 16
-    Width = 336
+    Width = 334
     Height = 525
+    AutoSize = True
     Picture.Data = {
       0A544A504547496D616765F1B60000FFD8FFE000104A46494600010101006000
       600000FFE1004845786966000049492A00080000000200310102001100000026
@@ -1644,7 +1645,7 @@ object Main_frm: TMain_frm
     Width = 185
     Height = 105
     Caption = 'RadioGroup1'
-    ItemIndex = 0
+    ItemIndex = 1
     Items.Strings = (
       '1st phase (Upkeep)'
       '2nd phase (Movement)'

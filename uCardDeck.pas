@@ -14,7 +14,7 @@ type
   TCardDeck = class(TObject) // Карты
   private
     Count: integer;
-    Cards: array [1..100] of CCard; // Данные о каждой карте
+    Cards: array [1..100, 1..3] of CCard; // Данные о каждой карте
     Card_Type: integer; // Тип карты (слух, миф, контакт и т.д.)
                        // "Знать", что делать с картой будет функция ProcessCard
     function GetLokation: integer;
@@ -25,10 +25,10 @@ type
     destructor Destroy; override;
     function GetCardByID(id: integer): CCard;
     property Lokaciya: integer read GetLokation; // Локация карты (свойство)
-    function Get_Card_ID(i: integer): Integer;
-    function Get_Card_Data(id: integer): string;
+    function Get_Card_ID(id, n: integer): Integer;
+    function Get_Card_Data(id, n: integer): string;
     function Find_Cards(file_path: string): integer;
-    function DrawCard(): Integer;
+    function DrawCard(n: integer): Integer;
     //property Nom: integer;
     procedure Dejstvie_karti; // Выполнение необходимых действий карты
     procedure Shuffle();
@@ -55,13 +55,14 @@ uses Classes;
 // Конструктор
 constructor TCardDeck.Create;
 var
-  i: Integer;
+  i, j: Integer;
 begin
   for i := 1 to 100 do
-  begin
-    Cards[i].ID := 0;
-    Cards[i].Data := '';
-  end;
+    for j := 1 to 3 do
+    begin
+      Cards[i, j].ID := 0;
+      Cards[i, j].Data := '';
+    end;
 end;
 
 // Деструктор TCard
@@ -72,11 +73,14 @@ end;
 
 function TCardDeck.GetCardByID(id: integer): CCard;
 var
-  i: integer;
+  i, j: integer;
 begin
   for i:= 1 to Count do
-    if Cards[i].ID = id then
-      GetCardByID := Cards[i];
+    for j := 1 to 3 do
+    begin
+      if Cards[i, j].ID = id then
+        GetCardByID := Cards[i, j];
+    end;
 end;
 
 function TCardDeck.GetLokation: integer;
@@ -90,20 +94,20 @@ begin
 end;
 
 // Получение ID карты
-function TCardDeck.Get_Card_ID(i: integer): integer;
+function TCardDeck.Get_Card_ID(id, n: integer): integer;
 begin
-  Get_Card_ID := Cards[i].ID;
+  Get_Card_ID := Cards[id, n].ID;
 end;
 
-// Получение ID карты
-function TCardDeck.Get_Card_Data(id: integer): string;
+// Получение данных карты
+function TCardDeck.Get_Card_Data(id, n: integer): string;
 begin
-  Get_Card_Data := Cards[id].Data;
+  Get_Card_Data := Cards[id, n].Data;
 end;
 
-function TCardDeck.DrawCard(): Integer;
+function TCardDeck.DrawCard(n: integer): Integer;
 begin
-  DrawCard := cards[Count].ID;
+  DrawCard := cards[Count div 3, n].ID;
   Shuffle;
 end;
 
@@ -114,23 +118,28 @@ var
   SR: TSearchRec; // поисковая переменная
   FindRes: Integer; // переменная для записи результата поиска
   s: string[80];
-  i: integer;
+  i, n: integer;
 begin
   // задание условий поиска и начало поиска
   FindRes := FindFirst(file_path + '*.txt', faAnyFile, SR);
 
   i := 0;
+  n := 0;
 
   while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
   begin
+    if n <> StrToInt(Copy(SR.Name, 2, 1)) then
+      i := 0;
+    n := StrToInt(Copy(SR.Name, 2, 1));
     i := i + 1;
     AssignFile (F, file_path + SR.Name);
     Reset(F);
     readln(F, s);
     CloseFile(F);
-    Cards[i].Data := s;
+    Cards[i, n].Data := s;
     //Cards^.Cards.Type := CT_UNIQUE_ITEM;
-    Cards[i].ID := StrToInt(Copy(SR.Name, 1, 4));
+    Cards[i, n].ID := StrToInt(Copy(SR.Name, 1, 4));
+
     FindRes := FindNext(SR); // продолжение поиска по заданным условиям
     //Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));
   end;
@@ -149,7 +158,7 @@ begin
     CT_DEJSTVIE:;
     CT_KONTAKT:
     begin
-      Action_Type := StrToInt(Cards[4].Data[4]);
+      Action_Type := 1; //StrToInt(Cards[4].Data[4]);
       case Action_Type of
         AT_WATCH_BUY:
         begin{
@@ -239,17 +248,18 @@ end;
 // Тасовка колоды
 procedure TCardDeck.Shuffle();
 var
-  i,r: integer;
+  i, j, r: integer;
   temp: CCard;
 begin
   randomize;
   for i := 1 to Count do
-  begin
-    temp := Cards[i];
-    r := random(Count);
-    Cards[i] := Cards[r+1];
-    Cards[r+1] := temp;
-  end;
+    for j := 1 to 3 do
+    begin
+      temp := Cards[i, j];
+      r := random(Count);
+      Cards[i, j] := Cards[r+1, j];
+      Cards[r+1, j] := temp;
+    end;
 end;
 
 end.

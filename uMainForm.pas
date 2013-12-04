@@ -135,12 +135,69 @@ const
   // Константы Действий
   AT_SPEC = 2;
   AT_WATCH_BUY = 3;
-  TLocationName: array [1..16] of string = ('607 Water St.', '7th House on the Left',
-        'Administration Building', 'Arkham Asylum',
-        'Artists'' Colony', 'Bank of Arkham', 'Bishop''s Brook Bridge', 'Black Cave',
-        'Cold Spring Glen', 'Congregational Hospital', 'Curiositie Shoppe',
-        'Darke''s Carnival', 'Devil Reef', 'Devil''s Hopyard', 'Dunwich Village',
-        'Esoteric Order of Dragon');
+  NeighborhoodsNames: array [1..19] of string = ('Backwoods Country', 'Blasted Heath',
+        'Central Hill', 'Church Green', 'Downtown', 'Easttown', 'Factory District',
+        'French Hill', 'Harborside', 'Innsmouth Shore', 'Kingsport Head',
+        'Merchant District', 'Miskatonic University', 'Northside', 'Rivertown',
+        'South Shore', 'Southside', 'Uptown', 'Village Common');
+  LocationsNames: array [1..57, 1..2] of string = (
+        ('011', '607 Water St.'),
+        ('012', '7th House on the Left'),
+        ('013', 'Administration Building'),
+        ('2100', 'Arkham Asylum'),
+        ('011', 'Artists'' Colony'),
+        ('2200', 'Bank of Arkham'),
+        ('011', 'Bishop''s Brook Bridge'),
+        ('011', 'Black Cave'),
+        ('011', 'Cold Spring Glen'),
+        ('011', 'Congregational Hospital'),
+        ('011', 'Curiositie Shoppe'),
+        ('011', 'Darke''s Carnival'),
+        ('011', 'Devil Reef'),
+        ('011', 'Devil''s Hopyard'),
+        ('011', 'Dunwich Village'),
+        ('011', 'Esoteric Order of Dagon'),
+        ('011', 'Falcon Point'),
+        ('011', 'First National Grocery'),
+        ('011', 'Gardners'' Place'),
+        ('011', 'General Store'),
+        ('011', 'Gilman House Hotel'),
+        ('011', 'Graveyard'),
+        ('011', 'Hall School'),
+        ('011', 'Harney Jones'' Shack'),
+        ('011', 'Hibb''s Roadhouse'),
+        ('011', 'Historical Society'),
+        ('2300', 'Independence Square'),
+        ('011', 'Inner Sanctum'),
+        ('011', 'Innsmouth Jail'),
+        ('011', 'Jail Cell'),
+        ('011', 'Library'),
+        ('011', 'Ma''s Boarding House'),
+        ('011', 'Marsh Refinery'),
+        ('011', 'Neil''s Curiosity Shop'),
+        ('011', 'Newspaper'),
+        ('011', 'North Point Lighthouse'),
+        ('011', 'Police Station'),
+        ('011', 'River Docks'),
+        ('011', 'Science Building'),
+        ('011', 'Silver Twilight Lodge'),
+        ('011', 'South Church'),
+        ('011', 'St. Erasmus''s Home'),
+        ('011', 'St. Mary''s Hospital'),
+        ('011', 'Strange High House'),
+        ('011', 'The Causeway'),
+        ('011', 'The Rope and Anchor'),
+        ('011', 'The Unnamable'),
+        ('011', 'The Witch House'),
+        ('011', 'Train Station'),
+        ('011', 'Unvisited Isle'),
+        ('011', 'Velma''s Diner'),
+        ('011', 'Whateley Farm'),
+        ('011', 'Wireless Station'),
+        ('011', 'Wizard''s Hill'),
+        ('011', 'Woods'),
+        ('011', 'Y''ha-nthlei'),
+        ('011', 'Ye Olde Magick Shoppe'));
   crd_ally: array [1..1] of string = ('Anna Kaslow');
   investigators: array [1..49] of string = ('Agnes Baker', 'Akachi Onyele',
         'Amanda Sharpe', '"Ashcan" Pete', 'Bob Jenkins', 'Calvin Wright',
@@ -158,8 +215,13 @@ const
 
 
 type
-  TArrayOfCard = TCardDeck;
-  PArrayOfCard = ^TArrayOfCard;
+  TLocation = record
+    id: integer;
+    Name: string;
+    Neighborhood: string;
+    deck: TCardDeck;
+    card_count: integer;
+  end;
 
 var
   Main_frm: TMain_frm;
@@ -167,9 +229,10 @@ var
   Cards0, Cards1: TCardDeck; // Массивы карт
   Common_Items_Deck: TCardDeck;
   Unique_Items_Deck: TCardDeck;
-  Locations_Deck: TCardDeck;
+  Downtown: TLocation;
   Common_Items_Count: integer = 0;
   Unique_Items_Count: integer = 0;
+  //Downtown_Count: integer = 0;
   Locations_Count: integer = 0;
   Cards_Count: integer = 0;
   players: array [1..8] of TPlayer;
@@ -178,7 +241,8 @@ var
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; var Locations_Deck: TCardDeck; card: integer);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
-
+  function GetLokID(lok_name: string): string; // Получение ID локации по названию
+  function GetLokByID(id: integer): TLocation;
 
 implementation                  { TODO : Начальное меню (кол-во игроков, сколько сыщиков) }
 
@@ -194,7 +258,7 @@ begin
   case Card_Type of
     CT_COMMON_ITEM: begin
       // Загружаем все карты, находящиеся в каталоге
-      Common_Items_Count :=  Common_Items_Deck.Find_Cards('..\\Gofy\\CardsData\\CommonItems\\');
+      //Common_Items_Count :=  Common_Items_Deck.Find_Cards(ExtractFilePath(Application.ExeName)+'\\CardsData\\CommonItems\\');
       //Main_frm.ComboBox2.Clear;
       //Main_frm.ComboBox2.Text := 'Choose a card';
       //for i := 1 to Common_Items_Count do
@@ -203,7 +267,7 @@ begin
 
     CT_UNIQUE_ITEM: begin
       // задание условий поиска и начало поиска
-      Unique_Items_Count := Unique_Items_Deck.Find_Cards('..\\Gofy\\CardsData\\UniqueItems\\');
+      //Unique_Items_Count := Unique_Items_Deck.Find_Cards(ExtractFilePath(Application.ExeName)+'\\CardsData\\UniqueItems\\');
 
       {Form1.ComboBox2.Clear;
       Form1.ComboBox2.Text := 'Choose a card';
@@ -211,22 +275,22 @@ begin
     end; // CT_UNIQUE_ITEM
 
     CT_ENCOUNTER: begin
-      // Задание условий поиска и начало поиска
-      Locations_Count := Locations_Deck.Find_Cards('..\\Gofy\\CardsData\\Locations\\Downtown\\');
+      // Loading cards for diff. neighborhoods
+      Downtown.card_count := Downtown.deck.Find_Cards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Locations\\Downtown\\');
 
-      Main_frm.cbLocation.Clear;
-      Main_frm.cbLocation.Text := 'Choose a card';
+      //Main_frm.cbLocation.Clear;
+      //Main_frm.cbLocation.Text := 'Choose a card';
 
-      Form2.cbb1.Clear;
-      Form2.cbb1.Text := 'Choose a card';
+      //Form2.cbb1.Clear;
+      //Form2.cbb1.Text := 'Choose a card';
 
-      for i := 1 to Locations_Count do
+      for i := 1 to Downtown.card_count do
       begin
-        Main_frm.cbLocation.Items.Add(IntToStr(Locations_Deck.Get_Card_ID(i)));
-        Form2.cbb1.Items.Add(IntToStr(Locations_Deck.Get_Card_ID(i)));
+        //Main_frm.cbLocation.Items.Add(IntToStr(Downtown_Deck.Get_Card_ID(i)));
+        //Form2.cbb1.Items.Add(IntToStr(Downtown_Deck.Get_Card_ID(i)));
       end;
 
-    end; // CT_LOCATION
+    end; // CT_ENCOUNTER
 
   end;
 
@@ -374,13 +438,14 @@ begin
     //Cards0[i] := TCard.Create;
     Common_Items_Deck:= TCardDeck.Create;
     Unique_Items_Deck:= TCardDeck.Create;
-    Locations_Deck:= TCardDeck.Create;
+    Downtown.deck:= TCardDeck.Create;
   end;
 
-  for i := 1 to 16 do
+  for i := 1 to 57 do
   begin
-    cbLocation.Items.Add(TLocationName[i]);
+    cbLocation.Items.Add(LocationsNames[i, 2]);
   end;
+  gCurrent_phase := 2;
 end;
 
 
@@ -403,14 +468,16 @@ procedure TMain_frm.cbLocationChange(Sender: TObject);
 var
   LocNum: integer;
 begin
-  LocNum := StrToInt(Copy(cbLocation.Text, 2, 1));
+  LocNum := StrToInt(getLokID(cbLocation.Text));
   lblLocID.Caption := IntToStr(LocNum);
   //gPlayer.Location := StrToInt(cbLocation.Text);
   {lblLocCardData.Caption := Get_Card_By_ID(@Locations_Deck, StrToInt(cbLocation.Text)).Get_Card_Data;
   lblNumSuccesses.Caption := Copy(Locations_Deck[cbLocation.ItemIndex + 1].Get_Card_Data, 9, 3);
   }
-  lblLocCardData.Caption := Locations_Deck.GetCardByID(StrToInt(cbLocation.Text)).Data;
-  case StrToInt(Copy(Locations_Deck.GetCardByID(StrToInt(cbLocation.Text)).Data, 3, 2)) of
+
+  //lblLocCardData.Caption := Downtown_Deck.GetCardByID(StrToInt(cbLocation.Text)).Data;
+
+  {case StrToInt(Copy(Locations_Deck.GetCardByID(StrToInt(cbLocation.Text)).Data, 3, 2)) of
   //1: lblSkill.Caption := ;
   2: lblSkill.Caption := 'Скорость';
   3: lblSkill.Caption := 'Скрытность';
@@ -419,8 +486,8 @@ begin
   6: lblSkill.Caption := 'Знание';
   7: lblSkill.Caption := 'Удача';
   8: lblSkill.Caption := 'Уход';
-  end;
-  imEncounter.Picture.LoadFromFile('..\\Gofy\\CardsData\\Locations\\Downtown\\'+cbLocation.Text[1]+'0'+cbLocation.Text[3]+cbLocation.Text[4]+'.jpg');
+  end;         }
+  //imEncounter.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\\CardsData\\Locations\\Downtown\\'+GetLokID(cbLocation.Text)+'.jpg');
 end;
 
 procedure TMain_frm.Button9Click(Sender: TObject);
@@ -433,8 +500,8 @@ begin
 
     end;
     PH_ENCOUNTER: begin
-      
-      Encounter(gCurrentPlayer, Locations_Deck, Locations_Deck.DrawCard);
+
+      //Encounter(gCurrentPlayer, Downtown.Deck, Downtown.Deck.DrawCard);
     end;
     PH_KONTAKTI_V_INIH_MIRAH: begin
     end;
@@ -487,7 +554,7 @@ procedure TMain_frm.Button10Click(Sender: TObject);
 begin
   if gCurrent_phase = PH_MOVE then
   begin
-    gCurrentPlayer.Location := StrToInt(cbLocation.Text);//Locations_Deck.DrawCard;
+    gCurrentPlayer.Location := StrToInt(GetLokID(cbLocation.Text));//Locations_Deck.DrawCard;
     //gCurrent_phase := PH_ENCOUNTER;
   end
   else
@@ -497,7 +564,7 @@ end;
 
 procedure TMain_frm.Button11Click(Sender: TObject);
 begin
-  Locations_Deck.Shuffle;
+  Downtown.Deck.Shuffle;
 end;
 
 // Проверка выполнилось ли условие на карте
@@ -562,7 +629,7 @@ begin
   3: gPlayer.Stamina := gPlayer.Stamina + action_value;
   8: begin // Draw unique item
     gPlayer.cards_count := gPlayer.cards_count + 1;
-    gPlayer.Cards[gPlayer.cards_count] := Unique_Items_Deck.DrawCard;
+    //gPlayer.Cards[gPlayer.cards_count] := Unique_Items_Deck.DrawCard;
   end; // case 8
   18: begin // Move to street
       gPlayer.Location := gPlayer.Location div 100 * 100;
@@ -604,7 +671,7 @@ begin
   // и добавлять новые
 
   // Получили данные карты
-  c_data := Locations_Deck.GetCardByID(gPlayer.Location).Data;
+  c_data := Locations_Deck.GetCardByID(card).Data;
   for i := 0 to Length(c_data)-1 do
     card_data[i] := StrToInt(c_data[i+1]);
 
@@ -734,8 +801,11 @@ begin
 end;
 
 procedure TMain_frm.Button8Click(Sender: TObject);
+var
+  lok: TLocation;
 begin
-  Encounter(players[GetFirstPlayer], Locations_Deck, Locations_Deck.DrawCard);
+  lok := GetLokByID(gCurrentPlayer.Location);
+  Encounter(players[GetFirstPlayer], lok.Deck, lok.Deck.DrawCard(StrToInt(copy(IntToStr(gCurrentPlayer.Location), 2, 1))));
 end;
 
 function GetFirstPlayer;
@@ -747,6 +817,25 @@ begin
     if players[i].bFirst_Player then
       Result := i;
   end;
+end;
+
+function GetLokID(lok_name: string): string;
+var
+  i: integer;
+begin
+  for i := 1 to 57 do
+    if LocationsNames[i, 2] = lok_name then
+    begin
+      result := LocationsNames[i, 1];
+      break;
+    end;
+end;
+
+function GetLokByID(id: integer): TLocation;
+var
+  i: integer;
+begin
+  result := Downtown;
 end;
 
 procedure TMain_frm.Button5Click(Sender: TObject);

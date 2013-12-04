@@ -7,7 +7,8 @@ uses
   uPlayer in 'uPlayer.pas',
   uCardDeck in 'uCardDeck.pas',
   Choise in 'Choise.pas' {ChoiseForm},
-  uInvChsForm in 'uInvChsForm.pas' {InvFrm};
+  uInvChsForm in 'uInvChsForm.pas' {InvFrm},
+  uCommon in 'uCommon.pas';
 
 {$R *.res}
 

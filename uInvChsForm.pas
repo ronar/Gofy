@@ -19,9 +19,19 @@ type
     { Public declarations }
   end;
 
+  TInvestigator = class
+  public
+    name: string;
+    start_location: integer;
+    sanity: integer;
+    stamina: integer;
+    focus: integer;
+  end;
+
 var
   InvFrm: TInvFrm;
-  investigators: array [1..49] of string = ('Agnes Baker', 'Akachi Onyele',
+  investigators: array [1..49] of TInvestigator;
+  investigators_names: array [1..49] of string = ('Agnes Baker', 'Akachi Onyele',
         'Amanda Sharpe', '"Ashcan" Pete', 'Bob Jenkins', 'Calvin Wright',
         'Carolyn Fern', 'Charlie Kane', 'Daisy Walker', 'Darrell Simmons',
         'Dexter Drake', 'Diana Stanley', 'Finn Edwards', 'George Barnaby',
@@ -45,7 +55,7 @@ var
 begin
   for i := 1 to 49 do
   begin
-    ComboBox1.Items.Add(investigators[i]);
+    ComboBox1.Items.Add(investigators_names[i]);
   end;
 end;
 
