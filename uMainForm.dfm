@@ -1,6 +1,6 @@
 object Main_frm: TMain_frm
-  Left = 499
-  Top = 108
+  Left = 684
+  Top = 233
   Width = 861
   Height = 625
   Caption = 'Main_frm'
@@ -2072,9 +2072,9 @@ object Main_frm: TMain_frm
   object Button4: TButton
     Left = 232
     Top = 312
-    Width = 75
+    Width = 89
     Height = 25
-    Caption = 'Next. pers'
+    Caption = #1057#1083#1077#1076'. '#1087#1077#1088#1089#1086#1085#1072#1078
     TabOrder = 13
     OnClick = Button4Click
   end

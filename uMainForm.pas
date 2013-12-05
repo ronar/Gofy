@@ -244,7 +244,7 @@ var
   function GetLokID(lok_name: string): string; // Получение ID локации по названию
   function GetLokByID(id: integer): TLocation;
 
-implementation                  { TODO : Начальное меню (кол-во игроков, сколько сыщиков) }
+implementation
 
 uses Unit2, Math, uInvChsForm;
 
@@ -839,9 +839,12 @@ begin
 end;
 
 procedure TMain_frm.Button5Click(Sender: TObject);
+var
+  i: integer;
 begin
   InvFrm.ShowModal;
-  gPlayer.investigator := InvFrm.ComboBox1.ItemIndex + 1;
+  for i := 1 to player_count do
+    players[i].investigator := (InvFrm.FindComponent('cbInvPlayer'+IntToStr(i)) as TComboBox).ItemIndex + 1;
 end;
 
 end.

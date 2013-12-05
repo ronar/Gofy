@@ -8,7 +8,8 @@ uses
   uCardDeck in 'uCardDeck.pas',
   Choise in 'Choise.pas' {ChoiseForm},
   uInvChsForm in 'uInvChsForm.pas' {InvFrm},
-  uCommon in 'uCommon.pas';
+  uCommon in 'uCommon.pas',
+  uInvestigator in 'uInvestigator.pas';
 
 {$R *.res}
 
