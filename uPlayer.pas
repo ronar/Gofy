@@ -2,7 +2,7 @@ unit uPlayer;
 
 interface
 uses
-  SysUtils, Dialogs, uCardDeck, Unit2;
+  SysUtils, Dialogs, uCardDeck, Unit2, uInvestigator;
 
 type
   TPlayer = class
@@ -11,7 +11,7 @@ type
 
   public
     bFirst_Player: boolean; // Флаг первого игрока
-    investigator: integer;
+    investigator: TInvestigator;
     Cards: array [1..100] of integer; // Предметы игрока
     cards_count: integer; // Amt. of player's items
     Sanity: integer;
@@ -38,6 +38,7 @@ type
     procedure Take_Action(action: integer; action_value: integer);
     function CheckAvailability(grade: integer; param: integer): boolean;
     function HasItem(ID: integer): boolean;
+    procedure ChangeSkills(r: integer; n: integer);
     //property Speed: integer read Stats[1] write Stats[1];
   end;
 
@@ -224,6 +225,45 @@ end;
 function TPlayer.HasItem(ID: integer): boolean;
 begin
 
+end;
+
+procedure TPlayer.ChangeSkills(r: integer; n: integer);
+begin
+  case r of
+  1: begin
+    if investigator.stats[1] < 3 then
+      Stats[1] := investigator.stats[1] + (n - 1)
+    else
+      Stats[1] := investigator.stats[1] - (n - 1);
+
+    if investigator.stats[2] < 3 then
+      Stats[2] := investigator.stats[2] + (n - 1)
+    else
+      Stats[2] := investigator.stats[2] - (n - 1);
+  end;
+  2: begin
+    if investigator.stats[3] < 3 then
+      Stats[3] := investigator.stats[3] + (n - 1)
+    else
+      Stats[3] := investigator.stats[3] - (n - 1);
+
+    if investigator.stats[4] < 3 then
+      Stats[4] := investigator.stats[4] + (n - 1)
+    else
+      Stats[4] := investigator.stats[4] - (n - 1);
+  end;
+  3: begin
+    if investigator.stats[5] < 3 then
+      Stats[5] := investigator.stats[5] + n - 1
+    else
+      Stats[5] := investigator.stats[5] - n - 1;
+
+    if investigator.stats[6] < 3 then
+      Stats[6] := investigator.stats[6] + n - 1
+    else
+      Stats[6] := investigator.stats[6] - n - 1;
+  end;
+  end;
 end;
 
 end.

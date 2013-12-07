@@ -125,10 +125,10 @@ const
   PH_KONTAKTI_V_INIH_MIRAH = 4;
   PH_MYTHOS = 5;
   // Константы Типов Карт
-  CT_DEJSTVIE = 6;
-  CT_KONTAKT = 7;
+  CT_SPELL = 6; // Заклинание
+  CT_ALLY = 7; // Союзник
   CT_MYTHOS = 8; // Миф
-  CT_HEADLINE = 9; // Слух
+  CT_SKILL = 9; // Навык
   CT_COMMON_ITEM = 1; // Простые предметы (первая цифра в ID)
   CT_UNIQUE_ITEM = 2; // Уникальные предметы (первая цифра в ID)
   CT_ENCOUNTER = 3; // Контакт (первая цифра в ID)
@@ -213,7 +213,6 @@ const
         'Trish Scarborough', 'Ursula Downs', 'Vincent Lee', 'Wendy Adams',
         'William Yorick', 'Wilson Richards', 'Zoey Samara');
 
-
 type
   TLocation = record
     id: integer;
@@ -258,7 +257,7 @@ begin
   case Card_Type of
     CT_COMMON_ITEM: begin
       // Загружаем все карты, находящиеся в каталоге
-      //Common_Items_Count :=  Common_Items_Deck.Find_Cards(ExtractFilePath(Application.ExeName)+'\\CardsData\\CommonItems\\');
+      Common_Items_Count :=  Common_Items_Deck.Find_Cards(ExtractFilePath(Application.ExeName)+'\\CardsData\\CommonItems\\');
       //Main_frm.ComboBox2.Clear;
       //Main_frm.ComboBox2.Text := 'Choose a card';
       //for i := 1 to Common_Items_Count do
@@ -331,7 +330,7 @@ begin
   begin
     // Загрузка объекта игрока
     players[i] := TPlayer.Create(PlStats, False);
-    players[i].investigator := 0;
+    players[i].investigator := nil;
   end;
   players[1].bFirst_Player := True;
 
@@ -369,7 +368,7 @@ begin
   lblPlaLoc.Caption := IntToStr(gCurrentPlayer.Location);
   lblPlaClue.Caption := IntToStr(gCurrentPlayer.Clue_Token);
   lblPlaMoney.Caption := IntToStr(gCurrentPlayer.Money);
-  lblPlaInv.Caption := investigators[gCurrentPlayer.investigator];
+  lblPlaInv.Caption := gCurrentPlayer.investigator.name;
   ListBox1.Clear;
   for i := 1 to gPlayer.Get_Items_Count do
     ListBox1.Items.Add(IntToStr(gCurrentPlayer.Get_Item(i)));
@@ -843,8 +842,19 @@ var
   i: integer;
 begin
   InvFrm.ShowModal;
-  for i := 1 to player_count do
-    players[i].investigator := (InvFrm.FindComponent('cbInvPlayer'+IntToStr(i)) as TComboBox).ItemIndex + 1;
+  gCurrentPlayer.investigator := inv;
+  gCurrentPlayer.ChangeSkills(1,1);
+  gCurrentPlayer.ChangeSkills(2,1);
+  gCurrentPlayer.ChangeSkills(3,1);
+  gCurrentPlayer.Sanity := inv.sanity;
+  gCurrentPlayer.Stamina := inv.stamina;
+  gCurrentPlayer.Money := inv.money;
+  gCurrentPlayer.Clue_Token := inv.clues;
+  gCurrentPlayer.Location :=  inv.start_lok;
+  gCurrentPlayer.Focus := inv.focus;
+
+  //for i := 1 to player_count do
+  //  players[i].investigator := (InvFrm.FindComponent('cbInvPlayer'+IntToStr(i)) as TComboBox).ItemIndex + 1;
 end;
 
 end.
