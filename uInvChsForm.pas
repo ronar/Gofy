@@ -69,9 +69,14 @@ type
     lbLuck2: TLabel;
     lbLuck3: TLabel;
     lbLuck4: TLabel;
+    GroupBox1: TGroupBox;
+    Button11: TButton;
+    Button12: TButton;
+    Button13: TButton;
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure cbInvPlayer1Change(Sender: TObject);
+    procedure Button11Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -85,6 +90,8 @@ var
   procedure Draw_Skills(skill: string);
 
 implementation
+
+uses uCardForm, uCommon;
 
 {$R *.dfm}
 
@@ -190,6 +197,12 @@ begin
     lb3.Caption := IntToStr(StrToInt(lb1.Caption) - 2);
     lb4.Caption := IntToStr(StrToInt(lb1.Caption) - 3);
   end;
+end;
+
+procedure TInvFrm.Button11Click(Sender: TObject);
+begin
+  card_to_load := CT_COMMON_ITEM;
+  frmCard.ShowModal;
 end;
 
 end.

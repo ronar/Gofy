@@ -9,7 +9,8 @@ uses
   Choise in 'Choise.pas' {ChoiseForm},
   uInvChsForm in 'uInvChsForm.pas' {InvFrm},
   uCommon in 'uCommon.pas',
-  uInvestigator in 'uInvestigator.pas';
+  uInvestigator in 'uInvestigator.pas',
+  uCardForm in 'uCardForm.pas' {frmCard};
 
 {$R *.res}
 
@@ -19,5 +20,6 @@ begin
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TChoiseForm, ChoiseForm);
   Application.CreateForm(TInvFrm, InvFrm);
+  Application.CreateForm(TfrmCard, frmCard);
   Application.Run;
 end.

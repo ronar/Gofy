@@ -11,52 +11,166 @@ type
     Data: string;
   end;
 
-  TCardDeck = class(TObject) // Карты
+  TCardDeck = class(TObject) // Общий класс колод карт
   private
-    Count: integer;
+    Count: integer; // Кол-во карт
+    Card_Type: integer; // Тип карты (предмет, миф, контакт и т.д.)
+  public
+    destructor Destroy; override;
+    //function GetCardID(i: integer): Integer; overload;
+    //function GetCardData(i: integer): string; overload;
+    //function GetCardByID(id: integer): CCard; overload;
+    function FindCards(file_path: string): integer; virtual; abstract;
+    function DrawCard(n: integer): Integer; virtual; abstract;
+    procedure Shuffle(); virtual; abstract;
+    //function Get_Card_By_ID(id: integer): TCard; // Нахождение карты по ее ID
+  end;
+
+  TItemCardDeck = class(TCardDeck)
+  private
+    Cards: array [1..100] of CCard; // Данные о каждой карте
+  public
+    constructor Create (crd_type: integer);
+    function GetCardID(i: integer): Integer;
+    function GetCardData(i: integer): string;
+    function GetCardByID(id: integer): CCard;
+    function FindCards(file_path: string): integer; override;
+    function DrawCard: Integer; //overload;
+    procedure Shuffle(); override;
+    //destructor Destroy; override;
+  end;
+
+  TLocationCardDeck = class(TCardDeck) // Карты
+  private
     Cards: array [1..100, 1..3] of CCard; // Данные о каждой карте
-    Card_Type: integer; // Тип карты (слух, миф, контакт и т.д.)
-                       // "Знать", что делать с картой будет функция ProcessCard
-    function GetLokation: integer;
-    function GetNom: integer;
+    //function GetLokation: integer;
+    //function GetNom: integer;
     //procedure SetLok;
   public
     constructor Create;
-    destructor Destroy; override;
+    //destructor Destroy; override;
     function GetCardByID(id: integer): CCard;
-    property Lokaciya: integer read GetLokation; // Локация карты (свойство)
-    function Get_Card_ID(id, n: integer): Integer;
-    function Get_Card_Data(id, n: integer): string;
-    function Find_Cards(file_path: string): integer;
+    //property Lokaciya: integer read GetLokation; // Локация карты (свойство)
+    function GetCardID(i, n: integer): Integer; overload; // Получить ID карты по порядковому номеру
+    function GetCardData(i, n: integer): string; overload; // Получить данные карты по порядковому номеру
+    function FindCards(file_path: string): integer; override;
     function DrawCard(n: integer): Integer;
     //property Nom: integer;
-    procedure Dejstvie_karti; // Выполнение необходимых действий карты
     procedure Shuffle();
     //function Get_Card_By_ID(id: integer): TCard; // Нахождение карты по ее ID
   end;
 
-const
-  // Константы Типов Карт
-  CT_DEJSTVIE = 6;
-  CT_KONTAKT = 7;
-  CT_MYTHOS = 8; // Миф
-  CT_HEADLINE = 9; // Слух
-  CT_COMMON_ITEM = 1; // Простые предметы (первая цифра в ID)
-  CT_UNIQUE_ITEM = 2; // Уникальные предметы (первая цифра в ID)
-  CT_ENCOUNTER = 3; // Контакт (первая цифра в ID)
-  // Константы Действий
-  AT_SPEC = 2;
-  AT_WATCH_BUY = 3;
-
 implementation
 
-uses Classes;
+uses Classes, uCommon;
+
+// Деструктор TCardDeck
+destructor TCardDeck.Destroy;
+begin
+  inherited;
+end;
+
+/////////////////////////////// TItemCardDeck //////////////////////////////////
 
 // Конструктор
-constructor TCardDeck.Create;
+constructor TItemCardDeck.Create(crd_type: integer);
+var
+  i: Integer;
+begin
+  Card_Type := crd_type;
+  for i := 1 to 100 do
+  begin
+    Cards[i].ID := 0;
+    Cards[i].Data := '';
+  end;
+end;
+
+function TItemCardDeck.GetCardByID(id: integer): CCard;
+var
+  i: integer;
+begin
+  for i:= 1 to Count do
+  begin
+    if Cards[i].ID = id then
+      GetCardByID := Cards[i];
+  end;
+end;
+
+// Получение ID карты
+function TItemCardDeck.GetCardID(i: integer): integer;
+begin
+  GetCardID := Cards[i].ID;
+end;
+
+// Получение данных карты
+function TItemCardDeck.GetCardData(i: integer): string;
+begin
+  GetCardData := Cards[i].Data;
+end;
+
+function TItemCardDeck.DrawCard: Integer;
+begin
+  DrawCard := cards[Count].ID;
+  Shuffle;
+end;
+
+// Поиск файлов в картами
+function TItemCardDeck.FindCards(file_path: string): integer;
+var
+  F: TextFile;
+  SR: TSearchRec; // поисковая переменная
+  FindRes: Integer; // переменная для записи результата поиска
+  s: string[80];
+  i: integer;
+begin
+  // задание условий поиска и начало поиска
+  FindRes := FindFirst(file_path + '*.txt', faAnyFile, SR);
+
+  i := 0;
+
+  while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+  begin
+    i := i + 1;
+    AssignFile (F, file_path + SR.Name);
+    Reset(F);
+    readln(F, s);
+    CloseFile(F);
+    Cards[i].Data := s;
+    //Cards^.Cards.Type := CT_UNIQUE_ITEM;
+    Cards[i].ID := StrToInt(Copy(SR.Name, 1, 4));
+
+    FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+    //Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));
+  end;
+  FindClose(SR); // закрываем поиск
+  FindCards := i;
+  Count := i;
+end;
+
+// Тасовка колоды
+procedure TItemCardDeck.Shuffle();
+var
+  i, r: integer;
+  temp: CCard;
+begin
+  randomize;
+  for i := 1 to Count do
+  begin
+    temp := Cards[i];
+    r := random(Count);
+    Cards[i] := Cards[r+1];
+    Cards[r+1] := temp;
+  end;
+end;
+
+///////////////////////////// TLocationCardDeck ////////////////////////////////
+
+// Конструктор
+constructor TLocationCardDeck.Create;
 var
   i, j: Integer;
 begin
+  Card_Type := CT_ENCOUNTER;
   for i := 1 to 100 do
     for j := 1 to 3 do
     begin
@@ -65,13 +179,7 @@ begin
     end;
 end;
 
-// Деструктор TCard
-destructor TCardDeck.Destroy;
-begin
-  inherited;
-end;
-
-function TCardDeck.GetCardByID(id: integer): CCard;
+function TLocationCardDeck.GetCardByID(id: integer): CCard;
 var
   i, j: integer;
 begin
@@ -83,36 +191,26 @@ begin
     end;
 end;
 
-function TCardDeck.GetLokation: integer;
-begin
-  GetLokation := 1;//StrToInt(Copy(Card_Data, 0, 2));
-end;
-
-function TCardDeck.GetNom: integer;
-begin
-  GetNom := 1;//StrToInt(Copy(Card_Data, 2, 2));
-end;
-
 // Получение ID карты
-function TCardDeck.Get_Card_ID(id, n: integer): integer;
+function TLocationCardDeck.GetCardID(i, n: integer): integer;
 begin
-  Get_Card_ID := Cards[id, n].ID;
+  GetCardID := Cards[i, n].ID;
 end;
 
 // Получение данных карты
-function TCardDeck.Get_Card_Data(id, n: integer): string;
+function TLocationCardDeck.GetCardData(i, n: integer): string;
 begin
-  Get_Card_Data := Cards[id, n].Data;
+  GetCardData := Cards[i, n].Data;
 end;
 
-function TCardDeck.DrawCard(n: integer): Integer;
+function TLocationCardDeck.DrawCard(n: integer): Integer;
 begin
   DrawCard := cards[Count div 3, n].ID;
   Shuffle;
 end;
 
 // Поиск файлов в картами
-function TCardDeck.Find_Cards(file_path: string): integer;
+function TLocationCardDeck.FindCards(file_path: string): integer;
 var
   F: TextFile;
   SR: TSearchRec; // поисковая переменная
@@ -144,109 +242,12 @@ begin
     //Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));
   end;
   FindClose(SR); // закрываем поиск
-  Find_Cards := i;
+  FindCards := i;
   Count := i;
 end;
 
-// Выполнение действия карты
-Procedure TCardDeck.Dejstvie_karti;
-var
-  Action_Type: integer;
-begin
-  // В зависимости от типа
-  case Card_Type of
-    CT_DEJSTVIE:;
-    CT_KONTAKT:
-    begin
-      Action_Type := 1; //StrToInt(Cards[4].Data[4]);
-      case Action_Type of
-        AT_WATCH_BUY:
-        begin{
-          Form1.Label14.Caption := Copy(Card_Data, 1, 3);
-          Form1.Label4.Caption := 'Просм. и покуп.';
-          case StrToInt(Card_Data[5]) of
-            1: Form1.Label5.Caption := 'Простые вещи';
-            2: Form1.Label5.Caption := 'Уникальные вещи';
-            3: Form1.Label5.Caption := 'Заклинания';
-            4: Form1.Label5.Caption := 'Навык';
-            5: Form1.Label5.Caption := 'Союзник';
-          end;
-          Form1.Label7.Caption := Card_Data[6];
-          Form1.Label9.Caption := Card_Data[7];
-          Form1.Label11.Caption := Card_Data[8];}
-        end;
-        AT_SPEC:
-        begin
-          {Form1.Label4.Caption := 'Спец. карта';
-          case StrToInt(Card_Data[9]) of
-            1: Form1.Label5.Caption := 'Гонорар';
-            2: Form1.Label5.Caption := 'Сереб. ложе';
-            3: Form1.Label5.Caption := 'Ссуда';
-            4: Form1.Label5.Caption := 'Пом. шерифа';
-            5: Form1.Label5.Caption := 'Благо';
-            6: Form1.Label5.Caption := 'Прок';
-          end;                                   }
-
-        end;
-      end;
-    end;
-    CT_MYTHOS:;
-    CT_HEADLINE:;
-    CT_COMMON_ITEM: begin
-   {  Form1.lblPrm1.Caption := Form1.ComboBox1.Text;
-      Form1.lblPrm2.Caption := Copy(Form1.ComboBox1.Text, 2, 2);
-      Form1.lblPrm3.Caption := Cards[1].Data[1];
-      Form1.lblPrm4.Caption := Cards[1].Data[4];
-      //lblPrm5.Caption := Card_Data[6];
-      case StrToInt(Cards[1].Data[6]) of
-        0: Form1.lblPrm5.Caption := 'Уход';
-        1: Form1.lblPrm5.Caption := 'Битва';
-        2: Form1.lblPrm5.Caption := 'Очки движения';
-        3: Form1.lblPrm5.Caption := 'Удача';
-        4: Form1.lblPrm5.Caption := 'Проверка ужаса';
-      end;
-      Form1.lblPrm6.Caption := Cards[1].Data[7];
-      Form1.lblCardData.Caption := Cards[1].Data;       }
-    end; // CT_COMMON_ITEM
-
-    CT_UNIQUE_ITEM: begin
-    {  Form1.lblPrm21.Caption := Form1.ComboBox2.Text;
-      Form1.lblPrm22.Caption := Copy(Form1.ComboBox2.Text, 2, 2);
-      Form1.lblPrm23.Caption := Cards[1].Data[1];
-      Form1.lblPrm24.Caption := Cards[1].Data[4];
-      //lblPrm5.Caption := Card_Data[6];
-      case StrToInt(Cards[1].Data[6]) of
-        0: Form1.lblPrm25.Caption := 'Уход';
-        1: Form1.lblPrm25.Caption := 'Битва';
-        2: Form1.lblPrm25.Caption := 'Очки движения';
-        3: Form1.lblPrm25.Caption := 'Удача';
-        4: Form1.lblPrm25.Caption := 'Проверка ужаса';
-      end;
-      Form1.lblPrm26.Caption := Cards[1].Data[7];
-      Form1.lblCardData2.Caption := Cards[1].Data;      }
-    end; // CT_COMMON_ITEM
-
-    CT_ENCOUNTER: begin
-    {  Form1.lblPrm21.Caption := Form1.ComboBox2.Text;
-      Form1.lblPrm22.Caption := Copy(Form1.ComboBox2.Text, 2, 2);
-      Form1.lblPrm23.Caption := Cards[1].Data[1];
-      Form1.lblPrm24.Caption := Cards[1].Data[4];
-      //lblPrm5.Caption := Cards[1].Data[6];
-      case StrToInt(Cards[1].Data[6]) of
-        0: Form1.lblPrm25.Caption := 'Уход';
-        1: Form1.lblPrm25.Caption := 'Битва';
-        2: Form1.lblPrm25.Caption := 'Очки движения';
-        3: Form1.lblPrm25.Caption := 'Удача';
-        4: Form1.lblPrm25.Caption := 'Проверка ужаса';
-      end;
-      Form1.lblPrm26.Caption := Cards[1].Data[7];
-      Form1.lblCardData2.Caption := Cards[1].Data;     }
-    end; // CT_COMMON_ITEM
-  end;
-end;
-
 // Тасовка колоды
-procedure TCardDeck.Shuffle();
+procedure TLocationCardDeck.Shuffle();
 var
   i, j, r: integer;
   temp: CCard;
@@ -262,5 +263,6 @@ begin
     end;
 end;
 
+////////////////////////////////////////////////////////////////////////////////
+
 end.
- 

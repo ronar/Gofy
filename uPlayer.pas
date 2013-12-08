@@ -7,6 +7,7 @@ uses
 type
   TPlayer = class
   private
+    mLocation: integer;
     //Items_Count: integer; // Кол-во предметов у игрока
 
   public
@@ -20,10 +21,10 @@ type
     Money: integer;
     Clue_Token: integer;
     Monster_Trophies: integer;
-    Location: integer; // id локации в виде xxy, где (хх - номер улицы, y - номер локации)
     Stats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
     constructor Create(var InitStats: array of integer; First_Player: boolean);
     destructor Destroy; override;
+    property Location: integer read mLocation write mLocation; // id локации в виде xxy, где (хх - номер улицы, y - номер локации)
     procedure Draw_Card(Card_ID: integer);
     function Get_Items_Count(): integer;
     function Get_Sanity(): integer;
@@ -175,7 +176,7 @@ begin
   end
   else
   begin
-    Location := 2103;
+    mLocation := 2103;
   end;
 
   c_Action1 := StrToInt(copy(c_data, 9, 2));
