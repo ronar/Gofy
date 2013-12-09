@@ -125,9 +125,13 @@ var
   Cards0, Cards1: TCardDeck; // ћассивы карт
   Common_Items_Deck: TItemCardDeck;
   Unique_Items_Deck: TItemCardDeck;
+  Spells_Deck: TItemCardDeck;
+  Skills_Deck: TItemCardDeck;
   Downtown: TLocation;
   Common_Items_Count: integer = 0;
   Unique_Items_Count: integer = 0;
+  Spells_Count: integer = 0;
+  Skills_Count: integer = 0;
   //Downtown_Count: integer = 0;
   Locations_Count: integer = 0;
   Cards_Count: integer = 0;
@@ -163,11 +167,25 @@ begin
 
     CT_UNIQUE_ITEM: begin
       // задание условий поиска и начало поиска
-      //Unique_Items_Count := Unique_Items_Deck.Find_Cards(ExtractFilePath(Application.ExeName)+'\\CardsData\\UniqueItems\\');
+      Unique_Items_Count := Unique_Items_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\UniqueItems\\');
 
       {Form1.ComboBox2.Clear;
       Form1.ComboBox2.Text := 'Choose a card';
       Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));  }
+    end; // CT_UNIQUE_ITEM
+
+    CT_SPELL: begin
+      // задание условий поиска и начало поиска
+      Spells_Count := Spells_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Spells\\');
+
+      {Form1.ComboBox2.Clear;
+      Form1.ComboBox2.Text := 'Choose a card';
+      Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));  }
+    end; // CT_UNIQUE_ITEM
+
+    CT_SKILL: begin
+      // задание условий поиска и начало поиска
+      Skills_Count := Skills_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Skills\\');
     end; // CT_UNIQUE_ITEM
 
     CT_ENCOUNTER: begin
@@ -239,6 +257,12 @@ begin
 
   // «агрузка карт обычных предметов
   Load_Cards(CT_COMMON_ITEM);
+
+  // «агрузка карт заклов
+  Load_Cards(CT_SPELL);
+
+  // «агрузка карт навыков
+  Load_Cards(CT_SKILL);
 
   // «агрузка карт уникальных предметов
   Load_Cards(CT_UNIQUE_ITEM);
@@ -334,6 +358,8 @@ begin
     //Cards0[i] := TCard.Create;
     Common_Items_Deck:= TItemCardDeck.Create(CT_COMMON_ITEM);
     Unique_Items_Deck:= TItemCardDeck.Create(CT_UNIQUE_ITEM);
+    Spells_Deck:= TItemCardDeck.Create(CT_SPELL);
+    Skills_Deck:= TItemCardDeck.Create(CT_SKILL);
     Downtown.deck:= TLocationCardDeck.Create;
   end;
 

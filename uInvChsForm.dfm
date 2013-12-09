@@ -4,7 +4,7 @@ object InvFrm: TInvFrm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'InvFrm'
-  ClientHeight = 589
+  ClientHeight = 682
   ClientWidth = 547
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -1007,7 +1007,7 @@ object InvFrm: TInvFrm
   end
   object Label10: TLabel
     Left = 8
-    Top = 352
+    Top = 384
     Width = 86
     Height = 24
     Caption = #1057#1082#1086#1088#1086#1089#1090#1100
@@ -1020,7 +1020,7 @@ object InvFrm: TInvFrm
   end
   object Label11: TLabel
     Left = 8
-    Top = 376
+    Top = 408
     Width = 109
     Height = 24
     Caption = #1057#1082#1088#1099#1090#1085#1086#1089#1090#1100
@@ -1033,7 +1033,7 @@ object InvFrm: TInvFrm
   end
   object Label12: TLabel
     Left = 8
-    Top = 440
+    Top = 472
     Width = 35
     Height = 24
     Caption = #1041#1086#1081
@@ -1046,7 +1046,7 @@ object InvFrm: TInvFrm
   end
   object Label13: TLabel
     Left = 8
-    Top = 464
+    Top = 496
     Width = 43
     Height = 24
     Caption = #1042#1086#1083#1103
@@ -1059,7 +1059,7 @@ object InvFrm: TInvFrm
   end
   object Label14: TLabel
     Left = 8
-    Top = 528
+    Top = 560
     Width = 66
     Height = 24
     Caption = #1047#1085#1072#1085#1080#1103
@@ -1072,7 +1072,7 @@ object InvFrm: TInvFrm
   end
   object Label15: TLabel
     Left = 8
-    Top = 552
+    Top = 584
     Width = 54
     Height = 24
     Caption = #1059#1076#1072#1095#1072
@@ -1085,7 +1085,7 @@ object InvFrm: TInvFrm
   end
   object lbSpeed1: TLabel
     Left = 136
-    Top = 352
+    Top = 384
     Width = 10
     Height = 24
     Caption = '0'
@@ -1098,7 +1098,7 @@ object InvFrm: TInvFrm
   end
   object lbSpeed2: TLabel
     Left = 200
-    Top = 352
+    Top = 384
     Width = 10
     Height = 24
     Caption = '0'
@@ -1111,7 +1111,7 @@ object InvFrm: TInvFrm
   end
   object lbSpeed3: TLabel
     Left = 264
-    Top = 352
+    Top = 384
     Width = 10
     Height = 24
     Caption = '0'
@@ -1124,7 +1124,7 @@ object InvFrm: TInvFrm
   end
   object lbSpeed4: TLabel
     Left = 320
-    Top = 352
+    Top = 384
     Width = 10
     Height = 24
     Caption = '0'
@@ -1137,7 +1137,7 @@ object InvFrm: TInvFrm
   end
   object lbSneak1: TLabel
     Left = 136
-    Top = 376
+    Top = 408
     Width = 10
     Height = 24
     Caption = '0'
@@ -1150,7 +1150,7 @@ object InvFrm: TInvFrm
   end
   object lbSneak2: TLabel
     Left = 200
-    Top = 376
+    Top = 408
     Width = 10
     Height = 24
     Caption = '0'
@@ -1163,7 +1163,7 @@ object InvFrm: TInvFrm
   end
   object lbSneak3: TLabel
     Left = 264
-    Top = 376
+    Top = 408
     Width = 10
     Height = 24
     Caption = '0'
@@ -1176,7 +1176,7 @@ object InvFrm: TInvFrm
   end
   object lbSneak4: TLabel
     Left = 320
-    Top = 376
+    Top = 408
     Width = 10
     Height = 24
     Caption = '0'
@@ -1189,7 +1189,7 @@ object InvFrm: TInvFrm
   end
   object lbFight1: TLabel
     Left = 136
-    Top = 440
+    Top = 472
     Width = 10
     Height = 24
     Caption = '0'
@@ -1202,7 +1202,7 @@ object InvFrm: TInvFrm
   end
   object lbFight2: TLabel
     Left = 200
-    Top = 440
+    Top = 472
     Width = 10
     Height = 24
     Caption = '0'
@@ -1215,7 +1215,7 @@ object InvFrm: TInvFrm
   end
   object lbFight3: TLabel
     Left = 264
-    Top = 440
+    Top = 472
     Width = 10
     Height = 24
     Caption = '0'
@@ -1228,7 +1228,7 @@ object InvFrm: TInvFrm
   end
   object lbFight4: TLabel
     Left = 320
-    Top = 440
+    Top = 472
     Width = 10
     Height = 24
     Caption = '0'
@@ -1241,7 +1241,7 @@ object InvFrm: TInvFrm
   end
   object lbWill1: TLabel
     Left = 136
-    Top = 464
+    Top = 496
     Width = 10
     Height = 24
     Caption = '0'
@@ -1254,7 +1254,7 @@ object InvFrm: TInvFrm
   end
   object lbWill2: TLabel
     Left = 200
-    Top = 464
+    Top = 496
     Width = 10
     Height = 24
     Caption = '0'
@@ -1267,7 +1267,7 @@ object InvFrm: TInvFrm
   end
   object lbWill3: TLabel
     Left = 264
-    Top = 464
+    Top = 496
     Width = 10
     Height = 24
     Caption = '0'
@@ -1280,7 +1280,7 @@ object InvFrm: TInvFrm
   end
   object lbWill4: TLabel
     Left = 320
-    Top = 464
+    Top = 496
     Width = 10
     Height = 24
     Caption = '0'
@@ -1293,7 +1293,7 @@ object InvFrm: TInvFrm
   end
   object lbLore1: TLabel
     Left = 136
-    Top = 528
+    Top = 560
     Width = 10
     Height = 24
     Caption = '0'
@@ -1306,7 +1306,7 @@ object InvFrm: TInvFrm
   end
   object lbLore2: TLabel
     Left = 200
-    Top = 528
+    Top = 560
     Width = 10
     Height = 24
     Caption = '0'
@@ -1319,7 +1319,7 @@ object InvFrm: TInvFrm
   end
   object lbLore3: TLabel
     Left = 264
-    Top = 528
+    Top = 560
     Width = 10
     Height = 24
     Caption = '0'
@@ -1332,7 +1332,7 @@ object InvFrm: TInvFrm
   end
   object lbLore4: TLabel
     Left = 320
-    Top = 528
+    Top = 560
     Width = 10
     Height = 24
     Caption = '0'
@@ -1345,7 +1345,7 @@ object InvFrm: TInvFrm
   end
   object lbLuck1: TLabel
     Left = 136
-    Top = 552
+    Top = 584
     Width = 10
     Height = 24
     Caption = '0'
@@ -1358,7 +1358,7 @@ object InvFrm: TInvFrm
   end
   object lbLuck2: TLabel
     Left = 200
-    Top = 552
+    Top = 584
     Width = 10
     Height = 24
     Caption = '0'
@@ -1371,7 +1371,7 @@ object InvFrm: TInvFrm
   end
   object lbLuck3: TLabel
     Left = 264
-    Top = 552
+    Top = 584
     Width = 10
     Height = 24
     Caption = '0'
@@ -1384,7 +1384,7 @@ object InvFrm: TInvFrm
   end
   object lbLuck4: TLabel
     Left = 320
-    Top = 552
+    Top = 584
     Width = 10
     Height = 24
     Caption = '0'
@@ -1952,7 +1952,7 @@ object InvFrm: TInvFrm
   end
   object RadioGroup1: TRadioGroup
     Left = 128
-    Top = 320
+    Top = 352
     Width = 257
     Height = 33
     Columns = 4
@@ -1966,7 +1966,7 @@ object InvFrm: TInvFrm
   end
   object RadioGroup2: TRadioGroup
     Left = 128
-    Top = 408
+    Top = 440
     Width = 257
     Height = 33
     Columns = 4
@@ -1980,7 +1980,7 @@ object InvFrm: TInvFrm
   end
   object RadioGroup3: TRadioGroup
     Left = 128
-    Top = 496
+    Top = 528
     Width = 257
     Height = 33
     Columns = 4
@@ -1994,8 +1994,8 @@ object InvFrm: TInvFrm
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Top = 240
-    Width = 257
+    Top = 272
+    Width = 529
     Height = 73
     Caption = 'Random possessions'
     TabOrder = 21
@@ -2015,6 +2015,7 @@ object InvFrm: TInvFrm
       Height = 25
       Caption = 'Uniq. item'
       TabOrder = 1
+      OnClick = Button12Click
     end
     object Button13: TButton
       Left = 168
@@ -2023,6 +2024,16 @@ object InvFrm: TInvFrm
       Height = 25
       Caption = 'Spell'
       TabOrder = 2
+      OnClick = Button13Click
+    end
+    object Button14: TButton
+      Left = 248
+      Top = 24
+      Width = 75
+      Height = 25
+      Caption = 'Skill'
+      TabOrder = 3
+      OnClick = Button14Click
     end
   end
 end

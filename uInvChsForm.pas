@@ -73,10 +73,14 @@ type
     Button11: TButton;
     Button12: TButton;
     Button13: TButton;
+    Button14: TButton;
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure cbInvPlayer1Change(Sender: TObject);
     procedure Button11Click(Sender: TObject);
+    procedure Button13Click(Sender: TObject);
+    procedure Button12Click(Sender: TObject);
+    procedure Button14Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -86,6 +90,10 @@ type
 var
   InvFrm: TInvFrm;
   inv: TInvestigator;
+  take_common: integer = 0; // How many already taken
+  take_uniq: integer = 0;
+  take_spell: integer = 0;
+  take_skill: integer = 0;
 
   procedure Draw_Skills(skill: string);
 
@@ -173,7 +181,6 @@ begin
   Draw_Skills('Will');
   Draw_Skills('Lore');
   Draw_Skills('Luck');
-
 end;
 
 procedure Draw_Skills(skill: string);
@@ -200,9 +207,64 @@ begin
 end;
 
 procedure TInvFrm.Button11Click(Sender: TObject);
+var
+  i, j: integer;
 begin
-  card_to_load := CT_COMMON_ITEM;
-  frmCard.ShowModal;
+  for i := 1 to 4 do
+  begin
+    if inv.can_take[i, 1] = CT_COMMON_ITEM then
+      for j := 1 to inv.can_take[i, 2] do
+      begin
+        card_to_load := CT_COMMON_ITEM;
+        frmCard.ShowModal;
+      end;
+  end;
+end;
+
+procedure TInvFrm.Button13Click(Sender: TObject);
+var
+  i, j: integer;
+begin
+  for i := 1 to 4 do
+  begin
+    if inv.can_take[i, 1] = CT_SPELL then
+      for j := 1 to inv.can_take[i, 2] do
+      begin
+        card_to_load := CT_SPELL;
+        frmCard.ShowModal;
+      end;
+  end;
+end;
+
+procedure TInvFrm.Button12Click(Sender: TObject);
+var
+  i, j: integer;
+begin
+  for i := 1 to 4 do
+  begin
+    if inv.can_take[i, 1] = CT_UNIQUE_ITEM then
+      for j := 1 to inv.can_take[i, 2] do
+      begin
+        card_to_load := CT_UNIQUE_ITEM;
+        frmCard.ShowModal;
+      end;
+  end;
+end;
+
+procedure TInvFrm.Button14Click(Sender: TObject);
+var
+  i, j: integer;
+begin
+  for i := 1 to 4 do
+  begin
+    if inv.can_take[i, 1] = CT_SKILL then
+      for j := 1 to inv.can_take[i, 2] do
+      begin
+        card_to_load := CT_SKILL;
+        frmCard.ShowModal;
+      end;
+  end;
+
 end;
 
 end.

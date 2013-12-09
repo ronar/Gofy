@@ -23079,6 +23079,7 @@ object frmCard: TfrmCard
     ItemHeight = 13
     TabOrder = 0
     Text = 'cbCard'
+    OnChange = cbCardChange
   end
   object btnTake: TButton
     Left = 40

@@ -14,6 +14,7 @@ type
     btnTake: TButton;
     procedure btnTakeClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure cbCardChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -32,7 +33,10 @@ uses uMainForm, uCommon;
 
 procedure TfrmCard.btnTakeClick(Sender: TObject);
 begin
-  Close;
+  if cbCard.ItemIndex = -1 then
+    ShowMessage('Please take a card.')
+  else
+    Close;
 end;
 
 procedure TfrmCard.FormShow(Sender: TObject);
@@ -40,7 +44,20 @@ var
   i: integer;
 begin
   case card_to_load of
-  CT_COMMON_ITEM: for i := 1 to Common_Items_Count do cbCard.Items.Add(IntToStr(i));
+  CT_COMMON_ITEM: for i := 1 to Common_Items_Count do cbCard.Items.Add(IntToStr(Common_Items_Deck.card[i]));
+  CT_UNIQUE_ITEM: for i := 1 to Unique_Items_Count do cbCard.Items.Add(IntToStr(Unique_Items_Deck.card[i]));
+  CT_SPELL: for i := 1 to Spells_Count do cbCard.Items.Add(IntToStr(Spells_Deck.card[i]));
+  CT_SKILL: for i := 1 to Skills_Count do cbCard.Items.Add(IntToStr(Skills_Deck.card[i]));
+  end;
+end;
+
+procedure TfrmCard.cbCardChange(Sender: TObject);
+begin
+  case card_to_load of
+  CT_COMMON_ITEM: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\\CardsData\CommonItems\' + cbCard.Text + '.jpg');
+  CT_UNIQUE_ITEM: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\\CardsData\UniqueItems\' + cbCard.Text + '.jpg');
+  CT_SPELL: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\\CardsData\Spells\' + cbCard.Text + '.jpg');
+  CT_SKILL: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\\CardsData\Skills\' + cbCard.Text + '.jpg');
   end;
 end;
 

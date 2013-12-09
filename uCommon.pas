@@ -17,13 +17,13 @@ const
   PH_KONTAKTI_V_INIH_MIRAH = 4;
   PH_MYTHOS = 5;
   // Константы Типов Карт
-  CT_SPELL = 6; // Заклинание
+  CT_SPELL = 3; // Заклинание
   CT_ALLY = 7; // Союзник
   CT_MYTHOS = 8; // Миф
-  CT_SKILL = 9; // Навык
+  CT_SKILL = 4; // Навык
   CT_COMMON_ITEM = 1; // Простые предметы (первая цифра в ID)
   CT_UNIQUE_ITEM = 2; // Уникальные предметы (первая цифра в ID)
-  CT_ENCOUNTER = 3; // Контакт (первая цифра в ID)
+  CT_ENCOUNTER = 6; // Контакт (первая цифра в ID)
   // Константы Действий
   AT_SPEC = 2;
   AT_WATCH_BUY = 3;

@@ -9,6 +9,7 @@ type
   CCard = record
     ID: integer;
     Data: string;
+    exposed: boolean;
   end;
 
   TCardDeck = class(TObject) // Общий класс колод карт
@@ -28,12 +29,13 @@ type
 
   TItemCardDeck = class(TCardDeck)
   private
-    Cards: array [1..100] of CCard; // Данные о каждой карте
-  public
-    constructor Create (crd_type: integer);
+    mCards: array [1..100] of CCard; // Данные о каждой карте
+    function GetCardByID(id: integer): CCard;
     function GetCardID(i: integer): Integer;
     function GetCardData(i: integer): string;
-    function GetCardByID(id: integer): CCard;
+  public
+    constructor Create (crd_type: integer);
+    property card[i: integer]: integer read GetCardID;
     function FindCards(file_path: string): integer; override;
     function DrawCard: Integer; //overload;
     procedure Shuffle(); override;
@@ -80,8 +82,9 @@ begin
   Card_Type := crd_type;
   for i := 1 to 100 do
   begin
-    Cards[i].ID := 0;
-    Cards[i].Data := '';
+    mCards[i].ID := 0;
+    mCards[i].Data := '';
+    mCards[i].exposed := False;
   end;
 end;
 
@@ -91,26 +94,26 @@ var
 begin
   for i:= 1 to Count do
   begin
-    if Cards[i].ID = id then
-      GetCardByID := Cards[i];
+    if mCards[i].ID = id then
+      GetCardByID := mCards[i];
   end;
 end;
 
 // Получение ID карты
 function TItemCardDeck.GetCardID(i: integer): integer;
 begin
-  GetCardID := Cards[i].ID;
+  GetCardID := mCards[i].ID;
 end;
 
 // Получение данных карты
 function TItemCardDeck.GetCardData(i: integer): string;
 begin
-  GetCardData := Cards[i].Data;
+  GetCardData := mCards[i].Data;
 end;
 
 function TItemCardDeck.DrawCard: Integer;
 begin
-  DrawCard := cards[Count].ID;
+  DrawCard := mCards[Count].ID;
   Shuffle;
 end;
 
@@ -135,9 +138,9 @@ begin
     Reset(F);
     readln(F, s);
     CloseFile(F);
-    Cards[i].Data := s;
+    mCards[i].Data := s;
     //Cards^.Cards.Type := CT_UNIQUE_ITEM;
-    Cards[i].ID := StrToInt(Copy(SR.Name, 1, 4));
+    mCards[i].ID := StrToInt(Copy(SR.Name, 1, 4));
 
     FindRes := FindNext(SR); // продолжение поиска по заданным условиям
     //Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));
@@ -156,10 +159,10 @@ begin
   randomize;
   for i := 1 to Count do
   begin
-    temp := Cards[i];
+    temp := mCards[i];
     r := random(Count);
-    Cards[i] := Cards[r+1];
-    Cards[r+1] := temp;
+    mCards[i] := mCards[r+1];
+    mCards[r+1] := temp;
   end;
 end;
 
@@ -176,6 +179,7 @@ begin
     begin
       Cards[i, j].ID := 0;
       Cards[i, j].Data := '';
+      Cards[i, j].exposed := False;
     end;
 end;
 
