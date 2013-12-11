@@ -13,13 +13,13 @@ type
   public
     bFirst_Player: boolean; // Флаг первого игрока
     investigator: TInvestigator;
-    Cards: array [1..100] of integer; // Предметы игрока
+    cards: array [1..100] of integer; // Предметы игрока
     cards_count: integer; // Amt. of player's items
-    Sanity: integer;
-    Stamina: integer;
-    Focus: integer;
-    Money: integer;
-    Clue_Token: integer;
+    sanity: integer;
+    stamina: integer;
+    focus: integer;
+    money: integer;
+    clues: integer;
     Monster_Trophies: integer;
     Stats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
     constructor Create(var InitStats: array of integer; First_Player: boolean);
@@ -213,7 +213,7 @@ begin
   if (grade = 8) and (money >= param) then
     result := true;
 
-  if (grade = 9) and (clue_token >= param) then
+  if (grade = 9) and (clues >= param) then
     result := true;
 
   if (grade = 10) and (Monster_trophies >= param) then

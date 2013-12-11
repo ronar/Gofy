@@ -1,6 +1,6 @@
 object Main_frm: TMain_frm
-  Left = 621
-  Top = 176
+  Left = 603
+  Top = 145
   Width = 861
   Height = 625
   Caption = 'Main_frm'
@@ -11,11 +11,12 @@ object Main_frm: TMain_frm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
   OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object imDie1: TImage
+  object imgDie1: TImage
     Left = 8
     Top = 528
     Width = 48
@@ -28,37 +29,37 @@ object Main_frm: TMain_frm
     Height = 13
     Caption = #1041#1088#1086#1089#1082#1080':'
   end
-  object imDie2: TImage
+  object imgDie2: TImage
     Left = 64
     Top = 528
     Width = 48
     Height = 48
   end
-  object imDie3: TImage
+  object imgDie3: TImage
     Left = 120
     Top = 528
     Width = 48
     Height = 48
   end
-  object imDie4: TImage
+  object imgDie4: TImage
     Left = 176
     Top = 528
     Width = 48
     Height = 48
   end
-  object imDie5: TImage
+  object imgDie5: TImage
     Left = 232
     Top = 528
     Width = 48
     Height = 48
   end
-  object imDie6: TImage
+  object imgDie6: TImage
     Left = 288
     Top = 528
     Width = 48
     Height = 48
   end
-  object imDie7: TImage
+  object imgDie7: TImage
     Left = 344
     Top = 528
     Width = 48
@@ -1631,11 +1632,11 @@ object Main_frm: TMain_frm
     Caption = 'lblCurPlayer'
   end
   object Button1: TButton
-    Left = 128
-    Top = 496
+    Left = 232
+    Top = 400
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = #1047#1072#1087#1080#1083#1080#1090#1100' '#1084#1086#1073#1072
     TabOrder = 0
     OnClick = Button1Click
   end
@@ -2086,5 +2087,13 @@ object Main_frm: TMain_frm
     Caption = #1042#1099#1073#1088#1072#1090#1100' '#1089#1099#1097#1080#1082#1072
     TabOrder = 14
     OnClick = Button5Click
+  end
+  object Button6: TButton
+    Left = 232
+    Top = 360
+    Width = 75
+    Height = 25
+    Caption = #1055#1088#1080#1084'. '#1082#1072#1088#1090#1091
+    TabOrder = 15
   end
 end

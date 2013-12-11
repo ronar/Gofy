@@ -3,7 +3,7 @@ unit uCardDeck;
 interface
 
 uses
-  SysUtils;
+  SysUtils, uCommon;
 
 type
   CCard = record
@@ -14,10 +14,11 @@ type
 
   TCardDeck = class(TObject) // Общий класс колод карт
   private
-    Count: integer; // Кол-во карт
+    mCount: integer; // Кол-во карт
     Card_Type: integer; // Тип карты (предмет, миф, контакт и т.д.)
   public
     destructor Destroy; override;
+    property Count: integer read mCount;
     //function GetCardID(i: integer): Integer; overload;
     //function GetCardData(i: integer): string; overload;
     //function GetCardByID(id: integer): CCard; overload;
@@ -44,7 +45,7 @@ type
 
   TLocationCardDeck = class(TCardDeck) // Карты
   private
-    Cards: array [1..100, 1..3] of CCard; // Данные о каждой карте
+    Cards: array [1..LOCATION_CARD_NUMBER, 1..3] of CCard; // Данные о каждой карте
     //function GetLokation: integer;
     //function GetNom: integer;
     //procedure SetLok;
@@ -64,7 +65,7 @@ type
 
 implementation
 
-uses Classes, uCommon;
+uses Classes;
 
 // Деструктор TCardDeck
 destructor TCardDeck.Destroy;
@@ -80,7 +81,7 @@ var
   i: Integer;
 begin
   Card_Type := crd_type;
-  for i := 1 to 100 do
+  for i := 1 to LOCATION_CARD_NUMBER do
   begin
     mCards[i].ID := 0;
     mCards[i].Data := '';
@@ -147,7 +148,7 @@ begin
   end;
   FindClose(SR); // закрываем поиск
   FindCards := i;
-  Count := i;
+  mCount := i;
 end;
 
 // Тасовка колоды
@@ -174,7 +175,7 @@ var
   i, j: Integer;
 begin
   Card_Type := CT_ENCOUNTER;
-  for i := 1 to 100 do
+  for i := 1 to LOCATION_CARD_NUMBER do
     for j := 1 to 3 do
     begin
       Cards[i, j].ID := 0;
@@ -247,7 +248,7 @@ begin
   end;
   FindClose(SR); // закрываем поиск
   FindCards := i;
-  Count := i;
+  mCount := i;
 end;
 
 // Тасовка колоды
