@@ -30,7 +30,8 @@ const
   NUMBER_OF_STREETS = 19;
   NUMBER_OF_LOCATIONS = 57;
   LOCATION_CARD_NUMBER = 20; // Число карт на каждую локацию
-  ITEMS_CARD_NUMBER = 20;
+  ITEMS_CARD_NUMBER = 30;
+  MAX_PLAYER_ITEMS = 20;
   NeighborhoodsNames: array [1..NUMBER_OF_STREETS, 1..2] of string = (
         ('0000', 'Backwoods Country'),
         ('0000', 'Blasted Heath'),

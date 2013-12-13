@@ -1,6 +1,6 @@
 object Main_frm: TMain_frm
-  Left = 603
-  Top = 145
+  Left = 936
+  Top = 415
   Width = 861
   Height = 625
   Caption = 'Main_frm'
@@ -145,7 +145,7 @@ object Main_frm: TMain_frm
     ParentFont = False
   end
   object imEncounter: TImage
-    Left = 496
+    Left = 480
     Top = 16
     Width = 334
     Height = 525
@@ -1666,7 +1666,7 @@ object Main_frm: TMain_frm
     OnClick = Button2Click
   end
   object Button3: TButton
-    Left = 16
+    Left = 128
     Top = 56
     Width = 81
     Height = 25
@@ -2023,14 +2023,14 @@ object Main_frm: TMain_frm
     TabOrder = 7
     OnChange = cbLocationChange
   end
-  object Button8: TButton
+  object bntEncounter: TButton
     Left = 632
     Top = 552
     Width = 75
     Height = 25
-    Caption = 'Resolve'
+    Caption = 'Encounter'
     TabOrder = 8
-    OnClick = Button8Click
+    OnClick = bntEncounterClick
   end
   object Button9: TButton
     Left = 328
@@ -2080,7 +2080,7 @@ object Main_frm: TMain_frm
     OnClick = Button4Click
   end
   object Button5: TButton
-    Left = 104
+    Left = 16
     Top = 56
     Width = 105
     Height = 25
@@ -2095,5 +2095,14 @@ object Main_frm: TMain_frm
     Height = 25
     Caption = #1055#1088#1080#1084'. '#1082#1072#1088#1090#1091
     TabOrder = 15
+  end
+  object Button7: TButton
+    Left = 320
+    Top = 400
+    Width = 75
+    Height = 25
+    Caption = 'Button7'
+    TabOrder = 16
+    OnClick = Button7Click
   end
 end

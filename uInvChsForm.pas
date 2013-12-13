@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, CheckLst, ExtCtrls, jpeg, uInvestigator;
 
 type
-  TInvFrm = class(TForm)
+  TfrmInv = class(TForm)
     cbInvPlayer1: TComboBox;
     Label1: TLabel;
     cbInvPlayer2: TComboBox;
@@ -88,7 +88,7 @@ type
   end;
 
 var
-  InvFrm: TInvFrm;
+  frmInv: TfrmInv;
   inv: TInvestigator;
   take_common: integer = 0; // How many already taken
   take_uniq: integer = 0;
@@ -103,23 +103,25 @@ uses uCardForm, uCommon;
 
 {$R *.dfm}
 
-procedure TInvFrm.Button2Click(Sender: TObject);
+procedure TfrmInv.Button2Click(Sender: TObject);
 begin
   Application.Terminate;
 end;
 
-procedure TInvFrm.Button1Click(Sender: TObject);
+procedure TfrmInv.Button1Click(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TInvFrm.cbInvPlayer1Change(Sender: TObject);
+procedure TfrmInv.cbInvPlayer1Change(Sender: TObject);
 var
   i, ip: integer;
   F: TextFile;
   s: string[80];
 begin
-  AssignFile (F, ExtractFilePath(Application.ExeName)+'\\CardsData\\Investigators\\'+IntToStr(cbInvPlayer1.ItemIndex + 1) + '.txt');
+  // Amanda Sharpe anyway :)
+  AssignFile (F, ExtractFilePath(Application.ExeName)+'\CardsData\Investigators\3.txt');
+  //AssignFile (F, ExtractFilePath(Application.ExeName)+'\CardsData\Investigators\'+IntToStr(cbInvPlayer1.ItemIndex + 1) + '.txt');
   Reset(F);
   readln(F, s);
   CloseFile(F);
@@ -187,10 +189,10 @@ procedure Draw_Skills(skill: string);
 var
   lb1, lb2, lb3, lb4: TLabel;
 begin
-  lb1 := (InvFrm.FindComponent('lb' + skill + '1') as TLabel);
-  lb2 := (InvFrm.FindComponent('lb' + skill + '2') as TLabel);
-  lb3 := (InvFrm.FindComponent('lb' + skill + '3') as TLabel);
-  lb4 := (InvFrm.FindComponent('lb' + skill + '4') as TLabel);
+  lb1 := (frmInv.FindComponent('lb' + skill + '1') as TLabel);
+  lb2 := (frmInv.FindComponent('lb' + skill + '2') as TLabel);
+  lb3 := (frmInv.FindComponent('lb' + skill + '3') as TLabel);
+  lb4 := (frmInv.FindComponent('lb' + skill + '4') as TLabel);
 
   if StrToInt(lb1.Caption) < 3 then
   begin
@@ -206,7 +208,7 @@ begin
   end;
 end;
 
-procedure TInvFrm.Button11Click(Sender: TObject);
+procedure TfrmInv.Button11Click(Sender: TObject);
 var
   i, j: integer;
 begin
@@ -221,7 +223,7 @@ begin
   end;
 end;
 
-procedure TInvFrm.Button13Click(Sender: TObject);
+procedure TfrmInv.Button13Click(Sender: TObject);
 var
   i, j: integer;
 begin
@@ -236,7 +238,7 @@ begin
   end;
 end;
 
-procedure TInvFrm.Button12Click(Sender: TObject);
+procedure TfrmInv.Button12Click(Sender: TObject);
 var
   i, j: integer;
 begin
@@ -251,7 +253,7 @@ begin
   end;
 end;
 
-procedure TInvFrm.Button14Click(Sender: TObject);
+procedure TfrmInv.Button14Click(Sender: TObject);
 var
   i, j: integer;
 begin

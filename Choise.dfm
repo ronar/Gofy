@@ -1,6 +1,6 @@
 object ChoiseForm: TChoiseForm
-  Left = 1241
-  Top = 832
+  Left = 1182
+  Top = 775
   Width = 679
   Height = 208
   Caption = 'Choise'
@@ -11,6 +11,7 @@ object ChoiseForm: TChoiseForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poMainFormCenter
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

@@ -1,9 +1,9 @@
-object InvFrm: TInvFrm
+object frmInv: TfrmInv
   Left = 476
   Top = 141
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
-  Caption = 'InvFrm'
+  Caption = 'frmInv'
   ClientHeight = 682
   ClientWidth = 547
   Color = clBtnFace
@@ -1399,10 +1399,10 @@ object InvFrm: TInvFrm
     Left = 58
     Top = 13
     Width = 177
-    Height = 21
+    Height = 19
+    Style = csOwnerDrawFixed
     ItemHeight = 13
     TabOrder = 0
-    Text = #1042#1099#1073#1077#1088#1080#1090#1077' '#1089#1099#1097#1080#1082#1072
     OnChange = cbInvPlayer1Change
     Items.Strings = (
       'Agnes Baker'
@@ -1459,10 +1459,10 @@ object InvFrm: TInvFrm
     Left = 58
     Top = 37
     Width = 177
-    Height = 21
+    Height = 19
+    Style = csOwnerDrawFixed
     ItemHeight = 13
     TabOrder = 1
-    Text = #1042#1099#1073#1077#1088#1080#1090#1077' '#1089#1099#1097#1080#1082#1072
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1518,10 +1518,10 @@ object InvFrm: TInvFrm
     Left = 58
     Top = 61
     Width = 177
-    Height = 21
+    Height = 19
+    Style = csOwnerDrawFixed
     ItemHeight = 13
     TabOrder = 2
-    Text = #1042#1099#1073#1077#1088#1080#1090#1077' '#1089#1099#1097#1080#1082#1072
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1577,10 +1577,10 @@ object InvFrm: TInvFrm
     Left = 58
     Top = 85
     Width = 177
-    Height = 21
+    Height = 19
+    Style = csOwnerDrawFixed
     ItemHeight = 13
     TabOrder = 3
-    Text = #1042#1099#1073#1077#1088#1080#1090#1077' '#1089#1099#1097#1080#1082#1072
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1636,10 +1636,10 @@ object InvFrm: TInvFrm
     Left = 58
     Top = 109
     Width = 177
-    Height = 21
+    Height = 19
+    Style = csOwnerDrawFixed
     ItemHeight = 13
     TabOrder = 4
-    Text = #1042#1099#1073#1077#1088#1080#1090#1077' '#1089#1099#1097#1080#1082#1072
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1695,10 +1695,10 @@ object InvFrm: TInvFrm
     Left = 58
     Top = 133
     Width = 177
-    Height = 21
+    Height = 19
+    Style = csOwnerDrawFixed
     ItemHeight = 13
     TabOrder = 5
-    Text = #1042#1099#1073#1077#1088#1080#1090#1077' '#1089#1099#1097#1080#1082#1072
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1754,10 +1754,10 @@ object InvFrm: TInvFrm
     Left = 58
     Top = 157
     Width = 177
-    Height = 21
+    Height = 19
+    Style = csOwnerDrawFixed
     ItemHeight = 13
     TabOrder = 6
-    Text = #1042#1099#1073#1077#1088#1080#1090#1077' '#1089#1099#1097#1080#1082#1072
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1813,10 +1813,10 @@ object InvFrm: TInvFrm
     Left = 58
     Top = 181
     Width = 177
-    Height = 21
+    Height = 19
+    Style = csOwnerDrawFixed
     ItemHeight = 13
     TabOrder = 7
-    Text = #1042#1099#1073#1077#1088#1080#1090#1077' '#1089#1099#1097#1080#1082#1072
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'

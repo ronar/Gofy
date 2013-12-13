@@ -2,36 +2,44 @@ unit uPlayer;
 
 interface
 uses
-  SysUtils, Dialogs, uCardDeck, Unit2, uInvestigator;
+  SysUtils, Dialogs, uCardDeck, Unit2, uInvestigator, uCommon;
 
 type
   TPlayer = class
   private
-    mLocation: integer;
-    //Items_Count: integer; // Кол-во предметов у игрока
-
+    fLocation: integer; // Player's location
+    fCards: array [1..MAX_PLAYER_ITEMS] of integer; // Player's items
+    fCardsCount: integer; // Amt. of player's items
+    fSanity: integer;
+    fStamina: integer;
+    fFocus: integer;
+    fMoney: integer;
+    fClues: integer;
+    fMonsterTrophies: integer;
+    fStats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
+    fFirstPlayer: boolean; // Флаг первого игрока
+    fInvestigator: TInvestigator;
+    function GetPlayerCard(indx: integer): integer;
+    function GetPlayerStat(indx: integer): integer;
   public
-    bFirst_Player: boolean; // Флаг первого игрока
-    investigator: TInvestigator;
-    cards: array [1..100] of integer; // Предметы игрока
-    cards_count: integer; // Amt. of player's items
-    sanity: integer;
-    stamina: integer;
-    focus: integer;
-    money: integer;
-    clues: integer;
-    Monster_Trophies: integer;
-    Stats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
-    constructor Create(var InitStats: array of integer; First_Player: boolean);
+    constructor Create(var init_stats: array of integer; first_player: boolean);
     destructor Destroy; override;
-    property Location: integer read mLocation write mLocation; // id локации в виде xxy, где (хх - номер улицы, y - номер локации)
-    procedure Draw_Card(Card_ID: integer);
-    function Get_Items_Count(): integer;
-    function Get_Sanity(): integer;
-    function Get_Stamina(): integer;
-    function Get_Focus: integer;
-    function Get_Stat(n: integer): integer;
-    function Get_Item(indx: integer): integer;
+    property Location: integer read fLocation write fLocation; // id локации в виде xxy, где (хх - номер улицы, y - номер локации)
+    property Cards[indx: integer]: integer read GetPlayerCard; // write AddItem;
+    property ItemsCount: integer read fCardsCount;
+    property Sanity: integer read fSanity write fSanity;
+    property Stamina: integer read fStamina write fStamina;
+    property Focus: integer read fFocus write fFocus;
+    property Money: integer read fMoney write fMoney;
+    property Clues: integer read fClues write fClues;
+    property MonsterTrophies: integer read fMonsterTrophies write fMonsterTrophies;
+    property Stats[indx: integer]: integer read GetPlayerStat; // write AddItem;
+    property bFirstPlayer: boolean read fFirstPlayer write fFirstPlayer;
+    property Investigator: TInvestigator read fInvestigator;
+    procedure DrawCard(card_id: integer);
+    procedure AddItem(indx: integer);
+    procedure AssignInvestigator(inv: TInvestigator);
+    //function Get_Item(indx: integer): integer;
     function RollADice(stat: integer): integer;
     function Act_Condition(Cond: integer; Choise: integer; N:integer; min: integer; max: integer): boolean;
     procedure EvtMoveToLocation(c_N: integer; c_data: string);
@@ -46,26 +54,25 @@ type
 implementation
 
 // Конструктор игрока
-constructor TPlayer.Create(var InitStats: array of integer; First_Player: boolean);
+constructor TPlayer.Create(var init_stats: array of integer; first_player: boolean);
 var
   i: integer;
 begin
-  cards_count := 0;
-  Stamina := 0;
-  Sanity := 0;
-  Focus := 0;
-  Stats[1] := InitStats[0];
-  Stats[2] := InitStats[1];
-  Stats[3] := InitStats[2];
-  Stats[4] := InitStats[3];
-  Stats[5] := InitStats[4];
-  Stats[6] := InitStats[5];
+  fCardsCount := 0;
+  fStamina := 0;
+  fSanity := 0;
+  fFocus := 0;
+  fStats[1] := init_stats[0];
+  fStats[2] := init_stats[1];
+  fStats[3] := init_stats[2];
+  fStats[4] := init_stats[3];
+  fStats[5] := init_stats[4];
+  fStats[6] := init_stats[5];
 
-  //SetLength(Cards, 0);
-  for i := 1 to 100 do
-    Cards[i] := 0;
-  bFirst_Player := False;
-  //Items_Count := 0;
+  for i := 1 to MAX_PLAYER_ITEMS do
+    fCards[i] := 0;
+  fFirstPlayer := False;
+  fInvestigator := nil;
 end;
 
 // Деструктор объекта TPlayer
@@ -75,48 +82,39 @@ begin
 end;
 
 // Функция: взятие карты из колоды
-procedure TPlayer.Draw_Card(Card_ID: integer);
+procedure TPlayer.DrawCard(card_id: integer);
 begin
   //Items_Count := Items_Count + 1;
   //SetLength(Cards, Items_Count);
   //Cards[Items_Count] := Card_ID;
 end;
 
-// Функция: получение кол-ва предметов у игрока
-function TPlayer.Get_Items_Count;
-begin
-  Get_Items_Count := cards_count;
-end;
-
-// Функция: получение значения "Тела" игрока
-function TPlayer.Get_Stamina;
-begin
-  Get_Stamina := Stamina;
-end;
-
-// Функция: получение значения "Разума" игрока
-function TPlayer.Get_Sanity;
-begin
-  Get_Sanity := Sanity;
-end;
-
-// Функция: получение значения "Собранности" игрока
-function TPlayer.Get_Focus;
-begin
-  Get_Focus := Focus;
-end;
-
-// Функция: получение значние 1 из 6 статов
-function TPlayer.Get_Stat(n: integer): integer;
-begin
-  Get_Stat := Stats[n];
-end;
-
 // Функция: получение предмета по индексу.
 // Достаем предметы по одному, а не массивом
-function TPlayer.Get_Item(indx: integer): integer;
+function TPlayer.GetPlayerCard(indx: integer): integer;
 begin
-  Get_Item := Cards[indx];
+  GetPlayerCard := fCards[indx];
+end;
+
+function TPlayer.GetPlayerStat(indx: integer): integer;
+begin
+  GetPlayerStat := fStats[indx];
+end;
+
+procedure TPlayer.AddItem(indx: integer);
+begin
+  fCardsCount := fCardsCount + 1;
+  fCards[fCardsCount] := indx;
+end;
+
+procedure TPlayer.AssignInvestigator(inv: TInvestigator);
+begin
+  fSanity := inv.sanity;
+  fStamina := inv.stamina;
+  fMoney := inv.money;
+  fClues := inv.clues;
+  fLocation := inv.start_lok;
+  fFocus := inv.focus;
 end;
 
 // Бросок кубика (Возвращает число успехов, 0 - провал)
@@ -176,7 +174,7 @@ begin
   end
   else
   begin
-    mLocation := 2103;
+    fLocation := 2103;
   end;
 
   c_Action1 := StrToInt(copy(c_data, 9, 2));
@@ -216,7 +214,7 @@ begin
   if (grade = 9) and (clues >= param) then
     result := true;
 
-  if (grade = 10) and (Monster_trophies >= param) then
+  if (grade = 10) and (fMonsterTrophies >= param) then
     result := true;
 
   result := false;
@@ -232,37 +230,37 @@ procedure TPlayer.ChangeSkills(r: integer; n: integer);
 begin
   case r of
   1: begin
-    if investigator.stats[1] < 3 then
-      Stats[1] := investigator.stats[1] + (n - 1)
+    if fInvestigator.stats[1] < 3 then
+      fStats[1] := fInvestigator.stats[1] + (n - 1)
     else
-      Stats[1] := investigator.stats[1] - (n - 1);
+      fStats[1] := fInvestigator.stats[1] - (n - 1);
 
-    if investigator.stats[2] < 3 then
-      Stats[2] := investigator.stats[2] + (n - 1)
+    if fInvestigator.stats[2] < 3 then
+      fStats[2] := fInvestigator.stats[2] + (n - 1)
     else
-      Stats[2] := investigator.stats[2] - (n - 1);
+      fStats[2] := fInvestigator.stats[2] - (n - 1);
   end;
   2: begin
-    if investigator.stats[3] < 3 then
-      Stats[3] := investigator.stats[3] + (n - 1)
+    if fInvestigator.stats[3] < 3 then
+      fStats[3] := fInvestigator.Stats[3] + (n - 1)
     else
-      Stats[3] := investigator.stats[3] - (n - 1);
+      fStats[3] := fInvestigator.Stats[3] - (n - 1);
 
-    if investigator.stats[4] < 3 then
-      Stats[4] := investigator.stats[4] + (n - 1)
+    if fInvestigator.stats[4] < 3 then
+      fStats[4] := fInvestigator.stats[4] + (n - 1)
     else
-      Stats[4] := investigator.stats[4] - (n - 1);
+      fStats[4] := fInvestigator.stats[4] - (n - 1);
   end;
   3: begin
-    if investigator.stats[5] < 3 then
-      Stats[5] := investigator.stats[5] + n - 1
+    if fInvestigator.stats[5] < 3 then
+      fStats[5] := fInvestigator.stats[5] + n - 1
     else
-      Stats[5] := investigator.stats[5] - n - 1;
+      fStats[5] := fInvestigator.stats[5] - n - 1;
 
-    if investigator.stats[6] < 3 then
-      Stats[6] := investigator.stats[6] + n - 1
+    if fInvestigator.stats[6] < 3 then
+      fStats[6] := fInvestigator.stats[6] + n - 1
     else
-      Stats[6] := investigator.stats[6] - n - 1;
+      fStats[6] := fInvestigator.stats[6] - n - 1;
   end;
   end;
 end;
