@@ -1,9 +1,9 @@
-object Main_frm: TMain_frm
-  Left = 820
-  Top = 255
-  Width = 861
-  Height = 625
-  Caption = 'Main_frm'
+object frmMain: TfrmMain
+  Left = 377
+  Top = 130
+  Width = 793
+  Height = 656
+  Caption = 'frmMain'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,58 +16,9 @@ object Main_frm: TMain_frm
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object imgDie1: TImage
-    Left = 8
-    Top = 528
-    Width = 48
-    Height = 48
-  end
-  object lblRolls: TLabel
-    Left = 8
-    Top = 504
-    Width = 40
-    Height = 13
-    Caption = #1041#1088#1086#1089#1082#1080':'
-  end
-  object imgDie2: TImage
-    Left = 64
-    Top = 528
-    Width = 48
-    Height = 48
-  end
-  object imgDie3: TImage
-    Left = 120
-    Top = 528
-    Width = 48
-    Height = 48
-  end
-  object imgDie4: TImage
-    Left = 176
-    Top = 528
-    Width = 48
-    Height = 48
-  end
-  object imgDie5: TImage
-    Left = 232
-    Top = 528
-    Width = 48
-    Height = 48
-  end
-  object imgDie6: TImage
-    Left = 288
-    Top = 528
-    Width = 48
-    Height = 48
-  end
-  object imgDie7: TImage
-    Left = 344
-    Top = 528
-    Width = 48
-    Height = 48
-  end
   object lblNRolls: TLabel
-    Left = 400
-    Top = 512
+    Left = 352
+    Top = 416
     Width = 26
     Height = 13
     Caption = #1057#1090#1072#1090':'
@@ -81,43 +32,43 @@ object Main_frm: TMain_frm
   end
   object lblSkillCheck: TLabel
     Left = 232
-    Top = 72
+    Top = 96
     Width = 94
     Height = 13
     Caption = #1055#1088#1086#1074#1077#1088#1082#1072' '#1085#1072#1074#1099#1082#1072':'
   end
   object lblNSuccesses: TLabel
     Left = 232
-    Top = 88
+    Top = 112
     Width = 80
     Height = 13
     Caption = #1050#1086#1083'-'#1074#1086' '#1091#1089#1087#1077#1093#1086#1074':'
   end
   object lblSkill: TLabel
-    Left = 385
-    Top = 72
+    Left = 369
+    Top = 96
     Width = 29
     Height = 13
     Alignment = taRightJustify
     Caption = 'lblSkill'
   end
   object lblNumSuccesses: TLabel
-    Left = 336
-    Top = 88
+    Left = 320
+    Top = 112
     Width = 84
     Height = 13
     Caption = 'lblNumSuccesses'
   end
   object lblLocIDCaption: TLabel
     Left = 232
-    Top = 56
+    Top = 80
     Width = 56
     Height = 13
     Caption = 'id '#1083#1086#1082#1072#1094#1080#1080':'
   end
   object lblLocID: TLabel
-    Left = 375
-    Top = 56
+    Left = 359
+    Top = 80
     Width = 39
     Height = 13
     Alignment = taRightJustify
@@ -125,14 +76,14 @@ object Main_frm: TMain_frm
   end
   object lblLocCardDataCaption: TLabel
     Left = 232
-    Top = 104
+    Top = 128
     Width = 54
     Height = 13
     Caption = 'Card_Data:'
   end
   object lblLocCardData: TLabel
-    Left = 438
-    Top = 480
+    Left = 374
+    Top = 520
     Width = 51
     Height = 13
     Alignment = taRightJustify
@@ -145,7 +96,7 @@ object Main_frm: TMain_frm
     ParentFont = False
   end
   object imEncounter: TImage
-    Left = 496
+    Left = 432
     Top = 16
     Width = 334
     Height = 525
@@ -1619,21 +1570,100 @@ object Main_frm: TMain_frm
   end
   object lblCurrentPlayer: TLabel
     Left = 232
-    Top = 288
+    Top = 312
     Width = 80
     Height = 13
     Caption = #1058#1077#1082#1091#1097#1080#1081' '#1080#1075#1088#1086#1082':'
   end
   object lblCurPlayer: TLabel
     Left = 320
-    Top = 288
+    Top = 312
     Width = 55
     Height = 13
     Caption = 'lblCurPlayer'
   end
+  object imgDR1: TImage
+    Left = 8
+    Top = 555
+    Width = 55
+    Height = 55
+  end
+  object lblRolls: TLabel
+    Left = 8
+    Top = 534
+    Width = 40
+    Height = 13
+    Caption = #1041#1088#1086#1089#1082#1080':'
+  end
+  object imgDR2: TImage
+    Left = 72
+    Top = 555
+    Width = 55
+    Height = 55
+  end
+  object imgDR3: TImage
+    Left = 136
+    Top = 555
+    Width = 55
+    Height = 55
+  end
+  object imgDR4: TImage
+    Left = 200
+    Top = 555
+    Width = 55
+    Height = 55
+  end
+  object imgDR5: TImage
+    Left = 264
+    Top = 555
+    Width = 55
+    Height = 55
+  end
+  object imgDR6: TImage
+    Left = 328
+    Top = 555
+    Width = 55
+    Height = 55
+  end
+  object imgDR7: TImage
+    Left = 392
+    Top = 555
+    Width = 55
+    Height = 55
+  end
+  object imgDR8: TImage
+    Left = 456
+    Top = 555
+    Width = 55
+    Height = 55
+  end
+  object imgDR9: TImage
+    Left = 520
+    Top = 555
+    Width = 55
+    Height = 55
+  end
+  object imgDR10: TImage
+    Left = 584
+    Top = 555
+    Width = 55
+    Height = 55
+  end
+  object imgDR11: TImage
+    Left = 648
+    Top = 555
+    Width = 55
+    Height = 55
+  end
+  object imgDR12: TImage
+    Left = 712
+    Top = 555
+    Width = 55
+    Height = 55
+  end
   object Button1: TButton
     Left = 232
-    Top = 400
+    Top = 424
     Width = 75
     Height = 25
     Caption = #1047#1072#1087#1080#1083#1080#1090#1100' '#1084#1086#1073#1072
@@ -1642,7 +1672,7 @@ object Main_frm: TMain_frm
   end
   object RadioGroup1: TRadioGroup
     Left = 232
-    Top = 128
+    Top = 152
     Width = 185
     Height = 105
     Caption = 'RadioGroup1'
@@ -1923,6 +1953,7 @@ object Main_frm: TMain_frm
       Height = 21
       TabOrder = 4
       Text = 'edStatSpeed'
+      OnChange = edStatSpeedChange
     end
     object edStatSneak: TEdit
       Left = 160
@@ -1998,16 +2029,17 @@ object Main_frm: TMain_frm
     end
   end
   object btnRollADie: TButton
-    Left = 400
-    Top = 552
+    Left = 352
+    Top = 456
     Width = 75
     Height = 25
     Caption = #1041#1088#1086#1089#1080#1090#1100
     TabOrder = 5
+    OnClick = btnRollADieClick
   end
   object Edit1: TEdit
-    Left = 400
-    Top = 528
+    Left = 352
+    Top = 432
     Width = 73
     Height = 21
     TabOrder = 6
@@ -2024,9 +2056,9 @@ object Main_frm: TMain_frm
     OnChange = cbLocationChange
   end
   object bntEncounter: TButton
-    Left = 632
-    Top = 552
-    Width = 75
+    Left = 304
+    Top = 48
+    Width = 65
     Height = 25
     Caption = 'Encounter'
     TabOrder = 8
@@ -2034,7 +2066,7 @@ object Main_frm: TMain_frm
   end
   object Button9: TButton
     Left = 328
-    Top = 256
+    Top = 280
     Width = 81
     Height = 25
     Caption = 'Process phase'
@@ -2042,8 +2074,8 @@ object Main_frm: TMain_frm
     OnClick = Button9Click
   end
   object Button10: TButton
-    Left = 408
-    Top = 24
+    Left = 232
+    Top = 48
     Width = 65
     Height = 25
     Caption = 'Move 2 lok'
@@ -2052,7 +2084,7 @@ object Main_frm: TMain_frm
   end
   object Button11: TButton
     Left = 232
-    Top = 256
+    Top = 280
     Width = 75
     Height = 25
     Caption = 'Shuffle'
@@ -2072,7 +2104,7 @@ object Main_frm: TMain_frm
   end
   object Button4: TButton
     Left = 232
-    Top = 312
+    Top = 336
     Width = 89
     Height = 25
     Caption = #1057#1083#1077#1076'. '#1087#1077#1088#1089#1086#1085#1072#1078
@@ -2090,15 +2122,15 @@ object Main_frm: TMain_frm
   end
   object Button6: TButton
     Left = 232
-    Top = 360
+    Top = 384
     Width = 75
     Height = 25
     Caption = #1055#1088#1080#1084'. '#1082#1072#1088#1090#1091
     TabOrder = 15
   end
   object Button7: TButton
-    Left = 320
-    Top = 400
+    Left = 232
+    Top = 456
     Width = 75
     Height = 25
     Caption = 'Button7'

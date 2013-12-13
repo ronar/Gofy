@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, uPlayer, uCardDeck, Choise, uCommon;
 
 type
-  TMain_frm = class(TForm)
+  TfrmMain = class(TForm)
     Button1: TButton;
     RadioGroup1: TRadioGroup;
     Button2: TButton;
@@ -21,14 +21,6 @@ type
     lblPlrFocus: TLabel;
     ListBox1: TListBox;
     Label2: TLabel;
-    imgDie1: TImage;
-    lblRolls: TLabel;
-    imgDie2: TImage;
-    imgDie3: TImage;
-    imgDie4: TImage;
-    imgDie5: TImage;
-    imgDie6: TImage;
-    imgDie7: TImage;
     btnRollADie: TButton;
     Edit1: TEdit;
     lblNRolls: TLabel;
@@ -87,6 +79,19 @@ type
     Label6: TLabel;
     Button6: TButton;
     Button7: TButton;
+    imgDR1: TImage;
+    lblRolls: TLabel;
+    imgDR2: TImage;
+    imgDR3: TImage;
+    imgDR4: TImage;
+    imgDR5: TImage;
+    imgDR6: TImage;
+    imgDR7: TImage;
+    imgDR8: TImage;
+    imgDR9: TImage;
+    imgDR10: TImage;
+    imgDR11: TImage;
+    imgDR12: TImage;
     procedure RadioGroup1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -107,6 +112,8 @@ type
     procedure Button11Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
+    procedure btnRollADieClick(Sender: TObject);
+    procedure edStatSpeedChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -154,7 +161,7 @@ type
   end;
 
 var
-  Main_frm: TMain_frm;
+  frmMain: TfrmMain;
   gCurrent_phase: integer;
   Common_Items_Deck: TItemCardDeck;
   Unique_Items_Deck: TItemCardDeck;
@@ -172,6 +179,7 @@ var
   players: array [1..8] of TPlayer;
   gPlayer, gCurrentPlayer: TPlayer;
   player_count: integer;
+  path_to_exe: string;
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; card: CCard);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
@@ -184,7 +192,7 @@ var
 
 implementation
 
-uses Unit2, Math, uInvChsForm, uTradeForm;
+uses uChsLok, Math, uInvChsForm, uTradeForm;
 
 {$R *.dfm}
 
@@ -261,7 +269,7 @@ begin
 
 end;
 
-procedure TMain_frm.RadioGroup1Click(Sender: TObject);
+procedure TfrmMain.RadioGroup1Click(Sender: TObject);
 begin
   if RadioGroup1.ItemIndex = 0
   then gCurrent_phase := PH_UPKEEP;
@@ -278,7 +286,7 @@ end;
 // Инициализация
 // После инициализации, массив карт будет содержать
 // в себе все карты определенного типа
-procedure TMain_frm.Button2Click(Sender: TObject);
+procedure TfrmMain.Button2Click(Sender: TObject);
 var
   i: integer;
   PlStats: array [1..6] of integer;
@@ -324,7 +332,7 @@ begin
   // И т.д.
 end;
 
-procedure TMain_frm.Button3Click(Sender: TObject);
+procedure TfrmMain.Button3Click(Sender: TObject);
 var
   i: integer;
 begin
@@ -346,13 +354,13 @@ begin
     ListBox1.Items.Add(IntToStr(gCurrentPlayer.cards[i]));
 end;
 
-procedure TMain_frm.ComboBox1Change(Sender: TObject);
+procedure TfrmMain.ComboBox1Change(Sender: TObject);
 begin
   //Image1.Picture.LoadFromFile('..\Gofy\CardsData\CommonItems\'+ComboBox1.Text+'.jpg');
   //Common_Items_Deck.Cards[ComboBox1.ItemIndex+1].Dejstvie_karti;
 end;
 
-procedure TMain_frm.Button4Click(Sender: TObject);
+procedure TfrmMain.Button4Click(Sender: TObject);
 var
   fp, i: integer;
 begin
@@ -379,13 +387,13 @@ begin
   //  gPlayer.Draw_Card(StrToInt(ComboBox1.Text));
 end;
 
-procedure TMain_frm.Button1Click(Sender: TObject);
+procedure TfrmMain.Button1Click(Sender: TObject);
 begin
   Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, 1);
   //Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].monsters[1] := monsters[1].id;
 end;
 
-procedure TMain_frm.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   i: integer;
 begin
@@ -400,10 +408,11 @@ begin
   end;
 end;
 
-procedure TMain_frm.FormCreate(Sender: TObject);
+procedure TfrmMain.FormCreate(Sender: TObject);
 var
   i, n: integer;
 begin
+  path_to_exe := ExtractFilePath(Application.ExeName);
   //for i := 1 to ITEMS_CARD_NUMBER do
   //begin
     Common_Items_Deck:= TItemCardDeck.Create(CT_COMMON_ITEM);
@@ -431,7 +440,7 @@ end;
 
 
 
-procedure TMain_frm.Button6Click(Sender: TObject);
+procedure TfrmMain.Button6Click(Sender: TObject);
 begin
   //if ComboBox2.ItemIndex < 1 then
   //  ShowMessage('Выберите карту')
@@ -439,13 +448,13 @@ begin
   //  gPlayer.Draw_Card(StrToInt(ComboBox2.Text));
 end;
 
-procedure TMain_frm.ComboBox2Change(Sender: TObject);
+procedure TfrmMain.ComboBox2Change(Sender: TObject);
 begin
   //Image2.Picture.LoadFromFile('..\Gofy\CardsData\UniqueItems\'+ComboBox2.Text+'.jpg');
   //Unique_Items_Deck[ComboBox2.ItemIndex+1].Dejstvie_karti;
 end;
 
-procedure TMain_frm.cbLocationChange(Sender: TObject);
+procedure TfrmMain.cbLocationChange(Sender: TObject);
 var
   LocNum: integer;
 begin
@@ -471,7 +480,7 @@ begin
   //imEncounter.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\\CardsData\\Locations\\Downtown\\'+GetLokID(cbLocation.Text)+'.jpg');
 end;
 
-procedure TMain_frm.Button9Click(Sender: TObject);
+procedure TfrmMain.Button9Click(Sender: TObject);
 begin
   case gCurrent_phase of
     PH_UPKEEP: begin
@@ -511,27 +520,27 @@ begin
 }
 end;
 
-procedure TMain_frm.DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
+procedure TfrmMain.DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if key = VK_MULTIPLY then
     showmessage ('iwr');
 end;
 
-procedure TMain_frm.edPlaStaminaChange(Sender: TObject);
+procedure TfrmMain.edPlaStaminaChange(Sender: TObject);
 begin
   try
-    gPlayer.Stamina := StrToInt(edPlaStamina.Text);
+    gCurrentPlayer.Stamina := StrToInt(edPlaStamina.Text);
   except
     on EConvertError do
     begin
-      gPlayer.Stamina := 0;
+      gCurrentPlayer.Stamina := 0;
       edPlaStamina.Text := '0';
     end;
   end;
 end;
 
-procedure TMain_frm.Button10Click(Sender: TObject);
+procedure TfrmMain.Button10Click(Sender: TObject);
 begin
   if gCurrent_phase = PH_MOVE then
   begin
@@ -555,7 +564,7 @@ begin
   //gPlayer.Encounter(Locations_Deck);
 end;
 
-procedure TMain_frm.Button11Click(Sender: TObject);
+procedure TfrmMain.Button11Click(Sender: TObject);
 begin
   //arkham[2].Deck.Shuffle;
 end;
@@ -631,7 +640,7 @@ begin
   28: // Move to lockation, enc
     if action_value = 0 then
     begin
-      Form2.ShowModal;
+      frmChsLok.ShowModal;
 
     end
     else
@@ -798,7 +807,7 @@ begin
 
 end;
 
-procedure TMain_frm.bntEncounterClick(Sender: TObject);
+procedure TfrmMain.bntEncounterClick(Sender: TObject);
 var
   lok: TLocation;
   drawn_items: array [1..3] of integer;
@@ -902,7 +911,7 @@ begin
   mlok[hon(lok_id)].clues := mlok[hon(lok_id)].clues + n;
 end;
 
-procedure TMain_frm.Button5Click(Sender: TObject);
+procedure TfrmMain.Button5Click(Sender: TObject);
 var
   i: integer;
 begin
@@ -955,9 +964,27 @@ begin
   result := num div 1000;
 end;
 
-procedure TMain_frm.Button7Click(Sender: TObject);
+procedure TfrmMain.Button7Click(Sender: TObject);
 begin
   Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].AddClue(gCurrentPlayer.Location, 1);
+end;
+
+procedure TfrmMain.btnRollADieClick(Sender: TObject);
+begin
+  gCurrentPlayer.RollADice(StrToInt(Edit1.Text));
+end;
+
+procedure TfrmMain.edStatSpeedChange(Sender: TObject);
+begin
+  try
+    gCurrentPlayer.Speed := StrToInt(edStatSpeed.Text);
+  except
+    on EConvertError do
+    begin
+      //gCurrentPlayer.Speed := 0;
+      edStatSpeed.Text := '0';
+    end;
+  end;
 end;
 
 end.

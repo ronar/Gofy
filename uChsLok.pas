@@ -1,4 +1,4 @@
-unit Unit2;
+unit uChsLok;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls;
 
 type
-  TForm2 = class(TForm)
+  TfrmChsLok = class(TForm)
     btn1: TButton;
     Edit1: TEdit;
     cbb1: TComboBox;
@@ -19,7 +19,7 @@ type
   end;
 
 var
-  Form2: TForm2;
+  frmChsLok: TfrmChsLok;
 
 implementation
 
@@ -27,9 +27,8 @@ uses uMainForm;
 
 {$R *.dfm}
 
-procedure TForm2.btn1Click(Sender: TObject);
+procedure TfrmChsLok.btn1Click(Sender: TObject);
 begin
-
   gPlayer.Location := StrToInt(Edit1.Text);
   Close;
   //gPlayer.Encounter;

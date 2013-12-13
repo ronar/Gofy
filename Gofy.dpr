@@ -2,8 +2,8 @@ program Gofy;
 
 uses
   Forms,
-  uMainForm in 'uMainForm.pas' {Main_frm},
-  Unit2 in 'Unit2.pas' {Form2},
+  uMainForm in 'uMainForm.pas' {frmMain},
+  uChsLok in 'uChsLok.pas' {frmChsLok},
   uPlayer in 'uPlayer.pas',
   uCardDeck in 'uCardDeck.pas',
   Choise in 'Choise.pas' {ChoiseForm},
@@ -18,8 +18,8 @@ uses
 begin
   Application.Initialize;
   Application.Title := 'Gofy';
-  Application.CreateForm(TMain_frm, Main_frm);
-  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TfrmChsLok, frmChsLok);
   Application.CreateForm(TChoiseForm, ChoiseForm);
   Application.CreateForm(TfrmInv, frmInv);
   Application.CreateForm(TfrmCard, frmCard);

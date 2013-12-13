@@ -1,4 +1,4 @@
-object Form2: TForm2
+object frmChsLok: TfrmChsLok
   Left = 1505
   Top = 811
   BorderStyle = bsDialog

@@ -2,7 +2,7 @@ unit uPlayer;
 
 interface
 uses
-  SysUtils, Dialogs, uCardDeck, Unit2, uInvestigator, uCommon;
+  SysUtils, Dialogs, uCardDeck, uChsLok, uInvestigator, uCommon, ExtCtrls;
 
 type
   TPlayer = class
@@ -19,8 +19,11 @@ type
     fStats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
     fFirstPlayer: boolean; // Флаг первого игрока
     fInvestigator: TInvestigator;
+    Roll_results: array [1..12] of integer;
     function GetPlayerCard(indx: integer): integer;
     function GetPlayerStat(indx: integer): integer;
+    //function SetPlayerStat(indx: integer; value: integer);
+    procedure SetSpeed(value: integer);
   public
     constructor Create(var init_stats: array of integer; first_player: boolean);
     destructor Destroy; override;
@@ -34,6 +37,7 @@ type
     property Clues: integer read fClues write fClues;
     property MonsterTrophies: integer read fMonsterTrophies write fMonsterTrophies;
     property Stats[indx: integer]: integer read GetPlayerStat; // write AddItem;
+    property Speed: integer write SetSpeed;
     property bFirstPlayer: boolean read fFirstPlayer write fFirstPlayer;
     property Investigator: TInvestigator read fInvestigator;
     procedure DrawCard(card_id: integer);
@@ -52,6 +56,8 @@ type
   end;
 
 implementation
+
+uses uMainForm;
 
 // Конструктор игрока
 constructor TPlayer.Create(var init_stats: array of integer; first_player: boolean);
@@ -101,6 +107,11 @@ begin
   GetPlayerStat := fStats[indx];
 end;
 
+procedure TPlayer.SetSpeed(value: integer);
+begin
+  fStats[1] := value;
+end;
+
 procedure TPlayer.AddItem(indx: integer);
 begin
   fCardsCount := fCardsCount + 1;
@@ -109,6 +120,7 @@ end;
 
 procedure TPlayer.AssignInvestigator(inv: TInvestigator);
 begin
+  fInvestigator := inv;
   fSanity := inv.sanity;
   fStamina := inv.stamina;
   fMoney := inv.money;
@@ -121,18 +133,24 @@ end;
 function TPlayer.RollADice(stat: integer): integer;
 var
   r, i: integer;
-  Roll_results: array [1..12] of integer;
   Successes: integer;
 begin
   randomize;
   Successes := 0;
-  //Form1.imDie1.Picture.LoadFromFile('..\\Gofy\\Pictures\\0.jpg');
-  //Form1.imDie2.Picture.LoadFromFile('..\\Gofy\\Pictures\\0.jpg');
-  //Form1.imDie3.Picture.LoadFromFile('..\\Gofy\\Pictures\\0.jpg');
-  //Form1.imDie4.Picture.LoadFromFile('..\\Gofy\\Pictures\\0.jpg');
-  //Form1.imDie5.Picture.LoadFromFile('..\\Gofy\\Pictures\\0.jpg');
-  //Form1.imDie6.Picture.LoadFromFile('..\\Gofy\\Pictures\\0.jpg');
-  //Form1.imDie7.Picture.LoadFromFile('..\\Gofy\\Pictures\\0.jpg');
+  // Deprecated
+  frmMain.imgDR1.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  frmMain.imgDR2.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  frmMain.imgDR3.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  frmMain.imgDR4.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  frmMain.imgDR5.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  frmMain.imgDR6.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  frmMain.imgDR7.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  frmMain.imgDR8.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  frmMain.imgDR9.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  frmMain.imgDR10.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  frmMain.imgDR11.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  frmMain.imgDR12.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+  // !Deprecated
   //RollADice := random(6)+1;
     //pl := TPlayer.Create(False);
   if Stats[stat] > 0 then
@@ -140,14 +158,16 @@ begin
     for i:=1 to Stats[stat] do
     begin
       Roll_results[i]:=random(6)+1;
-      {case Roll_results[i] of
-      1: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\1.jpg');
-      2: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\2.jpg');
-      3: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\3.jpg');
-      4: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\4.jpg');
-      5: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\5.jpg');
-      6: (Form1.FindComponent('imDie'+IntToStr(i)) as TImage).Picture.LoadFromFile('..\\Gofy\\Pictures\\6.jpg');
-      end; }
+      // Deprecated
+      case Roll_results[i] of
+      1: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\1.jpg');
+      2: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\2.jpg');
+      3: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\3.jpg');
+      4: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\4.jpg');
+      5: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\5.jpg');
+      6: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\6.jpg');
+      end;
+      // !Deprecated
 
       if Roll_results[i]>=5 then
       begin
@@ -159,7 +179,6 @@ begin
     end;
   end;
 
-  //Form1.imDie1.Picture.LoadFromFile('0.jpg');
   RollADice := Successes;
 end;
 
@@ -170,7 +189,7 @@ begin
   // refer to xls file to locs table (n, id)
   if c_N = 0 then
   begin
-    form2.ShowModal; // Move to any location
+    frmChsLok.ShowModal; // Move to any location
   end
   else
   begin
