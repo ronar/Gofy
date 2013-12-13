@@ -1,6 +1,6 @@
 object Main_frm: TMain_frm
-  Left = 936
-  Top = 415
+  Left = 820
+  Top = 255
   Width = 861
   Height = 625
   Caption = 'Main_frm'
@@ -145,7 +145,7 @@ object Main_frm: TMain_frm
     ParentFont = False
   end
   object imEncounter: TImage
-    Left = 480
+    Left = 496
     Top = 16
     Width = 334
     Height = 525

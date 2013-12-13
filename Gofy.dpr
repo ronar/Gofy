@@ -1,4 +1,4 @@
-program Project1;
+program Gofy;
 
 uses
   Forms,
@@ -17,6 +17,7 @@ uses
 
 begin
   Application.Initialize;
+  Application.Title := 'Gofy';
   Application.CreateForm(TMain_frm, Main_frm);
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TChoiseForm, ChoiseForm);
