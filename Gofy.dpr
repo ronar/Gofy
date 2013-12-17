@@ -11,7 +11,8 @@ uses
   uCommon in 'uCommon.pas',
   uInvestigator in 'uInvestigator.pas',
   uCardForm in 'uCardForm.pas' {frmCard},
-  uTradeForm in 'uTradeForm.pas' {frmTrade};
+  uTradeForm in 'uTradeForm.pas' {frmTrade},
+  uUseForm in 'uUseForm.pas' {frmUse};
 
 {$R *.res}
 
@@ -24,5 +25,6 @@ begin
   Application.CreateForm(TfrmInv, frmInv);
   Application.CreateForm(TfrmCard, frmCard);
   Application.CreateForm(TfrmTrade, frmTrade);
+  Application.CreateForm(TfrmUse, frmUse);
   Application.Run;
 end.

@@ -29,7 +29,7 @@ uses uMainForm;
 
 procedure TfrmChsLok.btn1Click(Sender: TObject);
 begin
-  gPlayer.Location := StrToInt(Edit1.Text);
+  //gPlayer.Location := StrToInt(Edit1.Text);
   Close;
   //gPlayer.Encounter;
 end;

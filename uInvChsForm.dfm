@@ -1,6 +1,6 @@
 object frmInv: TfrmInv
-  Left = 476
-  Top = 141
+  Left = 669
+  Top = 198
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'frmInv'
@@ -1402,7 +1402,9 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
+    ItemIndex = 2
     TabOrder = 0
+    Text = 'Amanda Sharpe'
     OnChange = cbInvPlayer1Change
     Items.Strings = (
       'Agnes Baker'

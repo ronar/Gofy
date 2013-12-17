@@ -54,10 +54,10 @@ end;
 procedure TfrmCard.cbCardChange(Sender: TObject);
 begin
   case card_to_load of
-  CT_COMMON_ITEM: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\\CardsData\CommonItems\' + cbCard.Text + '.jpg');
-  CT_UNIQUE_ITEM: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\\CardsData\UniqueItems\' + cbCard.Text + '.jpg');
-  CT_SPELL: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\\CardsData\Spells\' + cbCard.Text + '.jpg');
-  CT_SKILL: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\\CardsData\Skills\' + cbCard.Text + '.jpg');
+  CT_COMMON_ITEM: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\CardsData\CommonItems\' + cbCard.Text + '.jpg');
+  CT_UNIQUE_ITEM: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\CardsData\UniqueItems\' + cbCard.Text + '.jpg');
+  CT_SPELL: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\CardsData\Spells\' + cbCard.Text + '.jpg');
+  CT_SKILL: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\CardsData\Skills\' + cbCard.Text + '.jpg');
   end;
 end;
 

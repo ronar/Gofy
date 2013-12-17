@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 377
-  Top = 130
-  Width = 793
+  Left = 797
+  Top = 345
+  Width = 1096
   Height = 656
   Caption = 'frmMain'
   Color = clBtnFace
@@ -95,9 +95,9 @@ object frmMain: TfrmMain
     Font.Style = []
     ParentFont = False
   end
-  object imEncounter: TImage
-    Left = 432
-    Top = 16
+  object imgEncounter: TImage
+    Left = 736
+    Top = 8
     Width = 334
     Height = 525
     AutoSize = True
@@ -1661,10 +1661,17 @@ object frmMain: TfrmMain
     Width = 55
     Height = 55
   end
+  object Label3: TLabel
+    Left = 424
+    Top = 8
+    Width = 89
+    Height = 13
+    Caption = #1046#1091#1088#1085#1072#1083' '#1089#1086#1073#1099#1090#1080#1081':'
+  end
   object Button1: TButton
     Left = 232
     Top = 424
-    Width = 75
+    Width = 89
     Height = 25
     Caption = #1047#1072#1087#1080#1083#1080#1090#1100' '#1084#1086#1073#1072
     TabOrder = 0
@@ -1691,7 +1698,7 @@ object frmMain: TfrmMain
     Top = 24
     Width = 73
     Height = 25
-    Caption = #1048#1085#1080#1094'-'#1103
+    Caption = '1.'#1048#1085#1080#1094'-'#1103
     TabOrder = 2
     OnClick = Button2Click
   end
@@ -2116,7 +2123,7 @@ object frmMain: TfrmMain
     Top = 56
     Width = 105
     Height = 25
-    Caption = #1042#1099#1073#1088#1072#1090#1100' '#1089#1099#1097#1080#1082#1072
+    Caption = '2.'#1042#1099#1073#1088#1072#1090#1100' '#1089#1099#1097#1080#1082#1072
     TabOrder = 14
     OnClick = Button5Click
   end
@@ -2127,14 +2134,49 @@ object frmMain: TfrmMain
     Height = 25
     Caption = #1055#1088#1080#1084'. '#1082#1072#1088#1090#1091
     TabOrder = 15
+    OnClick = Button6Click
   end
   object Button7: TButton
     Left = 232
     Top = 456
     Width = 75
     Height = 25
-    Caption = 'Button7'
+    Caption = 'Add Clue'
     TabOrder = 16
     OnClick = Button7Click
+  end
+  object Button8: TButton
+    Left = 16
+    Top = 472
+    Width = 75
+    Height = 25
+    Caption = 'Give Item'
+    TabOrder = 17
+    OnClick = Button8Click
+  end
+  object lbLog: TListBox
+    Left = 424
+    Top = 24
+    Width = 289
+    Height = 385
+    ItemHeight = 13
+    TabOrder = 18
+  end
+  object edtLokID: TEdit
+    Left = 440
+    Top = 424
+    Width = 121
+    Height = 21
+    TabOrder = 19
+    Text = 'edtLokID'
+  end
+  object Button12: TButton
+    Left = 568
+    Top = 424
+    Width = 75
+    Height = 25
+    Caption = 'Button12'
+    TabOrder = 20
+    OnClick = Button12Click
   end
 end

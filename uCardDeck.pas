@@ -46,7 +46,7 @@ type
   TLocationCardDeck = class(TCardDeck) // Карты
   private
     mCards: array [1..LOCATION_CARD_NUMBER, 1..3] of CCard; // Данные о каждой карте
-    function GetCard(i, n: integer): CCard;
+    function GetCard(ID: integer): CCard;
     //function GetLokation: integer;
     //function GetNom: integer;
     //procedure SetLok;
@@ -58,8 +58,8 @@ type
     function GetCardID(i, n: integer): Integer; overload; // Получить ID карты по порядковому номеру
     function GetCardData(i, n: integer): string; overload; // Получить данные карты по порядковому номеру
     function FindCards(file_path: string): integer; override;
-    function DrawCard(n: integer): Integer; // Returns ID of the card on top of the deck
-    property cards[i: integer; n: integer]: CCard read GetCard;
+    function DrawCard(n: integer): CCard; // Returns ID of the card on top of the deck
+    property cards[ID: integer]: CCard read GetCard;
     //property Nom: integer;
     procedure Shuffle();
     //function Get_Card_By_ID(id: integer): TCard; // Нахождение карты по ее ID
@@ -186,9 +186,17 @@ begin
     end;
 end;
 
-function TLocationCardDeck.GetCard(i, n: integer): CCard;
+function TLocationCardDeck.GetCard(ID: integer): CCard;
+var
+  i, j: integer;
 begin
-  Result := mCards[i, n];
+  for i := 1 to 3 do
+    for j := 1 to 7 do
+      if mCards[j, i].ID = ID then
+      begin
+        Result := mCards[j, i];
+        exit;
+      end;
 end;
 
 function TLocationCardDeck.GetCardByID(id: integer): CCard;
@@ -215,9 +223,11 @@ begin
   GetCardData := mCards[i, n].Data;
 end;
 
-function TLocationCardDeck.DrawCard(n: integer): Integer;
+
+// n - номер локации на карте
+function TLocationCardDeck.DrawCard(n: integer): CCard;
 begin
-  DrawCard := mCards[Count div 3, n].ID;
+  DrawCard := mCards[Count div 3, n];
   Shuffle;
 end;
 
@@ -266,13 +276,15 @@ var
 begin
   randomize;
   for i := 1 to Count do
+  begin
+    r := random(Count);
     for j := 1 to 3 do
     begin
       temp := mCards[i, j];
-      r := random(Count);
       mCards[i, j] := mCards[r+1, j];
       mCards[r+1, j] := temp;
     end;
+  end;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////

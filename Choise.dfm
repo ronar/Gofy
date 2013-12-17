@@ -1,6 +1,6 @@
 object ChoiseForm: TChoiseForm
-  Left = 1182
-  Top = 775
+  Left = 950
+  Top = 492
   Width = 679
   Height = 208
   Caption = 'Choise'

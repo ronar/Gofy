@@ -110,6 +110,7 @@ end;
 
 procedure TfrmInv.Button1Click(Sender: TObject);
 begin
+  cbInvPlayer1Change(Sender);
   Close;
 end;
 

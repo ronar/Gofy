@@ -2,7 +2,8 @@ unit uPlayer;
 
 interface
 uses
-  SysUtils, Dialogs, uCardDeck, uChsLok, uInvestigator, uCommon, ExtCtrls;
+  SysUtils, Dialogs, uCardDeck, uChsLok, uInvestigator, uCommon, ExtCtrls,
+  Controls;
 
 type
   TPlayer = class
@@ -17,6 +18,7 @@ type
     fClues: integer;
     fMonsterTrophies: integer;
     fStats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
+    fBonusStats: array [1..6] of integer; // Прибавка от навыков, мифа.
     fFirstPlayer: boolean; // Флаг первого игрока
     fInvestigator: TInvestigator;
     Roll_results: array [1..12] of integer;
@@ -68,12 +70,11 @@ begin
   fStamina := 0;
   fSanity := 0;
   fFocus := 0;
-  fStats[1] := init_stats[0];
-  fStats[2] := init_stats[1];
-  fStats[3] := init_stats[2];
-  fStats[4] := init_stats[3];
-  fStats[5] := init_stats[4];
-  fStats[6] := init_stats[5];
+  for i := 1 to 6 do
+  begin
+    fStats[i] := init_stats[i - 1];
+    fBonusStats[i] := 0;
+  end;
 
   for i := 1 to MAX_PLAYER_ITEMS do
     fCards[i] := 0;
@@ -130,13 +131,16 @@ begin
 end;
 
 // Бросок кубика (Возвращает число успехов, 0 - провал)
-function TPlayer.RollADice(stat: integer): integer;
+function TPlayer.RollADice(stat: integer): integer; // stat - exactly value of stat
 var
-  r, i: integer;
+  r, i, s: integer;
   Successes: integer;
 begin
   randomize;
   Successes := 0;
+  s := stat;
+  while (Successes < 1) do
+  begin
   // Deprecated
   frmMain.imgDR1.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
   frmMain.imgDR2.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
@@ -153,9 +157,9 @@ begin
   // !Deprecated
   //RollADice := random(6)+1;
     //pl := TPlayer.Create(False);
-  if Stats[stat] > 0 then
+  if s > 0 then
   begin
-    for i:=1 to Stats[stat] do
+    for i:=1 to s do
     begin
       Roll_results[i]:=random(6)+1;
       // Deprecated
@@ -180,6 +184,24 @@ begin
   end;
 
   RollADice := Successes;
+  if Successes < 1 then
+  begin
+    if MessageDlg('Reroll (using one clue)?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+    begin
+      break;
+    end
+    else
+    begin
+      if fClues > 1 then
+        fClues := fClues - 1
+      else
+        break;
+      s := 1;
+    end;
+  end
+  else
+    break;
+  end; // While
 end;
 
 procedure TPlayer.EvtMoveToLocation(c_N: integer; c_data: string);
@@ -240,9 +262,18 @@ begin
 
 end;
 
+// Checks wether the player has the item or not
 function TPlayer.HasItem(ID: integer): boolean;
+var
+  i: integer;
 begin
-
+  HasItem := False;
+  for i := 1 to fCardsCount do
+    if fCards[i] = id then
+    begin
+      HasItem := True;
+      break;
+    end;
 end;
 
 procedure TPlayer.ChangeSkills(r: integer; n: integer);
