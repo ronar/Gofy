@@ -10,8 +10,8 @@ type
   TfrmMain = class(TForm)
     Button1: TButton;
     RadioGroup1: TRadioGroup;
-    Button2: TButton;
-    Button3: TButton;
+    btnInit: TButton;
+    btnPlaData: TButton;
     GroupBox2: TGroupBox;
     lblPlrStamina: TLabel;
     Label1: TLabel;
@@ -19,7 +19,7 @@ type
     Label4: TLabel;
     Label5: TLabel;
     lblPlrFocus: TLabel;
-    ListBox1: TListBox;
+    lbItems: TListBox;
     Label2: TLabel;
     btnRollADie: TButton;
     Edit1: TEdit;
@@ -31,7 +31,7 @@ type
     lblSkill: TLabel;
     lblNumSuccesses: TLabel;
     bntEncounter: TButton;
-    Button9: TButton;
+    btnProcess: TButton;
     lblLocIDCaption: TLabel;
     lblLocID: TLabel;
     lblLocCardDataCaption: TLabel;
@@ -61,8 +61,8 @@ type
     Label14: TLabel;
     lblPlaLoc: TLabel;
     edtPlaLoc: TEdit;
-    Button10: TButton;
-    Button11: TButton;
+    btnMoveToLok: TButton;
+    btnShuffle: TButton;
     Label20: TLabel;
     lblPlaClue: TLabel;
     edtPlaClue: TEdit;
@@ -72,13 +72,13 @@ type
     LabeledEdit1: TLabeledEdit;
     lblCurrentPlayer: TLabel;
     lblCurPlayer: TLabel;
-    Button4: TButton;
-    Button5: TButton;
+    btnNextPers: TButton;
+    btnChsInv: TButton;
     lblPlaInv: TLabel;
     edtPlaInv: TEdit;
     Label6: TLabel;
-    Button6: TButton;
-    Button7: TButton;
+    btnUseCard: TButton;
+    btnAddClue: TButton;
     imgDR1: TImage;
     lblRolls: TLabel;
     imgDR2: TImage;
@@ -92,35 +92,37 @@ type
     imgDR10: TImage;
     imgDR11: TImage;
     imgDR12: TImage;
-    Button8: TButton;
+    btnGiveItem: TButton;
     lbLog: TListBox;
     Label3: TLabel;
     edtLokID: TEdit;
-    Button12: TButton;
+    btnMoveToExactLok: TButton;
     procedure RadioGroup1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
+    procedure btnInitClick(Sender: TObject);
+    procedure btnPlaDataClick(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
+    procedure btnNextPersClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
+    procedure btnUseCardClick(Sender: TObject);
     procedure ComboBox2Change(Sender: TObject);
     procedure cbLocationChange(Sender: TObject);
-    procedure Button9Click(Sender: TObject);
+    procedure btnProcessClick(Sender: TObject);
     procedure DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edPlaStaminaChange(Sender: TObject);
     procedure bntEncounterClick(Sender: TObject);
-    procedure Button10Click(Sender: TObject);
-    procedure Button11Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
-    procedure Button7Click(Sender: TObject);
+    procedure btnMoveToLokClick(Sender: TObject);
+    procedure btnShuffleClick(Sender: TObject);
+    procedure btnChsInvClick(Sender: TObject);
+    procedure btnAddClueClick(Sender: TObject);
     procedure btnRollADieClick(Sender: TObject);
     procedure edStatSpeedChange(Sender: TObject);
-    procedure Button8Click(Sender: TObject);
-    procedure Button12Click(Sender: TObject);
+    procedure btnGiveItemClick(Sender: TObject);
+    procedure btnMoveToExactLokClick(Sender: TObject);
+    procedure edtPlaClueExit(Sender: TObject);
+    procedure edStatFightExit(Sender: TObject);
   private
     { Private declarations }
   public
@@ -192,7 +194,7 @@ var
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
   function GetLokIDByName(lok_name: string): integer; // Получение ID локации по названию
   function GetStreetIDByName(street_name: string): integer;
-  function GetLokNumByID(id: integer): integer;
+  function GetStreetIndxByLokID(id: integer): integer; // Searches the array for location that matches the id param
   function GetStreetNameByID(id: integer): string;
   function hon(num: integer): integer; // hundredth of number
   function ton(num: integer): integer; // thousandth of number
@@ -294,7 +296,7 @@ end;
 // Инициализация
 // После инициализации, массив карт будет содержать
 // в себе все карты определенного типа
-procedure TfrmMain.Button2Click(Sender: TObject);
+procedure TfrmMain.btnInitClick(Sender: TObject);
 var
   i: integer;
   PlStats: array [1..6] of integer;
@@ -340,7 +342,7 @@ begin
   // И т.д.
 end;
 
-procedure TfrmMain.Button3Click(Sender: TObject);
+procedure TfrmMain.btnPlaDataClick(Sender: TObject);
 var
   i: integer;
 begin
@@ -357,9 +359,9 @@ begin
   lblPlaClue.Caption := IntToStr(gCurrentPlayer.Clues);
   lblPlaMoney.Caption := IntToStr(gCurrentPlayer.Money);
   lblPlaInv.Caption := gCurrentPlayer.investigator.name;
-  ListBox1.Clear;
+  lbItems.Clear;
   for i := 1 to gPlayer.ItemsCount do
-    ListBox1.Items.Add(IntToStr(gCurrentPlayer.cards[i]));
+    lbItems.Items.Add(IntToStr(gCurrentPlayer.cards[i]));
 end;
 
 procedure TfrmMain.ComboBox1Change(Sender: TObject);
@@ -368,7 +370,7 @@ begin
   //Common_Items_Deck.Cards[ComboBox1.ItemIndex+1].Dejstvie_karti;
 end;
 
-procedure TfrmMain.Button4Click(Sender: TObject);
+procedure TfrmMain.btnNextPersClick(Sender: TObject);
 var
   fp, i: integer;
 begin
@@ -397,7 +399,7 @@ end;
 
 procedure TfrmMain.Button1Click(Sender: TObject);
 begin
-  Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, 1);
+  Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, 1);
   //Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].monsters[1] := monsters[1].id;
 end;
 
@@ -448,7 +450,7 @@ end;
 
 
 
-procedure TfrmMain.Button6Click(Sender: TObject);
+procedure TfrmMain.btnUseCardClick(Sender: TObject);
 var
   i: integer;
 begin
@@ -494,7 +496,7 @@ begin
   //imEncounter.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\\CardsData\\Locations\\Downtown\\'+GetLokID(cbLocation.Text)+'.jpg');
 end;
 
-procedure TfrmMain.Button9Click(Sender: TObject);
+procedure TfrmMain.btnProcessClick(Sender: TObject);
 begin
   case gCurrentPhase of
     PH_UPKEEP: begin
@@ -554,15 +556,15 @@ begin
   end;
 end;
 
-procedure TfrmMain.Button10Click(Sender: TObject);
+procedure TfrmMain.btnMoveToLokClick(Sender: TObject);
 begin
   if gCurrentPhase = PH_MOVE then
   begin
-    gCurrentPlayer.Location := GetLokIDByName(cbLocation.Text);
-    if Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).clues > 0 then
+    gCurrentPlayer.MoveToLocation(GetLokIDByName(cbLocation.Text));
+    if Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).clues > 0 then
       gCurrentPlayer.Clues := gCurrentPlayer.Clues + 1; // Сбор улик :)
     //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
-    if Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).monsters[1] > 0 then
+    if Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).monsters[1] > 0 then
       if MessageDlg('Care for battle with awful monster?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         ShowMessage('Let''s battle!')
       else
@@ -578,7 +580,7 @@ begin
   //gPlayer.Encounter(Locations_Deck);
 end;
 
-procedure TfrmMain.Button11Click(Sender: TObject);
+procedure TfrmMain.btnShuffleClick(Sender: TObject);
 begin
   //arkham[2].Deck.Shuffle;
 end;
@@ -594,13 +596,13 @@ begin
     Act_Condition := True;
   end;
   2: begin // Проверка скила
+    frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(Choise - 1) + '(=' + IntToStr(gCurrentPlayer.Stats[Choise - 1]) + ' -' + IntToStr(N) + ')..');
     skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[Choise - 1] - N); // Choise - номер скилла
-    { TODO -oRonar : Choise is in dependence with structure of constructor
-      program. In another words if indices have been changed then program
+    { TODO -oRonar : Choise is in dependence with structure of construction
+      of program. In another words if indices have been changed, program
       will be broken }
     frmMain.lbLog.Items.Add('Проверка навыка ' + IntToStr(Choise - 1) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
-    if (skill_test >= min) and
-       (skill_test <= max) then
+    if (skill_test >= min) then
       Act_Condition := True
     else
     begin
@@ -617,9 +619,10 @@ begin
   7: begin // Spec. card
     if MessageDlg('Confirm?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     begin
-      skill_test := gPlayer.RollADice(Choise - 2); // Choise - номер скилла
-      if (skill_test + N >= min) and
-        (skill_test + N <= max) then
+      frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(Choise - 1) + '(=' + IntToStr(gCurrentPlayer.Stats[Choise - 1]) + ')..');
+      skill_test := gPlayer.RollADice(gCurrentPlayer.Stats[Choise - 1] - N); // Choise - номер скилла
+      frmMain.lbLog.Items.Add('Проверка навыка ' + IntToStr(Choise - 1) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
+      if (skill_test >= min) then
         Act_Condition := True
       else
         Act_Condition := False;
@@ -632,56 +635,150 @@ function Choise1(act1: integer; act2: integer): integer;
 begin
   ChoiseForm.Choise1(act1, act2);
   ChoiseForm.ShowModal;
+  if ChoiseForm.RadioButton1.Checked then
+    Choise1 := 1
+  else
+    if ChoiseForm.RadioButton2.Checked then
+      Choise1 := 2;
 end;
 
 function Choise2(act1: integer; act2: integer; act3: integer): integer;
 begin
   ChoiseForm.Choise2(act1, act2, act3);
   ChoiseForm.ShowModal;
+  if ChoiseForm.RadioButton1.Checked then
+    Choise2 := 1
+  else
+    if ChoiseForm.RadioButton2.Checked then
+      Choise2 := 2
+    else
+      Choise2 := 3;
 end;
 
 // Выполнение действия согласно карте
-procedure Take_Action(action: integer; action_value: integer);
+procedure Take_Action(action: integer; action_value: integer; choise: integer = 0; n: integer = 0);
 var
   i: integer;
 begin
   case action of
   1: begin
     gPlayer.Money := gPlayer.Money + action_value;
-    frmMain.lbLog.Items.Add('Игрок получил/потерял деньги.');
+    frmMain.lbLog.Items.Add('Игрок получил деньги: ' + IntToStr(action_value) + '.');
   end;
   2: begin
     gPlayer.Money := gPlayer.Money - action_value;
-    frmMain.lbLog.Items.Add('Игрок получил/потерял деньги.');
+    frmMain.lbLog.Items.Add('Игрок потерял деньги: ' + IntToStr(action_value) + '.');
   end;
-  3: begin
+  3: begin // Take stamina
     gPlayer.Stamina := gPlayer.Stamina + action_value;
-    frmMain.lbLog.Items.Add('Игрок получил/потерял разум.');
+    frmMain.lbLog.Items.Add('Игрок получил тело: ' + IntToStr(action_value) + '.');
   end;
-  8: begin // Draw unique item
+  4: begin // Take sanity
+    gPlayer.Stamina := gPlayer.Sanity + action_value;
+    frmMain.lbLog.Items.Add('Игрок получил разум: ' + IntToStr(action_value) + '.');
+  end;
+  5: begin // Lose stamina
+    gCurrentPlayer.Stamina := gCurrentPlayer.Stamina - action_value;
+    frmMain.lbLog.Items.Add('Игрок потерял тело: ' + IntToStr(action_value) + '.');
+  end; // case 5
+  6: begin // Lose sanity
+    gCurrentPlayer.Sanity := gCurrentPlayer.Sanity - action_value;
+    frmMain.lbLog.Items.Add('Игрок потерял разум: ' + IntToStr(action_value) + '.');
+  end; // case 6
+  7: begin // Take clues
+    gCurrentPlayer.Clues := gCurrentPlayer.Clues + action_value;
+    frmMain.lbLog.Items.Add('Игрок получил улику(и): ' + IntToStr(action_value) + '.');
+  end; // case 7
+  8: begin // Lose clues
+    gCurrentPlayer.Clues := gCurrentPlayer.Clues - action_value;
+    frmMain.lbLog.Items.Add('Игрок потерял улику(и): ' + IntToStr(action_value) + '.');
+  end; // case 8
+  9: begin // Draw common item
+    gCurrentPlayer.AddItem(Common_Items_Deck.DrawCard);
+    frmMain.lbLog.Items.Add('Игрок вытянул карту простого предмета.');
+  end; // case 9
+  10: begin // Draw unique item
     gCurrentPlayer.AddItem(Unique_Items_Deck.DrawCard);
     frmMain.lbLog.Items.Add('Игрок вытянул карту уникального предмета.');
-  end; // case 8
-  11: begin // Draw 1 spell
+  end; // case 10
+  11: begin // Draw spell
     gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
     frmMain.lbLog.Items.Add('Игрок вытянул карту закла.');
+  end; // case 11
+  12: begin // Draw skill
+    //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
+    frmMain.lbLog.Items.Add('Игрок берет карту навыка.');
+  end; // case 12
+  13: begin // Draw ally card
+    //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
+    frmMain.lbLog.Items.Add('Игрок вытянул карту союзника: ' + IntToStr(action_value) + '.');
+  end; // case 13
+  15: begin // Drop item of player's choise
+    //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
+    frmMain.lbLog.Items.Add('Игрок потерял предмет (на выбор).');
+  end; // case 15
+  18: begin // Drop spell
+    //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
+    frmMain.lbLog.Items.Add('Игрок потерял закл.');
   end; // case 18
+  19: begin // Drop skill
+    //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
+    frmMain.lbLog.Items.Add('Игрок потерял навык.');
+  end; // case 19
+  20: begin // Move to street
+    //gCurrentPlayer.Blessed := True;
+    frmMain.lbLog.Items.Add('Игрок вышел на улицу (overlapping).');
+  end; // case 20
+  21: begin // Busted
+    //gCurrentPlayer.Blessed := True;
+    frmMain.lbLog.Items.Add('Игрок взят в полицайку.');
+  end; // case 21
+  22: begin // Blessed
+    gCurrentPlayer.Blessed := True;
+    frmMain.lbLog.Items.Add('Игрок благословен.');
+  end; // case 22
+  23: begin // Cursed
+    gCurrentPlayer.Cursed := True;
+    frmMain.lbLog.Items.Add('Игрок проклят.');
+  end; // case 23
+
   33: begin // Move to lok (ID или если 0 - на любую)
     if action_value = 0 then
     begin
       frmChsLok.ShowModal;
-      gCurrentPlayer.Location := StrToInt(frmChsLok.cbb1.Text);
+      gCurrentPlayer.Location := StrToInt(frmChsLok.edtLok.Text);
     end
     else
       gCurrentPlayer.Location := action_value;
 
     gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
     frmMain.lbLog.Items.Add('Игрок вышел на улицу.');
-  end; // case 18
+  end; // case 33
   34: begin // Move to street
     gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
     frmMain.lbLog.Items.Add('Игрок вышел на улицу.');
-  end; // case 18
+  end; // case 34
+  35: begin // Sucked into gate
+    //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
+    frmMain.lbLog.Items.Add('Игрока затянуло во врата.');
+  end; // case 35
+
+  38: begin // Pass turn
+    //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
+    frmMain.lbLog.Items.Add('Игрок пропускает ход.');
+  end; // case 38
+
+ { 41: begin // Check skill
+    frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(Choise - 1) + '(=' + IntToStr(gCurrentPlayer.Stats[Choise - 1]) + ' -' + IntToStr(N) + ')..');
+    skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[Choise - 1] - N); // Choise - номер скилла
+    frmMain.lbLog.Items.Add('Проверка навыка ' + IntToStr(Choise - 1) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
+    if (skill_test >= min) then
+      Take_Action();
+    else
+    begin
+     Take_Action();
+    end;
+  end; }// case 41
 
   28: // Move to location, enc
     if action_value = 0 then
@@ -755,7 +852,7 @@ begin
   c_Else3 := StrToInt(copy(c_data, 33, 2));
   c_Else3Value := StrToInt(copy(c_data, 35, 2));
 
-  c_Cond2 := StrToInt(copy(c_data, 27, 2));
+{  c_Cond2 := StrToInt(copy(c_data, 27, 2));
   c_Choise2 := StrToInt(copy(c_data, 29, 2));
   c_N2 := StrToInt(copy(c_data, 31, 1));
   c_NSccssMin2 := StrToInt(copy(c_data, 32, 1));
@@ -774,7 +871,7 @@ begin
   c_Else21Value := StrToInt(copy(c_data, 48, 1));
   c_Else2Cond := StrToInt(copy(c_data, 49, 1));
   c_Else22 := StrToInt(copy(c_data, 50, 2));
-  //c_Else22Value := StrToInt(copy(c_data, 52, 1));
+}  //c_Else22Value := StrToInt(copy(c_data, 52, 1));
 
   // Condition
   if Act_Condition(c_Cond1, c_Choise, c_N, c_NSccssMin, c_NSccssMax) then
@@ -788,6 +885,7 @@ begin
         if (c_Act2Cond = 1) then // OR / AND
         begin
           choise := Choise1(c_Action1, c_Action2);
+
           Take_Action(c_Action3, c_Action3Value);
         end
         else
@@ -808,8 +906,7 @@ begin
           Take_Action(c_Action2, c_Action2Value);
           Take_Action(c_Action3, c_Action3Value);
         end
-        else // 2 AND
-        //begin
+        else // !2 AND
           if (c_Act2Cond = 2) then // AND / OR
           begin
             Take_Action(c_Action1, c_Action1Value);
@@ -832,7 +929,13 @@ begin
       if (c_Else2Cond = 2) then // 2 OR
         choise := Choise2(c_Else1, c_Else2, c_Else3)
       else
-        choise := Choise1(c_Else1, c_Else2);
+        if (c_Else2Cond = 1) then // OR / AND
+        begin
+          choise := Choise1(c_Else1, c_Else2);
+          Take_Action(c_Else3, c_Else3Value);
+        end
+        else
+          choise := Choise1(c_Else1, c_Else2);
       case choise of
       1: Take_Action(c_Else1, c_Else1Value);
       2: Take_Action(c_Else2, c_Else2Value);
@@ -843,10 +946,25 @@ begin
     begin
       if (c_Else1Cond = 1) then// 1 AND
       begin
-        Take_Action(c_Else1, c_Else1Value);
-        Take_Action(c_Else2, c_Else2Value);
+        if (c_Else2Cond = 1) then // 2 AND
+        begin
+          Take_Action(c_Else1, c_Else1Value);
+          Take_Action(c_Else2, c_Else2Value);
+          Take_Action(c_Else3, c_Else3Value);
+        end // !2 AND
+        else
+          if (c_Else2Cond = 2) then // AND / OR
+          begin
+            Take_Action(c_Else1, c_Else1Value);
+            choise := Choise1(c_Else2, c_Else3);
+          end
+          else
+          begin
+            Take_Action(c_Else1, c_Else1Value);
+            Take_Action(c_Else2, c_Else2Value);
+          end;
       end
-      else
+      else // !1 AND
         Take_Action(c_Else1, c_Else1Value);
     end;
   end;
@@ -886,12 +1004,12 @@ begin
             gCurrentPlayer.AddItem(drawn_items[3]);
         end
         else
-          Encounter(gCurrentPlayer, Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
+          Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
       end; // 4300
-      else Encounter(gCurrentPlayer, Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
+      else Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
     end;
 
-    Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].deck.Shuffle;
+    Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.Shuffle;
   end
   else
     ShowMessage('Wrong phase!');
@@ -947,7 +1065,7 @@ var
   i: integer;
   ln: integer;
 begin
-  ln := GetLokNumByID( ton(id) * 1000 );
+  ln := GetStreetIndxByLokID( ton(id) * 1000 );
   result := Arkham_Streets[ln].mlok[hon(id)];
 end;
 
@@ -961,7 +1079,7 @@ begin
   mlok[hon(lok_id)].clues := mlok[hon(lok_id)].clues + n;
 end;
 
-procedure TfrmMain.Button5Click(Sender: TObject);
+procedure TfrmMain.btnChsInvClick(Sender: TObject);
 var
   i: integer;
 begin
@@ -977,7 +1095,8 @@ begin
 
 end;
 
-function GetLokNumByID(id: integer): integer;
+// Searches the array for location that matches the id param
+function GetStreetIndxByLokID(id: integer): integer;
 var
   i: integer;
   st: integer;
@@ -1014,9 +1133,9 @@ begin
   result := num div 1000;
 end;
 
-procedure TfrmMain.Button7Click(Sender: TObject);
+procedure TfrmMain.btnAddClueClick(Sender: TObject);
 begin
-  Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].AddClue(gCurrentPlayer.Location, 1);
+  Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].AddClue(gCurrentPlayer.Location, 1);
 end;
 
 procedure TfrmMain.btnRollADieClick(Sender: TObject);
@@ -1047,15 +1166,35 @@ begin
 
 end;
 
-procedure TfrmMain.Button8Click(Sender: TObject);
+procedure TfrmMain.btnGiveItemClick(Sender: TObject);
 begin
   gCurrentPlayer.AddItem(1342);
 end;
 
-procedure TfrmMain.Button12Click(Sender: TObject);
+procedure TfrmMain.btnMoveToExactLokClick(Sender: TObject);
 begin
-  Encounter(gCurrentPlayer, Arkham_Streets[GetLokNumByID(StrToInt(edtLokID.Text))].deck.cards[StrToInt(edtLokID.Text)]);
+  Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(StrToInt(edtLokID.Text))].deck.cards[StrToInt(edtLokID.Text)]);
   //ShowMessage(IntToStr(hon(2200)));
+end;
+
+procedure TfrmMain.edtPlaClueExit(Sender: TObject);
+begin
+  try
+    gCurrentPlayer.Clues := StrToInt(edtPlaClue.Text);
+  except
+    ShowMessage('No!');
+    edtPlaClue.Text := '0';
+  end;
+end;
+
+procedure TfrmMain.edStatFightExit(Sender: TObject);
+begin
+  try
+    gCurrentPlayer.Fight := StrToInt(edStatFight.Text);
+  except
+    ShowMessage('No!');
+    edStatFight.Text := '0';
+  end;
 end;
 
 end.

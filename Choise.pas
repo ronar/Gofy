@@ -28,7 +28,7 @@ type
 
 var
   ChoiseForm: TChoiseForm;
-  actions: array [1..51] of string = ('Ничего', 'Получить $', 'Потерять $', 'Получить тело',
+  actions: array [0..50] of string = ('Ничего', 'Получить $', 'Потерять $', 'Получить тело',
    'Получить разум', 'Потерять тело', 'Потерять разум', 'Взять улику', 'Потерять улик',
    'Взять простой предмет', 'Взять уник. предмет', 'Взять закл.', 'Взять навык',
    'Взять карту союзника, если доступна', 'Взять карту спутника', 'Сбросить простую вещь',
@@ -75,10 +75,12 @@ procedure TChoiseForm.Choise1(act: integer; act2: integer);
 begin
    RadioButton1.Caption := actions[act];
    RadioButton2.Caption := actions[act2];
+   RadioButton3.Visible := False;
 end;
 
 procedure TChoiseForm.Choise2(act: integer; act2: integer; act3: integer);
 begin
+   RadioButton3.Visible := True;
    RadioButton1.Caption := actions[act];
    RadioButton2.Caption := actions[act2];
    RadioButton3.Caption := actions[act3];

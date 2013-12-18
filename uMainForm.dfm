@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 797
-  Top = 345
+  Left = 428
+  Top = 135
   Width = 1096
   Height = 656
   Caption = 'frmMain'
@@ -100,7 +100,6 @@ object frmMain: TfrmMain
     Top = 8
     Width = 334
     Height = 525
-    AutoSize = True
     Picture.Data = {
       0A544A504547496D616765F1B60000FFD8FFE000104A46494600010101006000
       600000FFE1004845786966000049492A00080000000200310102001100000026
@@ -1566,6 +1565,7 @@ object frmMain: TfrmMain
       320015A3A3688756BB10FDA7C9CBE3704DC7F9D01628595A4D7F79159D9C0D3D
       C4ADB510773EA6BEB1F86DE0F5F09785E2B3600DD4BFBDB871DDCF5FC074ACDF
       87BF0DF46F0EDBADDC60CF76C399A45F9BFF00AD5E8EA814014AF73451B1FFD9}
+    Proportional = True
     Stretch = True
   end
   object lblCurrentPlayer: TLabel
@@ -1693,23 +1693,23 @@ object frmMain: TfrmMain
     TabOrder = 1
     OnClick = RadioGroup1Click
   end
-  object Button2: TButton
+  object btnInit: TButton
     Left = 104
     Top = 24
     Width = 73
     Height = 25
     Caption = '1.'#1048#1085#1080#1094'-'#1103
     TabOrder = 2
-    OnClick = Button2Click
+    OnClick = btnInitClick
   end
-  object Button3: TButton
+  object btnPlaData: TButton
     Left = 128
     Top = 56
     Width = 81
     Height = 25
     Caption = #1044'-'#1077' '#1086#1073' '#1080#1075#1088#1086#1082#1077
     TabOrder = 3
-    OnClick = Button3Click
+    OnClick = btnPlaDataClick
   end
   object GroupBox2: TGroupBox
     Left = 16
@@ -1920,7 +1920,7 @@ object frmMain: TfrmMain
       Height = 13
       Caption = #1057#1099#1097#1080#1082':'
     end
-    object ListBox1: TListBox
+    object lbItems: TListBox
       Left = 16
       Top = 248
       Width = 121
@@ -1934,7 +1934,7 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 1
-      Text = 'edPlaSanity'
+      Text = '0'
     end
     object edPlaStamina: TEdit
       Left = 160
@@ -1942,7 +1942,7 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 2
-      Text = 'edPlaStamina'
+      Text = '0'
       OnChange = edPlaStaminaChange
     end
     object edPlaFocus: TEdit
@@ -1951,7 +1951,7 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 3
-      Text = 'edPlaFocus'
+      Text = '0'
     end
     object edStatSpeed: TEdit
       Left = 160
@@ -1959,7 +1959,7 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 4
-      Text = 'edStatSpeed'
+      Text = '0'
       OnChange = edStatSpeedChange
     end
     object edStatSneak: TEdit
@@ -1968,7 +1968,7 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 5
-      Text = 'edStatSneak'
+      Text = '0'
     end
     object edStatFight: TEdit
       Left = 160
@@ -1976,7 +1976,8 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 6
-      Text = 'edStatFight'
+      Text = '0'
+      OnExit = edStatFightExit
     end
     object edStatWill: TEdit
       Left = 160
@@ -1984,7 +1985,7 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 7
-      Text = 'edStatWill'
+      Text = '0'
     end
     object edStatLore: TEdit
       Left = 160
@@ -1992,7 +1993,7 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 8
-      Text = 'edStatLore'
+      Text = '0'
     end
     object edStatLuck: TEdit
       Left = 160
@@ -2000,7 +2001,7 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 9
-      Text = 'edStatLuck'
+      Text = '0'
     end
     object edtPlaLoc: TEdit
       Left = 160
@@ -2008,7 +2009,7 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 10
-      Text = 'edtPlaLoc'
+      Text = '0'
     end
     object edtPlaClue: TEdit
       Left = 160
@@ -2016,7 +2017,8 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 11
-      Text = 'edtPlaClue'
+      Text = '0'
+      OnExit = edtPlaClueExit
     end
     object edtPlaMoney: TEdit
       Left = 160
@@ -2024,7 +2026,7 @@ object frmMain: TfrmMain
       Width = 41
       Height = 21
       TabOrder = 12
-      Text = 'edtPlaMoney'
+      Text = '0'
     end
     object edtPlaInv: TEdit
       Left = 160
@@ -2071,32 +2073,32 @@ object frmMain: TfrmMain
     TabOrder = 8
     OnClick = bntEncounterClick
   end
-  object Button9: TButton
+  object btnProcess: TButton
     Left = 328
     Top = 280
     Width = 81
     Height = 25
     Caption = 'Process phase'
     TabOrder = 9
-    OnClick = Button9Click
+    OnClick = btnProcessClick
   end
-  object Button10: TButton
+  object btnMoveToLok: TButton
     Left = 232
     Top = 48
     Width = 65
     Height = 25
     Caption = 'Move 2 lok'
     TabOrder = 10
-    OnClick = Button10Click
+    OnClick = btnMoveToLokClick
   end
-  object Button11: TButton
+  object btnShuffle: TButton
     Left = 232
     Top = 280
     Width = 75
     Height = 25
     Caption = 'Shuffle'
     TabOrder = 11
-    OnClick = Button11Click
+    OnClick = btnShuffleClick
   end
   object LabeledEdit1: TLabeledEdit
     Left = 16
@@ -2109,50 +2111,50 @@ object frmMain: TfrmMain
     TabOrder = 12
     Text = '1'
   end
-  object Button4: TButton
+  object btnNextPers: TButton
     Left = 232
     Top = 336
     Width = 89
     Height = 25
     Caption = #1057#1083#1077#1076'. '#1087#1077#1088#1089#1086#1085#1072#1078
     TabOrder = 13
-    OnClick = Button4Click
+    OnClick = btnNextPersClick
   end
-  object Button5: TButton
+  object btnChsInv: TButton
     Left = 16
     Top = 56
     Width = 105
     Height = 25
     Caption = '2.'#1042#1099#1073#1088#1072#1090#1100' '#1089#1099#1097#1080#1082#1072
     TabOrder = 14
-    OnClick = Button5Click
+    OnClick = btnChsInvClick
   end
-  object Button6: TButton
+  object btnUseCard: TButton
     Left = 232
     Top = 384
     Width = 75
     Height = 25
     Caption = #1055#1088#1080#1084'. '#1082#1072#1088#1090#1091
     TabOrder = 15
-    OnClick = Button6Click
+    OnClick = btnUseCardClick
   end
-  object Button7: TButton
+  object btnAddClue: TButton
     Left = 232
     Top = 456
     Width = 75
     Height = 25
     Caption = 'Add Clue'
     TabOrder = 16
-    OnClick = Button7Click
+    OnClick = btnAddClueClick
   end
-  object Button8: TButton
+  object btnGiveItem: TButton
     Left = 16
     Top = 472
     Width = 75
     Height = 25
     Caption = 'Give Item'
     TabOrder = 17
-    OnClick = Button8Click
+    OnClick = btnGiveItemClick
   end
   object lbLog: TListBox
     Left = 424
@@ -2168,15 +2170,15 @@ object frmMain: TfrmMain
     Width = 121
     Height = 21
     TabOrder = 19
-    Text = 'edtLokID'
+    Text = '2106'
   end
-  object Button12: TButton
+  object btnMoveToExactLok: TButton
     Left = 568
     Top = 424
     Width = 75
     Height = 25
-    Caption = 'Button12'
+    Caption = 'btnMoveToExactLok'
     TabOrder = 20
-    OnClick = Button12Click
+    OnClick = btnMoveToExactLokClick
   end
 end

@@ -23,7 +23,7 @@ object frmChsLok: TfrmChsLok
     TabOrder = 0
     OnClick = btn1Click
   end
-  object Edit1: TEdit
+  object edtLok: TEdit
     Left = 128
     Top = 56
     Width = 121

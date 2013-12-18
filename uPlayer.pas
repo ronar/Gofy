@@ -9,6 +9,7 @@ type
   TPlayer = class
   private
     fLocation: integer; // Player's location
+    fNeighborhood: integer; // Neighbourhood of the player's location (for easy ref. instead of hon(..) func.)
     fCards: array [1..MAX_PLAYER_ITEMS] of integer; // Player's items
     fCardsCount: integer; // Amt. of player's items
     fSanity: integer;
@@ -18,7 +19,9 @@ type
     fClues: integer;
     fMonsterTrophies: integer;
     fStats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
-    fBonusStats: array [1..6] of integer; // Прибавка от навыков, мифа.
+    fBonusStats: array [1..6] of integer; // Прибавка от карт навыков, мифа.
+    fBlessed: boolean;
+    fCursed: boolean;
     fFirstPlayer: boolean; // Флаг первого игрока
     fInvestigator: TInvestigator;
     Roll_results: array [1..12] of integer;
@@ -26,10 +29,20 @@ type
     function GetPlayerStat(indx: integer): integer;
     //function SetPlayerStat(indx: integer; value: integer);
     procedure SetSpeed(value: integer);
+    procedure SetSneak(value: integer);
+    procedure SetFight(value: integer);
+    procedure SetWill(value: integer);
+    procedure Setlore(value: integer);
+    procedure SetLuck(value: integer);
+    function IsBlessed: boolean;
+    procedure Bless(b: boolean);
+    function IsCursed: boolean;
+    procedure Curse(b: boolean);
   public
     constructor Create(var init_stats: array of integer; first_player: boolean);
     destructor Destroy; override;
     property Location: integer read fLocation write fLocation; // id локации в виде xxy, где (хх - номер улицы, y - номер локации)
+    property Neighborhood: integer read fNeighborhood write fNeighborhood; // id прилегающей улицы
     property Cards[indx: integer]: integer read GetPlayerCard; // write AddItem;
     property ItemsCount: integer read fCardsCount;
     property Sanity: integer read fSanity write fSanity;
@@ -40,6 +53,13 @@ type
     property MonsterTrophies: integer read fMonsterTrophies write fMonsterTrophies;
     property Stats[indx: integer]: integer read GetPlayerStat; // write AddItem;
     property Speed: integer write SetSpeed;
+    property Sneak: integer write SetSneak;
+    property Fight: integer write SetFight;
+    property Will: integer write SetWill;
+    property Lore: integer write SetLore;
+    property Luck: integer write SetLuck;
+    property Blessed: boolean read IsBlessed write Bless;
+    property Cursed: boolean read IsCursed write Curse;
     property bFirstPlayer: boolean read fFirstPlayer write fFirstPlayer;
     property Investigator: TInvestigator read fInvestigator;
     procedure DrawCard(card_id: integer);
@@ -54,6 +74,8 @@ type
     function CheckAvailability(grade: integer; param: integer): boolean;
     function HasItem(ID: integer): boolean;
     procedure ChangeSkills(r: integer; n: integer);
+    procedure MoveToLocation(id_lok: integer);
+    //procedure
     //property Speed: integer read Stats[1] write Stats[1];
   end;
 
@@ -111,6 +133,63 @@ end;
 procedure TPlayer.SetSpeed(value: integer);
 begin
   fStats[1] := value;
+end;
+
+procedure TPlayer.SetSneak(value: integer);
+begin
+  fStats[2] := value;
+end;
+
+procedure TPlayer.SetFight(value: integer);
+begin
+  fStats[3] := value;
+end;
+
+procedure TPlayer.SetWill(value: integer);
+begin
+  fStats[4] := value;
+end;
+
+procedure TPlayer.SetLore(value: integer);
+begin
+  fStats[5] := value;
+end;
+
+procedure TPlayer.SetLuck(value: integer);
+begin
+  fStats[6] := value;
+end;
+
+function TPlayer.IsBlessed: boolean;
+begin
+  if fBlessed then
+    IsBlessed := True
+  else
+    IsBlessed := False;
+end;
+
+procedure TPlayer.Bless(b: boolean);
+begin
+  if fCursed then
+    fBlessed := False
+  else
+    fBlessed := b;
+end;
+
+function TPlayer.IsCursed: boolean;
+begin
+  if fCursed then
+    IsCursed := True
+  else
+    IsCursed := False;
+end;
+
+procedure TPlayer.Curse(b: boolean);
+begin
+  if fBlessed then
+    fCursed := False
+  else
+    fCursed := b;
 end;
 
 procedure TPlayer.AddItem(indx: integer);
@@ -183,7 +262,7 @@ begin
     end;
   end;
 
-  RollADice := Successes;
+  RollADice := Successes; { TODO : Добавить сложность броска }
   if Successes < 1 then
   begin
     if MessageDlg('Reroll (using one clue)?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
@@ -192,10 +271,13 @@ begin
     end
     else
     begin
-      if fClues > 1 then
+      if fClues > 0 then
         fClues := fClues - 1
       else
+      begin
+        ShowMessage('No clues!');
         break;
+      end;
       s := 1;
     end;
   end
@@ -315,5 +397,11 @@ begin
   end;
 end;
 
+procedure TPlayer.MoveToLocation(id_lok: integer);
+begin
+  fLocation := id_lok;
+  fNeighborhood := (id_lok div 1000) * 1000;
+end;
+
+
 end.
- 

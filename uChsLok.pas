@@ -9,7 +9,7 @@ uses
 type
   TfrmChsLok = class(TForm)
     btn1: TButton;
-    Edit1: TEdit;
+    edtLok: TEdit;
     cbb1: TComboBox;
     procedure btn1Click(Sender: TObject);
   private
@@ -29,9 +29,10 @@ uses uMainForm;
 
 procedure TfrmChsLok.btn1Click(Sender: TObject);
 begin
-  //gPlayer.Location := StrToInt(Edit1.Text);
-  Close;
-  //gPlayer.Encounter;
+  if edtLok.Text = '' then
+    MessageDlg('Na ah!', mtWarning, [mbOK], 0)
+  else
+    Close;
 end;
 
 end.
