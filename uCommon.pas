@@ -32,6 +32,7 @@ const
   LOCATION_CARD_NUMBER = 20; // Число карт на каждую локацию
   ITEMS_CARD_NUMBER = 30;
   MAX_PLAYER_ITEMS = 20;
+  MONSTER_MAX = 50;
   NeighborhoodsNames: array [1..NUMBER_OF_STREETS, 1..2] of string = (
         ('0000', 'Backwoods Country'),
         ('0000', 'Blasted Heath'),
@@ -125,7 +126,58 @@ const
         'Trish Scarborough', 'Ursula Downs', 'Vincent Lee', 'Wendy Adams',
         'William Yorick', 'Wilson Richards', 'Zoey Samara');
 
+  MonsterNames: array [1..MONSTER_MAX, 1..2] of string = (
+        ('013', 'Bayakee'),
+        ('023', 'Bayakee'),
+        ('033', 'Bayakee'),
+        ('043', 'Bayakee'),
+        ('053', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('073', 'Bayakee'),
+        ('083', 'Bayakee'),
+        ('093', 'Bayakee'),
+        ('103', 'Bayakee'),
+        ('112', 'Chthonian'),
+        ('123', 'Bayakee'),
+        ('133', 'Bayakee'),
+        ('146', 'Cultist'),
+        ('153', 'Bayakee'),
+        ('163', 'Bayakee'),
+        ('173', 'Bayakee'),
+        ('183', 'Bayakee'),
+        ('193', 'Bayakee'),
+        ('202', 'Fire Vampire'),
+        ('213', 'Bayakee'),
+        ('223', 'Bayakee'),
+        ('233', 'Bayakee'),
+        ('243', 'Bayakee'),
+        ('253', 'Bayakee'),
+        ('263', 'Bayakee'),
+        ('273', 'Bayakee'),
+        ('282', 'Fire Vampire'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'),
+        ('063', 'Bayakee'));
+
 implementation
 
 end.
- 

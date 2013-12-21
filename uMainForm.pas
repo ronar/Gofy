@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, uPlayer, uCardDeck, Choise, uCommon;
+  Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, uPlayer, uCardDeck, Choise,
+  uCommon, uMonster;
 
 type
   TfrmMain = class(TForm)
@@ -153,22 +154,6 @@ type
     procedure AddClue(lok_id: integer; n: integer);
   end;
 
-  TMonster = record
-    id: integer;
-    name: string;
-    awareness:integer;
-    dimention: integer;
-    mon_type: integer;
-    toughness: integer;
-    //skor: integer;
-    //vrata: integer;
-    spec: string[6];
-    horror_rate: integer;
-    horror_dmg: integer;
-    cmbt_rate: integer;
-    cmbt_dmg: integer;
-  end;
-
 var
   frmMain: TfrmMain;
   gCurrentPhase: integer;
@@ -176,7 +161,7 @@ var
   Unique_Items_Deck: TItemCardDeck;
   Spells_Deck: TItemCardDeck;
   Skills_Deck: TItemCardDeck;
-  Monsters: array [1..50] of TMonster;
+  Monsters: TMonsterArray;//array [1..MONSTER_MAX] of TMonster;
   Arkham_Streets: array [1..NUMBER_OF_STREETS] of TStreet;
   Common_Items_Count: integer = 0;
   Unique_Items_Count: integer = 0;
@@ -189,6 +174,7 @@ var
   gPlayer, gCurrentPlayer: TPlayer;
   player_count: integer;
   path_to_exe: string;
+  monCount: integer;
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; card: CCard);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
@@ -198,7 +184,7 @@ var
   function GetStreetNameByID(id: integer): string;
   function hon(num: integer): integer; // hundredth of number
   function ton(num: integer): integer; // thousandth of number
-  function AdditionalChecks(player: TPlayer; stat: integer): boolean;
+  //function AdditionalChecks(player: TPlayer; stat: integer): boolean;
 
 implementation
 
@@ -279,6 +265,7 @@ begin
 
 end;
 
+
 procedure TfrmMain.RadioGroup1Click(Sender: TObject);
 begin
   if RadioGroup1.ItemIndex = 0
@@ -338,6 +325,10 @@ begin
 
   // Загрузка карт контактов
   Load_Cards(CT_ENCOUNTER);
+
+  //monCount := 0;
+  // Загрузка monsters
+  LoadMonsterCards(Monsters, ExtractFilePath(Application.ExeName));
 
   // И т.д.
 end;
@@ -439,12 +430,6 @@ begin
     cbLocation.Items.Add(LocationsNames[i, 2]);
   end;
   gCurrentPhase := 2;
-  with Monsters[1] do
-  begin
-    id := 063;
-    name := 'Bayakee';
-
-  end;
 
 end;
 
@@ -1118,6 +1103,7 @@ begin
     if StrToInt(NeighborhoodsNames[i, 1]) = id then
       GetStreetNameByID := NeighborhoodsNames[i, 2];
 end;
+
 
 function hon(num: integer): integer; // hundredth of number // thousandth of number
 var

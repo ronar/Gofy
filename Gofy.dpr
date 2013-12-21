@@ -12,7 +12,8 @@ uses
   uInvestigator in 'uInvestigator.pas',
   uCardForm in 'uCardForm.pas' {frmCard},
   uTradeForm in 'uTradeForm.pas' {frmTrade},
-  uUseForm in 'uUseForm.pas' {frmUse};
+  uUseForm in 'uUseForm.pas' {frmUse},
+  uMonster in 'uMonster.pas';
 
 {$R *.res}
 
