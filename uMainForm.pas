@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, uPlayer, uCardDeck, Choise,
-  uCommon, uMonster;
+  uCommon, uMonster, xmldom, XMLIntf, msxmldom, XMLDoc;
 
 type
   TfrmMain = class(TForm)
@@ -98,6 +98,8 @@ type
     Label3: TLabel;
     edtLokID: TEdit;
     btnMoveToExactLok: TButton;
+    tv1: TTreeView;
+    xmldcmnt1: TXMLDocument;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -137,6 +139,7 @@ type
     clues: integer; // Улики на локации
     gate: integer; // Врата открытые на локации
     monsters: array [1..5] of integer;
+    lok_mon_count: integer;
   end;
 
   TStreet = class
@@ -174,7 +177,8 @@ var
   gPlayer, gCurrentPlayer: TPlayer;
   player_count: integer;
   path_to_exe: string;
-  monCount: integer;
+  //monCount: integer;
+  trees: array [1..50] of TTreeView;
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; card: CCard);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
@@ -185,6 +189,9 @@ var
   function hon(num: integer): integer; // hundredth of number
   function ton(num: integer): integer; // thousandth of number
   //function AdditionalChecks(player: TPlayer; stat: integer): boolean;
+  procedure XML2Tree(tree   : TTreeView; XMLDoc : TXMLDocument; file_name: string);
+  function ProcessCondition(data: string): boolean;
+  procedure ProcessAction(data: string);
 
 implementation
 
@@ -209,6 +216,7 @@ begin
         mlok[n].monsters[3] := 0;
         mlok[n].monsters[4] := 0;
         mlok[n].monsters[5] := 0;
+        mlok[n].lok_mon_count := 0;
     end;
     mdeck := TLocationCardDeck.Create;
 
@@ -296,6 +304,11 @@ begin
   PlStats[6] := 0; // Luck
 
   player_count := StrToInt(LabeledEdit1.Text);
+
+  for i := 1 to 50 do
+  begin
+    trees[i] := TTreeView.Create(nil);
+  end;
 
   for i := 1 to player_count do
   begin
@@ -389,20 +402,35 @@ begin
 end;
 
 procedure TfrmMain.Button1Click(Sender: TObject);
+var
+  mob_id: integer;
 begin
-  Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, 1);
-  //Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].monsters[1] := monsters[1].id;
+  mob_id := DrawMonsterCard(monsters);
+  ShowMessage(IntToStr(mob_id));
+  Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, mob_id);
+ //Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].monsters[1] := monsters[1].id;
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   i: integer;
 begin
-  gCurrentPlayer.Free;
-    Common_Items_Deck.Free;
-    Unique_Items_Deck.Free;
-    Spells_Deck.Free;
-    Skills_Deck.Free;
+  for i := 1 to 50 do
+  begin
+    trees[i].Free;
+  end;
+
+  for i := 1 to player_count do
+  begin
+    // Освобождение ресурсов игрока
+    players[i].Free;
+  end;
+
+  Common_Items_Deck.Free;
+  Unique_Items_Deck.Free;
+  Spells_Deck.Free;
+  Skills_Deck.Free;
+
   for i := 1 to NUMBER_OF_STREETS do
   begin
     Arkham_Streets[i].Free;
@@ -550,7 +578,7 @@ begin
       gCurrentPlayer.Clues := gCurrentPlayer.Clues + 1; // Сбор улик :)
     //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
     if Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).monsters[1] > 0 then
-      if MessageDlg('Care for battle with awful monster?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      if MessageDlg('Care for battle with an awful monster?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         ShowMessage('Let''s battle!')
       else
         ShowMessage('Aah. Forget it.')
@@ -1181,6 +1209,94 @@ begin
     ShowMessage('No!');
     edStatFight.Text := '0';
   end;
+end;
+
+procedure XML2Tree(
+          tree   : TTreeView;
+          XMLDoc : TXMLDocument;
+          file_name: string);
+var
+  iNode : IXMLNode;
+  pc, t, f: boolean;
+
+  procedure ProcessNode(
+        Node : IXMLNode;
+        tn   : TTreeNode);
+  var
+    cNode : IXMLNode;
+    s: string;
+  begin
+    if Node = nil then Exit;
+    with Node do
+    begin
+      tn := tree.Items.AddChild(tn, Attributes['type']);
+      //ShowMessage(Attributes['type']);
+     { if (Attributes['type'] = 't') and (not pc) then
+        Exit
+      else
+        t := true;
+
+      if (Attributes['type'] = 'f') and pc then
+        Exit
+      else
+        f := true;    }
+
+      if HasAttribute('data') then
+      begin
+        //s := Attributes['type'];
+        tn.Text := tn.Text + Attributes['data'];
+//        if Attributes['type'] = 'c' then
+//        begin
+//          pc := ProcessCondition(Attributes['data']);
+//        end;
+//        if (Attributes['type'] = 'a') and ((not t and not f)
+//            or (pc and t) or (not pc and f)) then
+//        begin
+//          ProcessAction(Attributes['data']);
+//          f := false;
+//          t := false;
+//        end;
+
+
+      end;
+    end;
+
+
+
+    cNode := Node.ChildNodes.First;
+    while cNode <> nil do
+    begin
+      ProcessNode(cNode, tn);
+      cNode := cNode.NextSibling;
+    end;
+  end; (*ProcessNode*)
+begin
+  tree.Items.Clear;
+  XMLDoc.FileName := ExtractFilePath(Application.ExeName)+file_name;//ChangeFileExt(ParamStr(0),'.XML');
+  XMLDoc.Active := True;
+
+  iNode := XMLDoc.DocumentElement.ChildNodes.First;
+
+  while iNode <> nil do
+  begin
+    ProcessNode(iNode,nil);
+    iNode := iNode.NextSibling;
+  end;
+
+  XMLDoc.Active := False;
+end;
+
+function ProcessCondition(data: string): boolean;
+begin
+  if StrToInt(copy(data, 1, 2)) = 1 then
+    ShowMessage('Проверка скилла ' + (copy(data, 3, 2)));
+  ProcessCondition := true;
+end;
+
+procedure ProcessAction(data: string);
+begin
+  //if StrToInt(copy(data, 1, 2)) = 1 then
+  ShowMessage('Process action.' + data);
 end;
 
 end.

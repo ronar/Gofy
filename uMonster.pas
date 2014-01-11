@@ -3,29 +3,35 @@ unit uMonster;
 interface
 
 uses
-  SysUtils, uCommon;
+  SysUtils, Dialogs, uCommon;
 
 type
   TMonster = record
-    id: integer;
+  //private
+    fId: integer;
     //monData: string;
-    name: string;
-    awareness:integer;
-    movBorder: integer;
-    dimention: integer;
-    horror_rate: integer;
-    horror_dmg: integer;
-    toughness: integer;
-    cmbt_rate: integer;
-    cmbt_dmg: integer;
-    spec: string[6];
+    fName: string;
+    fAwareness:integer;
+    fMovBorder: integer;
+    fDimention: integer;
+    fHorrorRate: integer;
+    fHorrorDmg: integer;
+    fToughness: integer;
+    fCmbtRate: integer;
+    fCmbtDmg: integer;
+    fSpec: string[6];
+  //public
+
   end;
 
   TMonsterArray = array of TMonster;
 
   function LoadMonsterCards(var monsters: TMonsterArray; file_path: string): integer;
+  function DrawMonsterCard(var monsters: TMonsterArray): integer;
+  procedure ShuffleMonsterDeck(var monsters: TMonsterArray);
   function GetMonsterNameByID(id: integer): string;
   function GetMonsterByID(var monsters: TMonsterArray; id: integer): TMonster; // Get mob from pool
+  function GetMonsterCount(var monsters: TMonsterArray): integer;
 
 implementation
 
@@ -56,25 +62,25 @@ begin
     SetLength(Monsters, i);
     with Monsters[i-1] do
     begin
-      id := StrToInt(Copy(SR.Name, 1, 3));
+      fId := StrToInt(Copy(SR.Name, 1, 3));
       //monData: string;
-      name := GetMonsterNameByID(id);
+      fName := GetMonsterNameByID(fId);
       readln(F, s);
-      awareness   := StrToInt(s);
+      fAwareness   := StrToInt(s);
       readln(F, s);
-      movBorder   := StrToInt(s);
+      fMovBorder   := StrToInt(s);
       readln(F, s);
-      dimention   := StrToInt(s);
+      fDimention   := StrToInt(s);
       readln(F, s);
-      horror_rate := StrToInt(s);
+      fHorrorRate := StrToInt(s);
       readln(F, s);
-      horror_dmg  := StrToInt(s);
+      fHorrorDmg  := StrToInt(s);
       readln(F, s);
-      toughness   := StrToInt(s);
+      fToughness   := StrToInt(s);
       readln(F, s);
-      cmbt_rate   := StrToInt(s);
+      fCmbtRate   := StrToInt(s);
       readln(F, s);
-      cmbt_dmg    := StrToInt(s);
+      fCmbtDmg    := StrToInt(s);
       //spec: string[6];
     end;
 
@@ -86,7 +92,39 @@ begin
   end;
   FindClose(SR); // закрываем поиск
   LoadMonsterCards := i;
-  //monCount := i;
+  monCount := i;
+end;
+
+// Return mob ID
+function DrawMonsterCard(var monsters: TMonsterArray): integer;
+var
+  i: integer;
+begin
+  //Assert(monCount > 1);
+  if monCount < 1 then
+  begin
+    ShowMessage('Нету монстров.');
+    DrawMonsterCard := 0;
+    Exit;
+  end;
+  DrawMonsterCard := monsters[monCount].fId;
+  ShuffleMonsterDeck(monsters);
+  monCount := monCount - 1;
+end;
+
+procedure ShuffleMonsterDeck(var monsters: TMonsterArray);
+var
+  i, r: integer;
+  temp: TMonster;
+begin
+  randomize;
+  for i := 1 to monCount do
+  begin
+    temp := monsters[i];
+    r := random(monCount);
+    monsters[i] := monsters[r+1];
+    monsters[r+1] := temp;
+  end;
 end;
 
 //
@@ -105,11 +143,25 @@ var
 begin
   for i := 1 to monCount do
   begin
-    if Monsters[i].id = id then
+    if Monsters[i].fId = id then
       GetMonsterByID := Monsters[i];
       //Monsters[i] := nil;
   end;
 
+end;
+
+function GetMonsterCount(var monsters: TMonsterArray): integer;
+var
+  i, c: integer;
+begin
+  c := 0;
+  i := 1;
+  while monsters[i].fId <> 0 do
+  begin
+    c := c + 1;
+    i := i + 1;
+  end;
+  GetMonsterCount := c;
 end;
 
 end.

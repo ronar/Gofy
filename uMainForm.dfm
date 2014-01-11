@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 295
-  Top = 91
+  Left = 534
+  Top = 142
   Width = 1096
   Height = 656
   Caption = 'frmMain'
@@ -2180,5 +2180,18 @@ object frmMain: TfrmMain
     Caption = 'btnMoveToExactLok'
     TabOrder = 20
     OnClick = btnMoveToExactLokClick
+  end
+  object tv1: TTreeView
+    Left = 568
+    Top = 464
+    Width = 105
+    Height = 73
+    Indent = 19
+    TabOrder = 21
+  end
+  object xmldcmnt1: TXMLDocument
+    Left = 328
+    Top = 344
+    DOMVendorDesc = 'MSXML'
   end
 end
