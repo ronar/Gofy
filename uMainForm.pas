@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, uPlayer, uCardDeck, Choise,
-  uCommon, uMonster, xmldom, XMLIntf, msxmldom, XMLDoc;
+  uCommon, uMonster, xmldom, XMLIntf, msxmldom, XMLDoc, uCardXML;
 
 type
   TfrmMain = class(TForm)
@@ -99,7 +99,8 @@ type
     edtLokID: TEdit;
     btnMoveToExactLok: TButton;
     tv1: TTreeView;
-    xmldcmnt1: TXMLDocument;
+    xmldoc1: TXMLDocument;
+    btn1: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -126,6 +127,7 @@ type
     procedure btnMoveToExactLokClick(Sender: TObject);
     procedure edtPlaClueExit(Sender: TObject);
     procedure edStatFightExit(Sender: TObject);
+    procedure btn1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -179,6 +181,7 @@ var
   path_to_exe: string;
   //monCount: integer;
   trees: array [1..50] of TTreeView;
+  head: PMyNode;
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; card: CCard);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
@@ -264,8 +267,9 @@ begin
     CT_ENCOUNTER: begin
       // Loading cards for diff. neighborhoods
       { TODO :  Implement auto load streets, not by explicit index }
-      Arkham_Streets[5].mDeck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Locations\\Downtown\\');
-      Arkham_Streets[5].mDeck.Shuffle;
+      xml2tree(trees[i], frmMain.xmldoc1, '1.xml');
+      //Arkham_Streets[5].mDeck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Locations\\Downtown\\');
+      //Arkham_Streets[5].mDeck.Shuffle;
 
     end; // CT_ENCOUNTER
 
@@ -458,7 +462,8 @@ begin
     cbLocation.Items.Add(LocationsNames[i, 2]);
   end;
   gCurrentPhase := 2;
-
+  
+  New(head);
 end;
 
 
@@ -1229,7 +1234,7 @@ var
     if Node = nil then Exit;
     with Node do
     begin
-      tn := tree.Items.AddChild(tn, Attributes['type']);
+      tn := tree.Items.AddChild(tn, NodeName);
       //ShowMessage(Attributes['type']);
      { if (Attributes['type'] = 't') and (not pc) then
         Exit
@@ -1297,6 +1302,17 @@ procedure ProcessAction(data: string);
 begin
   //if StrToInt(copy(data, 1, 2)) = 1 then
   ShowMessage('Process action.' + data);
+end;
+
+procedure TfrmMain.btn1Click(Sender: TObject);
+var
+  temp: TTreeView;
+begin
+  // Создание компонента TreeView динамически
+  temp := TTreeView.Create(frmMain);
+  temp.Parent := frmMain;
+  XML2Tree(temp, xmldoc1, 'CardsData\Locations\Rivertown\4101');
+
 end;
 
 end.

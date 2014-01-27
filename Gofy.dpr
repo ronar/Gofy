@@ -13,7 +13,8 @@ uses
   uCardForm in 'uCardForm.pas' {frmCard},
   uTradeForm in 'uTradeForm.pas' {frmTrade},
   uUseForm in 'uUseForm.pas' {frmUse},
-  uMonster in 'uMonster.pas';
+  uMonster in 'uMonster.pas',
+  uCardXML in 'uCardXML.pas';
 
 {$R *.res}
 

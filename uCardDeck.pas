@@ -241,7 +241,7 @@ var
   i, n: integer;
 begin
   // задание условий поиска и начало поиска
-  FindRes := FindFirst(file_path + '*.txt', faAnyFile, SR);
+  FindRes := FindFirst(file_path + '*.xml', faAnyFile, SR);
 
   i := 0;
   n := 0;
@@ -263,6 +263,7 @@ begin
     FindRes := FindNext(SR); // продолжение поиска по заданным условиям
     //Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));
   end;
+
   FindClose(SR); // закрываем поиск
   FindCards := i;
   mCount := i;

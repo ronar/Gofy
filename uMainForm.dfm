@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 534
-  Top = 142
+  Left = 380
+  Top = 101
   Width = 1096
   Height = 656
   Caption = 'frmMain'
@@ -2189,7 +2189,16 @@ object frmMain: TfrmMain
     Indent = 19
     TabOrder = 21
   end
-  object xmldcmnt1: TXMLDocument
+  object btn1: TButton
+    Left = 480
+    Top = 496
+    Width = 75
+    Height = 25
+    Caption = 'btn1'
+    TabOrder = 22
+    OnClick = btn1Click
+  end
+  object xmldoc1: TXMLDocument
     Left = 328
     Top = 344
     DOMVendorDesc = 'MSXML'
