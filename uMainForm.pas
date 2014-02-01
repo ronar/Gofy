@@ -101,6 +101,10 @@ type
     tv1: TTreeView;
     xmldoc1: TXMLDocument;
     btn1: TButton;
+    lbl1: TLabel;
+    lbl2: TLabel;
+    lbl3: TLabel;
+    btn2: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -128,6 +132,7 @@ type
     procedure edtPlaClueExit(Sender: TObject);
     procedure edStatFightExit(Sender: TObject);
     procedure btn1Click(Sender: TObject);
+    procedure btn2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -181,7 +186,7 @@ var
   path_to_exe: string;
   //monCount: integer;
   trees: array [1..50] of TTreeView;
-  head: PMyNode;
+  head_of_list: PMyNode;
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; card: CCard);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
@@ -192,7 +197,7 @@ var
   function hon(num: integer): integer; // hundredth of number
   function ton(num: integer): integer; // thousandth of number
   //function AdditionalChecks(player: TPlayer; stat: integer): boolean;
-  procedure XML2Tree(tree   : TTreeView; XMLDoc : TXMLDocument; file_name: string);
+  procedure XML2Tree(head: PMyNode;{tree   : TTreeView;} XMLDoc : TXMLDocument; file_name: string);
   function ProcessCondition(data: string): boolean;
   procedure ProcessAction(data: string);
 
@@ -267,7 +272,7 @@ begin
     CT_ENCOUNTER: begin
       // Loading cards for diff. neighborhoods
       { TODO :  Implement auto load streets, not by explicit index }
-      xml2tree(trees[i], frmMain.xmldoc1, '1.xml');
+      //xml2tree(trees[i], frmMain.xmldoc1, '1.xml');
       //Arkham_Streets[5].mDeck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Locations\\Downtown\\');
       //Arkham_Streets[5].mDeck.Shuffle;
 
@@ -463,7 +468,7 @@ begin
   end;
   gCurrentPhase := 2;
   
-  New(head);
+  New(head_of_list);
 end;
 
 
@@ -1217,7 +1222,7 @@ begin
 end;
 
 procedure XML2Tree(
-          tree   : TTreeView;
+          head: PMyNode;
           XMLDoc : TXMLDocument;
           file_name: string);
 var
@@ -1226,57 +1231,32 @@ var
 
   procedure ProcessNode(
         Node : IXMLNode;
-        tn   : TTreeNode);
+        tn: PMyNode);
   var
     cNode : IXMLNode;
     s: string;
   begin
+    if tn = nil then
+      tn := head;
     if Node = nil then Exit;
     with Node do
     begin
-      tn := tree.Items.AddChild(tn, NodeName);
-      //ShowMessage(Attributes['type']);
-     { if (Attributes['type'] = 't') and (not pc) then
-        Exit
-      else
-        t := true;
-
-      if (Attributes['type'] = 'f') and pc then
-        Exit
-      else
-        f := true;    }
+      tn := Add_Child(tn, NodeName);
 
       if HasAttribute('data') then
-      begin
-        //s := Attributes['type'];
-        tn.Text := tn.Text + Attributes['data'];
-//        if Attributes['type'] = 'c' then
-//        begin
-//          pc := ProcessCondition(Attributes['data']);
-//        end;
-//        if (Attributes['type'] = 'a') and ((not t and not f)
-//            or (pc and t) or (not pc and f)) then
-//        begin
-//          ProcessAction(Attributes['data']);
-//          f := false;
-//          t := false;
-//        end;
-
-
-      end;
+        tn.data := tn.data + Attributes['data'];
     end;
-
-
-
+    
     cNode := Node.ChildNodes.First;
     while cNode <> nil do
     begin
       ProcessNode(cNode, tn);
       cNode := cNode.NextSibling;
     end;
+
   end; (*ProcessNode*)
+  
 begin
-  tree.Items.Clear;
   XMLDoc.FileName := ExtractFilePath(Application.ExeName)+file_name;//ChangeFileExt(ParamStr(0),'.XML');
   XMLDoc.Active := True;
 
@@ -1307,12 +1287,17 @@ end;
 procedure TfrmMain.btn1Click(Sender: TObject);
 var
   temp: TTreeView;
+  tmp: PMyNode;
 begin
-  // Создание компонента TreeView динамически
-  temp := TTreeView.Create(frmMain);
-  temp.Parent := frmMain;
-  XML2Tree(temp, xmldoc1, 'CardsData\Locations\Rivertown\4101');
+  head_of_list^.data := '1234';
+  head_of_list^.mnChildCount := 0;
 
+  xml2tree(head_of_list, frmMain.xmldoc1, 'CardsData\Locations\Rivertown\4101');
+end;
+
+procedure TfrmMain.btn2Click(Sender: TObject);
+begin
+  lbl1.Caption := Format('%s', [head_of_list.mnChild[0].mnChild[0].mnChild[0].data]);
 end;
 
 end.

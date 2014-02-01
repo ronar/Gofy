@@ -11,29 +11,31 @@ type
     mnChild: array of PMyNode;
   end;
 
-procedure AddNode(parent: PMyNode; node: PMyNode);
 procedure DeleteNode(head: PMyNode; index: integer);
+function Add_Child(var parnt: PMyNode; s: string): PMyNode;
 
 implementation
 
-//uses SysInit, Math;
+uses SysUtils, Dialogs;
 
-procedure AddNode(parent: PMyNode; node: PMyNode);
+function Add_Child(var parnt: PMyNode; s: string): PMyNode;
+var
+  tmp: PMyNode;
 begin
-  if parent = nil then // нету еще ничего
+  New(tmp);
+  tmp.mnParent := parnt;
+  tmp.mnChildCount := 0;
+  tmp.data := s;
+  tmp.mnChild := nil;
+
+  if parnt <> nil then
   begin
-    Exit;
-  end
-  else
-  begin
-    if node <> nil then
-    begin
-      SetLength(parent.mnChild, parent.mnChildCount + 2);
-      parent.mnChild[parent.mnChildCount] := node;
-      parent.mnChildCount := parent.mnChildCount + 1;
-    end;
+    parnt^.mnChildCount := parnt^.mnChildCount + 1;
+    SetLength(parnt^.mnChild, parnt^.mnChildCount);
+    parnt^.mnChild[parnt^.mnChildCount - 1] := tmp;
   end;
 
+  Result := tmp;
 end;
 
 procedure DeleteNode(head: PMyNode; index: integer);

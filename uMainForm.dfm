@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 380
-  Top = 101
-  Width = 1096
+  Left = 728
+  Top = 326
+  Width = 1110
   Height = 656
   Caption = 'frmMain'
   Color = clBtnFace
@@ -1668,6 +1668,27 @@ object frmMain: TfrmMain
     Height = 13
     Caption = #1046#1091#1088#1085#1072#1083' '#1089#1086#1073#1099#1090#1080#1081':'
   end
+  object lbl1: TLabel
+    Left = 784
+    Top = 544
+    Width = 16
+    Height = 13
+    Caption = 'lbl1'
+  end
+  object lbl2: TLabel
+    Left = 784
+    Top = 560
+    Width = 16
+    Height = 13
+    Caption = 'lbl2'
+  end
+  object lbl3: TLabel
+    Left = 784
+    Top = 576
+    Width = 16
+    Height = 13
+    Caption = 'lbl3'
+  end
   object Button1: TButton
     Left = 232
     Top = 424
@@ -2190,13 +2211,22 @@ object frmMain: TfrmMain
     TabOrder = 21
   end
   object btn1: TButton
-    Left = 480
-    Top = 496
+    Left = 784
+    Top = 592
     Width = 75
-    Height = 25
+    Height = 17
     Caption = 'btn1'
     TabOrder = 22
     OnClick = btn1Click
+  end
+  object btn2: TButton
+    Left = 864
+    Top = 592
+    Width = 75
+    Height = 17
+    Caption = 'btn2'
+    TabOrder = 23
+    OnClick = btn2Click
   end
   object xmldoc1: TXMLDocument
     Left = 328
