@@ -151,10 +151,10 @@ type
 
   TStreet = class
   private
-    mId: integer; // id of streets (1000, 2000, 3000, etc..)
-    mLok: array [1..3] of TLocation;
-    mDeck: TLocationCardDeck;
-    function GetDeck: TLocationCardDeck;
+    fId: integer; // id of streets (1000, 2000, 3000, etc..)
+    fLok: array [1..3] of TLocation;
+    fDeck: TLocationCardsDeck;
+    function GetDeck: TLocationCardsDeck;
   public
     constructor Create(street_id: integer);
     property st_id: integer read mId write mId;
@@ -200,6 +200,7 @@ var
   procedure XML2Tree(head: PMyNode;{tree   : TTreeView;} XMLDoc : TXMLDocument; file_name: string);
   function ProcessCondition(data: string): boolean;
   procedure ProcessAction(data: string);
+  procedure Read_Mem(var_addr: Pointer);
 
 implementation
 
@@ -232,11 +233,11 @@ begin
 end;
 
 // Загрузка данных в карты из файла
-procedure Load_Cards(Card_Type: integer);
+procedure Load_Cards(card_type: integer);
 var
   i: integer;
 begin
-  case Card_Type of
+  case card_type of
     CT_COMMON_ITEM: begin
       // Загружаем все карты, находящиеся в каталоге
       Common_Items_Count :=  Common_Items_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\CommonItems\\');
@@ -1221,55 +1222,7 @@ begin
   end;
 end;
 
-procedure XML2Tree(
-          head: PMyNode;
-          XMLDoc : TXMLDocument;
-          file_name: string);
-var
-  iNode : IXMLNode;
-  pc, t, f: boolean;
 
-  procedure ProcessNode(
-        Node : IXMLNode;
-        tn: PMyNode);
-  var
-    cNode : IXMLNode;
-    s: string;
-  begin
-    if tn = nil then
-      tn := head;
-    if Node = nil then Exit;
-    with Node do
-    begin
-      tn := Add_Child(tn, NodeName);
-
-      if HasAttribute('data') then
-        tn.data := tn.data + Attributes['data'];
-    end;
-    
-    cNode := Node.ChildNodes.First;
-    while cNode <> nil do
-    begin
-      ProcessNode(cNode, tn);
-      cNode := cNode.NextSibling;
-    end;
-
-  end; (*ProcessNode*)
-  
-begin
-  XMLDoc.FileName := ExtractFilePath(Application.ExeName)+file_name;//ChangeFileExt(ParamStr(0),'.XML');
-  XMLDoc.Active := True;
-
-  iNode := XMLDoc.DocumentElement.ChildNodes.First;
-
-  while iNode <> nil do
-  begin
-    ProcessNode(iNode,nil);
-    iNode := iNode.NextSibling;
-  end;
-
-  XMLDoc.Active := False;
-end;
 
 function ProcessCondition(data: string): boolean;
 begin

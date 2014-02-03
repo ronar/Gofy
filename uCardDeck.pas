@@ -3,22 +3,28 @@ unit uCardDeck;
 interface
 
 uses
-  SysUtils, uCommon;
+  SysUtils, uCommon, uCardXML;
 
 type
-  CCard = record
-    ID: integer;
-    Data: string;
+  TItemCard = record
+    id: integer;
+    data: string;
+    exposed: boolean;
+  end;
+
+  TLocationCard = record
+    id: integer;
+    crd_head: PLLData;
     exposed: boolean;
   end;
 
   TCardDeck = class(TObject) // Общий класс колод карт
   private
-    mCount: integer; // Кол-во карт
-    Card_Type: integer; // Тип карты (предмет, миф, контакт и т.д.)
+    fCount: integer; // Кол-во карт
+    fCardType: integer; // Тип карты (предмет, миф, контакт и т.д.)
   public
     destructor Destroy; override;
-    property Count: integer read mCount;
+    property Count: integer read fCount;
     //function GetCardID(i: integer): Integer; overload;
     //function GetCardData(i: integer): string; overload;
     //function GetCardByID(id: integer): CCard; overload;
@@ -30,8 +36,8 @@ type
 
   TItemCardDeck = class(TCardDeck)
   private
-    mCards: array [1..ITEMS_CARD_NUMBER] of CCard; // Данные о каждой карте
-    function GetCardByID(id: integer): CCard;
+    fCards: array [1..ITEMS_CARD_NUMBER] of TItemCard; // Данные о каждой карте
+    function GetCardByID(id: integer): TItemCard;
     function GetCardID(i: integer): Integer;
     function GetCardData(i: integer): string;
   public
@@ -43,23 +49,22 @@ type
     //destructor Destroy; override;
   end;
 
-  TLocationCardDeck = class(TCardDeck) // Карты
+  TLocationCardsDeck = class(TCardDeck) // Карты
   private
-    mCards: array [1..LOCATION_CARD_NUMBER, 1..3] of CCard; // Данные о каждой карте
-    function GetCard(ID: integer): CCard;
+    fCards: array [1..LOCATION_CARD_NUMBER, 1..3] of TLocationCard; // Данные о каждой карте
+    function GetCard(id: integer): TLocationCard; // Получает карту из колоды (для трех локаций улицы). Для св-ва.
     //function GetLokation: integer;
     //function GetNom: integer;
     //procedure SetLok;
   public
     constructor Create;
     //destructor Destroy; override;
-    function GetCardByID(id: integer): CCard;
     //property Lokaciya: integer read GetLokation; // Локация карты (свойство)
     function GetCardID(i, n: integer): Integer; overload; // Получить ID карты по порядковому номеру
-    function GetCardData(i, n: integer): string; overload; // Получить данные карты по порядковому номеру
+    function GetCardData(i, n: integer): PLLData; overload; // Получить данные карты по порядковому номеру
     function FindCards(file_path: string): integer; override;
-    function DrawCard(n: integer): CCard; // Returns ID of the card on top of the deck
-    property cards[ID: integer]: CCard read GetCard;
+    function DrawCard(n: integer): TLocationCard; // Returns ID of the card on top of the deck
+    property cards[id: integer]: TLocationCard read GetCard;
     //property Nom: integer;
     procedure Shuffle();
     //function Get_Card_By_ID(id: integer): TCard; // Нахождение карты по ее ID
@@ -82,41 +87,41 @@ constructor TItemCardDeck.Create(crd_type: integer);
 var
   i: Integer;
 begin
-  Card_Type := crd_type;
+  fCardType := crd_type;
   for i := 1 to ITEMS_CARD_NUMBER do
   begin
-    mCards[i].ID := 0;
-    mCards[i].Data := '';
-    mCards[i].exposed := False;
+    fCards[i].id := 0;
+    fCards[i].data := '';
+    fCards[i].exposed := False;
   end;
 end;
 
-function TItemCardDeck.GetCardByID(id: integer): CCard;
+function TItemCardDeck.GetCardByID(id: integer): TItemCard;
 var
   i: integer;
 begin
-  for i:= 1 to Count do
+  for i:= 1 to fCount do
   begin
-    if mCards[i].ID = id then
-      GetCardByID := mCards[i];
+    if fCards[i].id = id then
+      GetCardByID := fCards[i];
   end;
 end;
 
 // Получение ID карты
 function TItemCardDeck.GetCardID(i: integer): integer;
 begin
-  GetCardID := mCards[i].ID;
+  GetCardID := fCards[i].id;
 end;
 
-// Получение данных карты
+// Получение данных карты (указатель на голову связного списка)
 function TItemCardDeck.GetCardData(i: integer): string;
 begin
-  GetCardData := mCards[i].Data;
+  GetCardData := fCards[i].data;
 end;
 
 function TItemCardDeck.DrawCard: Integer;
 begin
-  DrawCard := mCards[Count].ID;
+  DrawCard := fCards[fCount].id;
   Shuffle;
 end;
 
@@ -141,98 +146,97 @@ begin
     Reset(F);
     readln(F, s);
     CloseFile(F);
-    mCards[i].Data := s;
+    fCards[i].data := s;
     //Cards^.Cards.Type := CT_UNIQUE_ITEM;
-    mCards[i].ID := StrToInt(Copy(SR.Name, 1, 4));
+    fCards[i].id := StrToInt(Copy(SR.Name, 1, 4));
 
     FindRes := FindNext(SR); // продолжение поиска по заданным условиям
-    //Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));
   end;
   FindClose(SR); // закрываем поиск
   FindCards := i;
-  mCount := i;
+  fCount := i;
 end;
 
 // Тасовка колоды
 procedure TItemCardDeck.Shuffle();
 var
   i, r: integer;
-  temp: CCard;
+  temp: TItemCard;
 begin
   randomize;
-  for i := 1 to Count do
+  for i := 1 to fCount do
   begin
-    temp := mCards[i];
+    temp := fCards[i];
     r := random(Count);
-    mCards[i] := mCards[r+1];
-    mCards[r+1] := temp;
+    fCards[i] := fCards[r+1];
+    fCards[r+1] := temp;
   end;
 end;
 
 ///////////////////////////// TLocationCardDeck ////////////////////////////////
 
 // Конструктор
-constructor TLocationCardDeck.Create;
+constructor TLocationCardsDeck.Create;
 var
   i, j: Integer;
 begin
-  Card_Type := CT_ENCOUNTER;
+  fCardType := CT_ENCOUNTER;
   for i := 1 to LOCATION_CARD_NUMBER do
     for j := 1 to 3 do
     begin
-      mCards[i, j].ID := 0;
-      mCards[i, j].Data := '';
-      mCards[i, j].exposed := False;
+      fCards[i, j].id := 0;
+      fCards[i, j].crd_head := nil;
+      fCards[i, j].exposed := False;
     end;
 end;
 
-function TLocationCardDeck.GetCard(ID: integer): CCard;
+function TLocationCardsDeck.GetCard(ID: integer): TLocationCard;
 var
   i, j: integer;
 begin
-  for i := 1 to 3 do
-    for j := 1 to 7 do
-      if mCards[j, i].ID = ID then
+  for i := 1 to fCount do
+    for j := 1 to 3 do
+      if fCards[i, j].id = id then
       begin
-        Result := mCards[j, i];
+        Result := fCards[i, j];
         exit;
       end;
 end;
 
-function TLocationCardDeck.GetCardByID(id: integer): CCard;
+{function TLocationCardsDeck.GetCardByID(id: integer): TLocationCard;
 var
   i, j: integer;
 begin
   for i:= 1 to Count do
     for j := 1 to 3 do
     begin
-      if mCards[i, j].ID = id then
-        GetCardByID := mCards[i, j];
+      if fCards[i, j].id = id then
+        GetCardByID := fCards[i, j];
     end;
-end;
+end;    }
 
 // Получение ID карты
-function TLocationCardDeck.GetCardID(i, n: integer): integer;
+function TLocationCardsDeck.GetCardID(i, n: integer): integer;
 begin
-  GetCardID := mCards[i, n].ID;
+  GetCardID := fCards[i, n].id;
 end;
 
 // Получение данных карты
-function TLocationCardDeck.GetCardData(i, n: integer): string;
+function TLocationCardsDeck.GetCardData(i, n: integer): PLLData;
 begin
-  GetCardData := mCards[i, n].Data;
+  GetCardData := fCards[i, n].crd_head;
 end;
 
 
 // n - номер локации на карте
-function TLocationCardDeck.DrawCard(n: integer): CCard;
+function TLocationCardsDeck.DrawCard(n: integer): TLocationCard;
 begin
-  DrawCard := mCards[Count div 3, n];
+  DrawCard := fCards[fCount div 3, n];
   Shuffle;
 end;
 
 // Поиск файлов в картами
-function TLocationCardDeck.FindCards(file_path: string): integer;
+function TLocationCardsDeck.FindCards(file_path: string): integer;
 var
   F: TextFile;
   SR: TSearchRec; // поисковая переменная
@@ -256,9 +260,10 @@ begin
     Reset(F);
     readln(F, s);
     CloseFile(F);
-    mCards[i, n].Data := s;
+    XML2LL(fCards[i, n].crd_head, file_path);
+    //rCards[i, n].Data := s;
     //Cards^.Cards.Type := CT_UNIQUE_ITEM;
-    mCards[i, n].ID := StrToInt(Copy(SR.Name, 1, 4));
+    fCards[i, n].id := StrToInt(Copy(SR.Name, 1, 4));
 
     FindRes := FindNext(SR); // продолжение поиска по заданным условиям
     //Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));
@@ -266,24 +271,24 @@ begin
 
   FindClose(SR); // закрываем поиск
   FindCards := i;
-  mCount := i;
+  fCount := i;
 end;
 
 // Тасовка колоды
-procedure TLocationCardDeck.Shuffle();
+procedure TLocationCardsDeck.Shuffle();
 var
   i, j, r: integer;
-  temp: CCard;
+  temp: TLocationCard;
 begin
   randomize;
-  for i := 1 to Count do
+  for i := 1 to fCount do
   begin
-    r := random(Count);
+    r := random(fCount);
     for j := 1 to 3 do
     begin
-      temp := mCards[i, j];
-      mCards[i, j] := mCards[r+1, j];
-      mCards[r+1, j] := temp;
+      temp := fCards[i, j];
+      fCards[i, j] := fCards[r+1, j];
+      fCards[r+1, j] := temp;
     end;
   end;
 end;
