@@ -133,6 +133,7 @@ type
     procedure edStatFightExit(Sender: TObject);
     procedure btn1Click(Sender: TObject);
     procedure btn2Click(Sender: TObject);
+    procedure edStatWillExit(Sender: TObject);
   private
     { Private declarations }
   public
@@ -142,7 +143,7 @@ type
 type
   TLocation = record
     lok_id: integer; // id of location (2100, 2200, 2300, etc..)
-    Name: string;
+    lok_name: string;
     clues: integer; // Улики на локации
     gate: integer; // Врата открытые на локации
     monsters: array [1..5] of integer;
@@ -157,8 +158,8 @@ type
     function GetDeck: TLocationCardsDeck;
   public
     constructor Create(street_id: integer);
-    property st_id: integer read mId write mId;
-    property deck: TLocationCardDeck read GetDeck;
+    property StreetId: integer read fId write fId;
+    property Deck: TLocationCardsDeck read GetDeck;
     function GetLokByID(id: integer): TLocation;
     procedure AddMonster(lok_id: integer; mob_id: integer);
     procedure AddClue(lok_id: integer; n: integer);
@@ -186,9 +187,9 @@ var
   path_to_exe: string;
   //monCount: integer;
   trees: array [1..50] of TTreeView;
-  head_of_list: PMyNode;
+  head_of_list: PLLData;
   procedure Load_Cards(Card_Type: integer);
-  procedure Encounter(player: TPlayer; card: CCard);
+  procedure Encounter(player: TPlayer; card: TLocationCard);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
   function GetLokIDByName(lok_name: string): integer; // Получение ID локации по названию
   function GetStreetIDByName(street_name: string): integer;
@@ -197,10 +198,13 @@ var
   function hon(num: integer): integer; // hundredth of number
   function ton(num: integer): integer; // thousandth of number
   //function AdditionalChecks(player: TPlayer; stat: integer): boolean;
-  procedure XML2Tree(head: PMyNode;{tree   : TTreeView;} XMLDoc : TXMLDocument; file_name: string);
-  function ProcessCondition(data: string): boolean;
-  procedure ProcessAction(data: string);
-  procedure Read_Mem(var_addr: Pointer);
+  //procedure XML2Tree(head: PMyNode;{tree   : TTreeView;} XMLDoc : TXMLDocument; file_name: string);
+  function ProcessCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): boolean;
+  procedure ProcessAction(prm1: string; prm2: string);
+  //procedure Read_Mem(var_addr: Pointer);
+  procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
+  procedure ProcessNode(Node : PLLData);
+
 
 implementation
 
@@ -214,20 +218,20 @@ var
 begin
   //for i := 1 to NUMBER_OF_STREETS do
   begin
-      mid := street_id;
+      fId := street_id;
       for n := 1 to 3 do
       begin
-        mlok[n].lok_id := mId + 100 * n;
-        mlok[n].clues := 0;
-        mlok[n].gate := 0;
-        mlok[n].monsters[1] := 0;
-        mlok[n].monsters[2] := 0;
-        mlok[n].monsters[3] := 0;
-        mlok[n].monsters[4] := 0;
-        mlok[n].monsters[5] := 0;
-        mlok[n].lok_mon_count := 0;
+        fLok[n].lok_id := fId + 100 * n;
+        fLok[n].clues := 0;
+        fLok[n].gate := 0;
+        fLok[n].monsters[1] := 0;
+        fLok[n].monsters[2] := 0;
+        fLok[n].monsters[3] := 0;
+        fLok[n].monsters[4] := 0;
+        fLok[n].monsters[5] := 0;
+        fLok[n].lok_mon_count := 0;
     end;
-    mdeck := TLocationCardDeck.Create;
+    fDeck := TLocationCardsDeck.Create;
 
   end;
 end;
@@ -273,8 +277,7 @@ begin
     CT_ENCOUNTER: begin
       // Loading cards for diff. neighborhoods
       { TODO :  Implement auto load streets, not by explicit index }
-      //xml2tree(trees[i], frmMain.xmldoc1, '1.xml');
-      //Arkham_Streets[5].mDeck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Locations\\Downtown\\');
+      Arkham_Streets[4].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Rivertown\');
       //Arkham_Streets[5].mDeck.Shuffle;
 
     end; // CT_ENCOUNTER
@@ -348,6 +351,8 @@ begin
 
   // Загрузка карт контактов
   Load_Cards(CT_ENCOUNTER);
+
+  //ShowMessage(Arkham_Streets[4].Deck.cards[1, 1].crd_head.mnChild[0].data);
 
   //monCount := 0;
   // Загрузка monsters
@@ -469,7 +474,7 @@ begin
   end;
   gCurrentPhase := 2;
   
-  New(head_of_list);
+  //New(head_of_list);
 end;
 
 
@@ -610,34 +615,34 @@ begin
 end;
 
 // Проверка выполнилось ли условие на карте
-function Act_Condition(cond: integer; choise: integer; N:integer; min: integer; max: integer): boolean;
+function ProcessCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): boolean;
 var
   skill_test: integer;
 begin
-  Act_Condition := False;
-  case Cond of
+  ProcessCondition := False;
+  case cond of
   1: begin // Если True
-    Act_Condition := True;
+    ProcessCondition := True;
   end;
   2: begin // Проверка скила
-    frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(Choise - 1) + '(=' + IntToStr(gCurrentPlayer.Stats[Choise - 1]) + ' -' + IntToStr(N) + ')..');
-    skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[Choise - 1] - N); // Choise - номер скилла
+    //frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(prm) + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(suxxess) + ')..');
+    skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n); // Choise - номер скилла
     { TODO -oRonar : Choise is in dependence with structure of construction
       of program. In another words if indices have been changed, program
       will be broken }
-    frmMain.lbLog.Items.Add('Проверка навыка ' + IntToStr(Choise - 1) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
-    if (skill_test >= min) then
-      Act_Condition := True
+    //frmMain.lbLog.Items.Add('Проверка навыка ' + IntToStr(Choise - 1) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
+    if (skill_test >= suxxess) then
+      ProcessCondition := True
     else
     begin
-     Act_Condition := False;
+     ProcessCondition := False;
     end;
   end;
-  3: begin // Проверка наличия
+  {3: begin // Проверка наличия
     if gPlayer.CheckAvailability(Choise, N) then //
-      Act_Condition := True
+      ProcessCondition := True
     else
-      Act_Condition := False;
+      ProcessCondition := False;
     frmMain.lbLog.Items.Add('Проверка наличия');
   end; // case 3
   7: begin // Spec. card
@@ -647,11 +652,11 @@ begin
       skill_test := gPlayer.RollADice(gCurrentPlayer.Stats[Choise - 1] - N); // Choise - номер скилла
       frmMain.lbLog.Items.Add('Проверка навыка ' + IntToStr(Choise - 1) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
       if (skill_test >= min) then
-        Act_Condition := True
+        ProcessCondition := True
       else
-        Act_Condition := False;
+        ProcessCondition := False;
     end;
-  end;
+  end;}
   end;
 end;
 
@@ -817,12 +822,15 @@ end;
 
 
 // Разрешить контакт
-procedure Encounter(player: TPlayer; card: CCard);
+procedure Encounter(player: TPlayer; card: TLocationCard);
+type
+  StrDataArray = array [1..10] of integer;
 var
   i: integer;
   s, ns: integer;
   card_data: array [0..71] of integer;
   c_data: string;
+  c_node: PLLData;
   c_Cond1, c_Cond2: integer;
   c_Choise, c_Choise2: integer;
   c_N, c_N2: integer;
@@ -840,7 +848,25 @@ begin
   // и добавлять новые
 
   // Получили данные карты
-  c_data := card.Data;
+  if card.crd_head <> nil then
+  begin
+    c_node := card.crd_head;
+    //processnode(c_node);
+  end;
+
+  for i := 0 to c_node.mnChildCount-1 do
+  begin
+    processnode(c_node.mnChild[i]);
+    //splitdata('|', c_node.data, output_data);
+    //strto
+    //case c_node.data of
+    //'0': ;
+    //end;
+    //ProcessNode(cNode, tn);
+    //cNode := cNode.NextSibling;
+  end;
+
+{  c_data := card.Data;
   if c_data = '' then
   begin
     MessageDlg('Не удалось загрузить карту.', mtError, [mbOK], 0);
@@ -876,26 +902,6 @@ begin
   c_Else3 := StrToInt(copy(c_data, 33, 2));
   c_Else3Value := StrToInt(copy(c_data, 35, 2));
 
-{  c_Cond2 := StrToInt(copy(c_data, 27, 2));
-  c_Choise2 := StrToInt(copy(c_data, 29, 2));
-  c_N2 := StrToInt(copy(c_data, 31, 1));
-  c_NSccssMin2 := StrToInt(copy(c_data, 32, 1));
-  c_NSccssMax2 := StrToInt(copy(c_data, 33, 1));
-
-  c_Action21 := StrToInt(copy(c_data, 34, 2));
-  c_Action21Value := StrToInt(copy(c_data, 36, 1));
-  c_Act21Cond := StrToInt(copy(c_data, 37, 1));
-  c_Action22 := StrToInt(copy(c_data, 38, 2));
-  c_Action22Value := StrToInt(copy(c_data, 41, 1));
-  c_Act22Cond := StrToInt(copy(c_data, 42, 1));
-
-  c_Action23 := StrToInt(copy(c_data, 43, 2));
-  c_Action23Value := StrToInt(copy(c_data, 45, 1));
-  c_Else21 := StrToInt(copy(c_data, 46, 2));
-  c_Else21Value := StrToInt(copy(c_data, 48, 1));
-  c_Else2Cond := StrToInt(copy(c_data, 49, 1));
-  c_Else22 := StrToInt(copy(c_data, 50, 2));
-}  //c_Else22Value := StrToInt(copy(c_data, 52, 1));
 
   // Condition
   if Act_Condition(c_Cond1, c_Choise, c_N, c_NSccssMin, c_NSccssMax) then
@@ -992,7 +998,7 @@ begin
         Take_Action(c_Else1, c_Else1Value);
     end;
   end;
-
+            }
   // Choise1 proto
   // Dialog window: choose 1 OR 2, if 1 then take_action ... if 2 ...
 
@@ -1030,7 +1036,8 @@ begin
         else
           Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
       end; // 4300
-      else Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
+      //else Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
+      else Encounter(gCurrentPlayer, Arkham_Streets[4].deck.DrawCard(hon(gCurrentPlayer.Location)));
     end;
 
     Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.Shuffle;
@@ -1079,9 +1086,9 @@ begin
       result := 1100;
 end;
 
-function TStreet.GetDeck: TLocationCardDeck;
+function TStreet.GetDeck: TLocationCardsDeck;
 begin
-  result := mDeck;
+  result := fDeck;
 end;
 
 function TStreet.GetLokByID(id: integer): TLocation;
@@ -1090,17 +1097,17 @@ var
   ln: integer;
 begin
   ln := GetStreetIndxByLokID( ton(id) * 1000 );
-  result := Arkham_Streets[ln].mlok[hon(id)];
+  result := Arkham_Streets[ln].fLok[hon(id)];
 end;
 
 procedure TStreet.AddMonster(lok_id: integer; mob_id: integer);
 begin
-  mlok[hon(lok_id)].monsters[1] := mob_id;
+  fLok[hon(lok_id)].monsters[1] := mob_id;
 end;
 
 procedure TStreet.AddClue(lok_id: integer; n: integer);
 begin
-  mlok[hon(lok_id)].clues := mlok[hon(lok_id)].clues + n;
+  fLok[hon(lok_id)].clues := fLok[hon(lok_id)].clues + n;
 end;
 
 procedure TfrmMain.btnChsInvClick(Sender: TObject);
@@ -1127,7 +1134,7 @@ var
 begin
   st := ton(id) * 1000;
   for i := 1 to NUMBER_OF_STREETS do
-    if Arkham_Streets[i].mid = st then
+    if Arkham_Streets[i].fId = st then
     begin
       result := i;
       break;
@@ -1198,7 +1205,7 @@ end;
 
 procedure TfrmMain.btnMoveToExactLokClick(Sender: TObject);
 begin
-  Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(StrToInt(edtLokID.Text))].deck.cards[StrToInt(edtLokID.Text)]);
+  //Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(StrToInt(edtLokID.Text))].deck.cards[StrToInt(edtLokID.Text)]);
   //ShowMessage(IntToStr(hon(2200)));
 end;
 
@@ -1222,35 +1229,115 @@ begin
   end;
 end;
 
+procedure ProcessNode(Node : PLLData);
+var
+  s: string;
+  output_data: TStringList;
+begin
+
+  output_data := TStringList.Create;
+
+  splitdata('|', Node.data, output_data);
+  if output_data[1] = '02' then // Проверка навыка
+  begin
+    ProcessCondition(StrToInt(output_data[1]), StrToInt(output_data[2]), StrToInt(output_data[3]), StrToInt(output_data[4]));
+    //ProcessAction(StrToInt(output_data[1]), StrToInt(output_data[2]));
+  end;
+
+  output_data.Free;
+  {  if Node = nil then Exit;
+    with Node do
+    begin
+      ShowMessage(NodeName);
+      tn := tree.Items.AddChild(tn, Attributes['type']);
+      ShowMessage(Attributes['type']);
+      if (Attributes['type'] = 't') and (not pc) then
+        Exit
+      else
+        t := true;
+
+      if (Attributes['type'] = 'f') and pc then
+        Exit
+      else
+        f := true;
+
+      if HasAttribute('data') then
+      begin
+        //s := Attributes['type'];
+        tn.Text := tn.Text + Attributes['data'];
+        if Attributes['type'] = 'c' then
+        begin
+          pc := ProcessCondition(Attributes['data']);
+        end;
+        if (Attributes['type'] = 'a') and ((not t and not f)
+            or (pc and t) or (not pc and f)) then
+        begin
+          ProcessAction(Attributes['data']);
+          f := false;
+          t := false;
+        end;
 
 
-function ProcessCondition(data: string): boolean;
+      end;
+    end;
+
+
+
+  cNode := Node.ChildNodes.First;
+  while cNode <> nil do
+  begin
+    ProcessNode(cNode, tn);
+    cNode := cNode.NextSibling;
+  end;  }
+end; (*ProcessNode*)
+
+{function ProcessCondition(data: string): boolean;
 begin
   if StrToInt(copy(data, 1, 2)) = 1 then
     ShowMessage('Проверка скилла ' + (copy(data, 3, 2)));
   ProcessCondition := true;
 end;
-
-procedure ProcessAction(data: string);
+}
+procedure ProcessAction(prm1: string; prm2: string);
 begin
   //if StrToInt(copy(data, 1, 2)) = 1 then
-  ShowMessage('Process action.' + data);
+  ShowMessage('Process action.' + prm1 + ' ' + prm2);
 end;
 
 procedure TfrmMain.btn1Click(Sender: TObject);
 var
   temp: TTreeView;
-  tmp: PMyNode;
+  tmp: PLLData;
 begin
   head_of_list^.data := '1234';
   head_of_list^.mnChildCount := 0;
 
-  xml2tree(head_of_list, frmMain.xmldoc1, 'CardsData\Locations\Rivertown\4101');
+  //xml2tree(head_of_list, frmMain.xmldoc1, 'CardsData\Locations\Rivertown\4101');
+end;
+
+procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
+var
+  tmp: StrDataArray;
+begin
+  output_data.Clear;
+  output_data.Delimiter := delimiter;
+  output_data.DelimitedText := str;
+  //tmp[1] := Copy(str, 1, 2);
 end;
 
 procedure TfrmMain.btn2Click(Sender: TObject);
 begin
-  lbl1.Caption := Format('%s', [head_of_list.mnChild[0].mnChild[0].mnChild[0].data]);
+  lbl1.Caption := Format('%s', [head_of_list.mnChild[0].data]);
+end;
+
+procedure TfrmMain.edStatWillExit(Sender: TObject);
+begin
+  try
+    gCurrentPlayer.Will := StrToInt(edStatWill.Text);
+  except
+    ShowMessage('No!');
+    edStatWill.Text := '0';
+  end;
 end;
 
 end.

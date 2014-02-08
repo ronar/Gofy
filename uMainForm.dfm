@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 672
-  Top = 283
+  Left = 251
+  Top = 64
   Width = 1110
   Height = 656
   Caption = 'frmMain'
@@ -2007,6 +2007,7 @@ object frmMain: TfrmMain
       Height = 21
       TabOrder = 7
       Text = '0'
+      OnExit = edStatWillExit
     end
     object edStatLore: TEdit
       Left = 160

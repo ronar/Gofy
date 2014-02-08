@@ -13,21 +13,21 @@ type
 
 procedure DeleteNode(head: PLLData; index: integer);
 function Add_Child(var parnt: PLLData; s: string): PLLData;
-procedure XML2LL(head: PLLData; {XMLDoc : TXMLDocument; }file_name: string);
+procedure XML2LL(head: PLLData; file_name: string);
 //function Get_Child(var parnt: PLLData; s: string): PLLData;
 
 implementation
 
 uses SysUtils, Dialogs, xmldom, XMLIntf, msxmldom, XMLDoc;
 
+
 procedure XML2LL(
           head: PLLData;
-          {XMLDoc : TXMLDocument; }
           file_name: string);
 var
   iNode : IXMLNode;
   pc, t, f: boolean;
-  XMLDoc: TXMLDocument;
+  XMLDoc: IXMLDocument;
 
   procedure ProcessNode(
         Node : IXMLNode;
@@ -57,9 +57,8 @@ var
   end; (*ProcessNode*)
   
 begin
-  XMLDoc := TXMLDocument.Create(nil) ;
+  XMLDoc := TXMLDocument.Create(nil);
   try
-    XMLDoc.Active := True;
     //use XMLDoc here
     XMLDoc.FileName := file_name;//ChangeFileExt(ParamStr(0),'.XML');
     XMLDoc.Active := True;
@@ -79,11 +78,6 @@ begin
 
 end;
 
-{procedure InitXMLDoc;
-begin
-
-end;             }
-
 function Add_Child(var parnt: PLLData; s: string): PLLData;
 var
   tmp: PLLData;
@@ -102,6 +96,12 @@ begin
   end;
 
   Result := tmp;
+end;
+
+function Get_Child(parnt: PLLData): PLLData;
+begin
+  if parnt.mnChild[0] <> nil then
+
 end;
 
 procedure DeleteNode(head: PLLData; index: integer);

@@ -178,6 +178,9 @@ const
         ('063', 'Bayakee'),
         ('063', 'Bayakee'));
 
+type
+  StrDataArray = array [1..10] of string;
+
 implementation
 
 end.

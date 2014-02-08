@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <actions>
-	<action type="c" data="Check|Lore|-2">
+	<action type="c" data="|02|05|-2|1">
     	<true>
-  			<action type="a" data="Successes|1|Nothing"></action>
+  			<action type="a" data="|Successes|1|Nothing"></action>
   		</true>
   		<false>
-    		<action type="a" data="Successes|1|Lose|Stamina|1"></action>
-            <action type="a" data="Successes|1|StayHereNextTurn"></action>
+    		<action type="a" data="|Successes|1|Lose|Stamina|1"></action>
+            <action type="a" data="|Successes|1|StayHereNextTurn"></action>
     	</false>
   </action>
 </actions>
