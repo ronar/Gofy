@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|02|Пройти проверку или сбросить карту 'Виски'?">
+		<action type="c" data="|03|06|-2|1">
+    		<true>
+  				<action type="a" data="|Successes|1|Nothing"></action>
+  			</true>
+  			<false>
+    			<action type="a" data="|Successes|1|Lose|Stamina|1"></action>
+            	<action type="a" data="|Successes|1|StayHereNextTurn"></action>
+    		</false>
+		</action>
+		<action type="c" data="|03|06|-2|1">
+    		<true>
+  				<action type="a" data="|Successes|1|Nothing"></action>
+  			</true>
+  			<false>
+    			<action type="a" data="|Successes|1|Lose|Stamina|1"></action>
+            	<action type="a" data="|Successes|1|StayHereNextTurn"></action>
+    		</false>
+		</action>  
+    </or>
+  
+</actions>

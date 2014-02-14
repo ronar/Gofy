@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <actions>
-	<action type="c" data="Check|Luck|-2">
+	<action type="c" data="|2|6|-2|1">
     	<true>
-  			<action type="a" data="Successes|1|Take|Clue|1"></action>
-  			<action type="a" data="Successes|1|Move|Street|Any"></action>
-  			<action type="a" data="Successes|1|Move|Location|Any"></action>
+  			<action type="a" data="|4|7|2|1"></action>
+  			<action type="a" data="|4|34|1456|1"></action>
+  			<action type="a" data="|4|34|0|1"></action>
   		</true>
   		<false>
+  			<action type="a" data="|0|0|0|0"></action>
     	</false>
   </action>
 </actions>

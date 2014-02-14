@@ -134,6 +134,7 @@ type
     procedure btn1Click(Sender: TObject);
     procedure btn2Click(Sender: TObject);
     procedure edStatWillExit(Sender: TObject);
+    procedure edStatLuckExit(Sender: TObject);
   private
     { Private declarations }
   public
@@ -200,7 +201,7 @@ var
   //function AdditionalChecks(player: TPlayer; stat: integer): boolean;
   //procedure XML2Tree(head: PMyNode;{tree   : TTreeView;} XMLDoc : TXMLDocument; file_name: string);
   function ProcessCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): boolean;
-  procedure ProcessAction(prm1: string; prm2: string);
+  procedure ProcessAction(action: integer; action_value: integer; choise: integer = 0; n: integer = 0);
   //procedure Read_Mem(var_addr: Pointer);
   procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
   procedure ProcessNode(Node : PLLData);
@@ -685,7 +686,7 @@ begin
 end;
 
 // Выполнение действия согласно карте
-procedure Take_Action(action: integer; action_value: integer; choise: integer = 0; n: integer = 0);
+procedure ProcessAction(action: integer; action_value: integer; choise: integer = 0; n: integer = 0);
 var
   i: integer;
 begin
@@ -808,7 +809,10 @@ begin
      Take_Action();
     end;
   end; }// case 41
-
+  42: // Игрок тянет 1 простую вещь бесплатно из n
+    begin
+      frmMain.lbLog.Items.Add('Игрок тянет 1 простую вещь бесплатно из ' + IntToStr(action_value));
+    end; // case 42
   28: // Move to location, enc
     if action_value = 0 then
     begin
@@ -823,26 +827,9 @@ end;
 
 // Разрешить контакт
 procedure Encounter(player: TPlayer; card: TLocationCard);
-type
-  StrDataArray = array [1..10] of integer;
 var
   i: integer;
-  s, ns: integer;
-  card_data: array [0..71] of integer;
-  c_data: string;
   c_node: PLLData;
-  c_Cond1, c_Cond2: integer;
-  c_Choise, c_Choise2: integer;
-  c_N, c_N2: integer;
-  c_NSccssMin, c_NSccssMax, c_NSccssMin2, c_NSccssMax2: integer;
-  c_Action1, c_Action2, c_Action3, c_Action21, c_Action22, c_Action23: integer;
-  c_Action1Value, c_Action2Value, c_Action3Value,
-  c_Action21Value, c_Action22Value, c_Action23Value: integer;
-  c_Act1Cond, c_Act2Cond, c_Act21Cond, c_Act22Cond, c_Else1Cond, c_Else2Cond: integer;
-  c_Else1, c_Else2, c_Else3, c_Else21, c_Else22: integer;
-  c_Else1Value, c_Else2Value, c_Else3Value, c_Else21Value, c_Else22Value: integer;
-  skill_test: integer;
-  choise: integer;
 begin
   // TODO: таблицу с картами | N | ID_Card |, чтобы находить карты для условия
   // и добавлять новые
@@ -857,13 +844,6 @@ begin
   for i := 0 to c_node.mnChildCount-1 do
   begin
     processnode(c_node.mnChild[i]);
-    //splitdata('|', c_node.data, output_data);
-    //strto
-    //case c_node.data of
-    //'0': ;
-    //end;
-    //ProcessNode(cNode, tn);
-    //cNode := cNode.NextSibling;
   end;
 
 {  c_data := card.Data;
@@ -875,133 +855,7 @@ begin
 
   frmMain.imgEncounter.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Locations\Downtown\' + IntToStr((ton(card.ID) * 1000) + StrToInt(IntToStr(card.ID)[4])) + '.jpg');
 
-  for i := 0 to Length(c_data)-1 do
-    card_data[i] := StrToInt(c_data[i+1]);
-
-  c_Cond1 := StrToInt(copy(c_data, 1, 2));
-  c_Choise := StrToInt(copy(c_data, 3, 2));
-  c_N := StrToInt(copy(c_data, 5, 2));
-  c_NSccssMin := StrToInt(copy(c_data, 7, 1));
-  c_NSccssMax := StrToInt(copy(c_data, 8, 1));
-
-  c_Action1 := StrToInt(copy(c_data, 9, 2));
-  c_Action1Value := StrToInt(copy(c_data, 11, 2));
-  c_Act1Cond := StrToInt(copy(c_data, 13, 1));
-  c_Action2 := StrToInt(copy(c_data, 14, 2));
-  c_Action2Value := StrToInt(copy(c_data, 16, 2));
-  c_Act2Cond := StrToInt(copy(c_data, 18, 1));
-  c_Action3 := StrToInt(copy(c_data, 19, 2));
-  c_Action3Value := StrToInt(copy(c_data, 21, 2));
-
-  c_Else1 := StrToInt(copy(c_data, 23, 2));
-  c_Else1Value := StrToInt(copy(c_data, 25, 2));
-  c_Else1Cond := StrToInt(copy(c_data, 27, 1));
-  c_Else2 := StrToInt(copy(c_data, 28, 2));
-  c_Else2Value := StrToInt(copy(c_data, 30, 2));
-  c_Else2Cond := StrToInt(copy(c_data, 32, 1));
-  c_Else3 := StrToInt(copy(c_data, 33, 2));
-  c_Else3Value := StrToInt(copy(c_data, 35, 2));
-
-
-  // Condition
-  if Act_Condition(c_Cond1, c_Choise, c_N, c_NSccssMin, c_NSccssMax) then
-  begin
-    //Action
-    if (c_Act1Cond = 2) then// 1 OR
-    begin
-      if (c_Act2Cond = 2) then // 2 ORs
-        choise := Choise2(c_Action1, c_Action2, c_Action3)
-      else // 1 OR
-        if (c_Act2Cond = 1) then // OR / AND
-        begin
-          choise := Choise1(c_Action1, c_Action2);
-
-          Take_Action(c_Action3, c_Action3Value);
-        end
-        else
-          choise := Choise1(c_Action1, c_Action2);
-      case choise of
-      1: Take_Action(c_Action1, c_Action1Value);
-      2: Take_Action(c_Action2, c_Action2Value);
-      3: Take_Action(c_Action3, c_Action3Value);
-      end;
-    end
-    else // No ORs
-    begin
-      if (c_Act1Cond = 1) then// 1 AND
-      begin
-        if (c_Act2Cond = 1) then // 2 AND
-        begin
-          Take_Action(c_Action1, c_Action1Value);
-          Take_Action(c_Action2, c_Action2Value);
-          Take_Action(c_Action3, c_Action3Value);
-        end
-        else // !2 AND
-          if (c_Act2Cond = 2) then // AND / OR
-          begin
-            Take_Action(c_Action1, c_Action1Value);
-            choise := Choise1(c_Action2, c_Action3);
-          end
-          else
-          begin
-            Take_Action(c_Action1, c_Action1Value);
-            Take_Action(c_Action2, c_Action2Value);
-          end;
-      end
-      else // 1 AND
-        Take_Action(c_Action1, c_Action1Value);
-    end; // else No ORs
-  end
-  else // else1
-  begin
-    if (c_Else1Cond = 2) then // 1 OR
-    begin
-      if (c_Else2Cond = 2) then // 2 OR
-        choise := Choise2(c_Else1, c_Else2, c_Else3)
-      else
-        if (c_Else2Cond = 1) then // OR / AND
-        begin
-          choise := Choise1(c_Else1, c_Else2);
-          Take_Action(c_Else3, c_Else3Value);
-        end
-        else
-          choise := Choise1(c_Else1, c_Else2);
-      case choise of
-      1: Take_Action(c_Else1, c_Else1Value);
-      2: Take_Action(c_Else2, c_Else2Value);
-      3: Take_Action(c_Else3, c_Else3Value);
-      end;
-    end
-    else // No ORs
-    begin
-      if (c_Else1Cond = 1) then// 1 AND
-      begin
-        if (c_Else2Cond = 1) then // 2 AND
-        begin
-          Take_Action(c_Else1, c_Else1Value);
-          Take_Action(c_Else2, c_Else2Value);
-          Take_Action(c_Else3, c_Else3Value);
-        end // !2 AND
-        else
-          if (c_Else2Cond = 2) then // AND / OR
-          begin
-            Take_Action(c_Else1, c_Else1Value);
-            choise := Choise1(c_Else2, c_Else3);
-          end
-          else
-          begin
-            Take_Action(c_Else1, c_Else1Value);
-            Take_Action(c_Else2, c_Else2Value);
-          end;
-      end
-      else // !1 AND
-        Take_Action(c_Else1, c_Else1Value);
-    end;
-  end;
-            }
-  // Choise1 proto
-  // Dialog window: choose 1 OR 2, if 1 then take_action ... if 2 ...
-
+}
 end;
 
 procedure TfrmMain.bntEncounterClick(Sender: TObject);
@@ -1233,16 +1087,43 @@ procedure ProcessNode(Node : PLLData);
 var
   s: string;
   output_data: TStringList;
+  b: boolean;
+  i: integer;
 begin
 
   output_data := TStringList.Create;
 
   splitdata('|', Node.data, output_data);
-  if output_data[1] = '02' then // Проверка навыка
+  if output_data[1] = '2' then // Проверка навыка
   begin
-    ProcessCondition(StrToInt(output_data[1]), StrToInt(output_data[2]), StrToInt(output_data[3]), StrToInt(output_data[4]));
+    b := ProcessCondition(StrToInt(output_data[1]), StrToInt(output_data[2]), StrToInt(output_data[3]), StrToInt(output_data[4]));
+    if b then
+    begin
+      ProcessNode(Node.mnChild[0].mnChild[0]);
+      for i := 1 to Node.mnChild[0].mnChildCount-1 do
+      begin
+        ProcessNode(Node.mnChild[0].mnChild[i]);
+      end;
+    end
+    else
+    begin
+      ProcessNode(Node.mnChild[1].mnChild[0]);
+      for i := 1 to Node.mnChild[1].mnChildCount-1 do
+      begin
+        ProcessNode(Node.mnChild[1].mnChild[i]);
+      end;
+    end;
+
     //ProcessAction(StrToInt(output_data[1]), StrToInt(output_data[2]));
   end;
+
+  if output_data[1] = '4' then // Получить что-либо
+  begin
+    ProcessAction(StrToInt(output_data[2]), StrToInt(output_data[3]));
+  end;
+
+    //ProcessAction(StrToInt(output_data[1]), StrToInt(output_data[2]));
+
 
   output_data.Free;
   {  if Node = nil then Exit;
@@ -1298,12 +1179,12 @@ begin
   ProcessCondition := true;
 end;
 }
-procedure ProcessAction(prm1: string; prm2: string);
+{procedure ProcessAction(prm1: integer; prm2: integer);
 begin
   //if StrToInt(copy(data, 1, 2)) = 1 then
-  ShowMessage('Process action.' + prm1 + ' ' + prm2);
+  //ShowMessage('Process action.' + prm1 + ' ' + prm2);
 end;
-
+}
 procedure TfrmMain.btn1Click(Sender: TObject);
 var
   temp: TTreeView;
@@ -1338,6 +1219,17 @@ begin
     ShowMessage('No!');
     edStatWill.Text := '0';
   end;
+end;
+
+procedure TfrmMain.edStatLuckExit(Sender: TObject);
+begin
+  try
+    gCurrentPlayer.Luck := StrToInt(edStatLuck.Text);
+  except
+    ShowMessage('No!');
+    edStatLuck.Text := '0';
+  end;
+
 end;
 
 end.

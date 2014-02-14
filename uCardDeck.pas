@@ -232,7 +232,7 @@ end;
 // n - номер локации на карте
 function TLocationCardsDeck.DrawCard(n: integer): TLocationCard;
 begin
-  DrawCard := fCards[1{fCount div 3}, n];
+  DrawCard := fCards[2{fCount div 3}, 1];//n];
   Shuffle;
 end;
 
