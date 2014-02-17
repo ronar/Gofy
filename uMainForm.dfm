@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 255
-  Top = 37
+  Left = 183
+  Top = 29
   Width = 1110
   Height = 656
   Caption = 'frmMain'
@@ -1704,7 +1704,7 @@ object frmMain: TfrmMain
     Width = 185
     Height = 105
     Caption = 'RadioGroup1'
-    ItemIndex = 1
+    ItemIndex = 2
     Items.Strings = (
       '1st phase (Upkeep)'
       '2nd phase (Movement)'

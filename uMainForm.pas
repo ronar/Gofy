@@ -473,7 +473,7 @@ begin
   begin
     cbLocation.Items.Add(LocationsNames[i, 2]);
   end;
-  gCurrentPhase := 2;
+  gCurrentPhase := 3;
   
   //New(head_of_list);
 end;
@@ -639,14 +639,14 @@ begin
      ProcessCondition := False;
     end;
   end;
-  {3: begin // Проверка наличия
-    if gPlayer.CheckAvailability(Choise, N) then //
+  3: begin // Проверка наличия
+    if gPlayer.CheckAvailability(prm, N) then //
       ProcessCondition := True
     else
       ProcessCondition := False;
     frmMain.lbLog.Items.Add('Проверка наличия');
   end; // case 3
-  7: begin // Spec. card
+  {7: begin // Spec. card
     if MessageDlg('Confirm?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     begin
       frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(Choise - 1) + '(=' + IntToStr(gCurrentPlayer.Stats[Choise - 1]) + ')..');
@@ -1054,7 +1054,7 @@ end;
 
 procedure TfrmMain.btnGiveItemClick(Sender: TObject);
 begin
-  gCurrentPlayer.AddItem(1342);
+  gCurrentPlayer.AddItem(1582);
 end;
 
 procedure TfrmMain.btnMoveToExactLokClick(Sender: TObject);
@@ -1094,21 +1094,22 @@ begin
   output_data := TStringList.Create;
 
   splitdata('|', Node.data, output_data);
-  if output_data[1] = '2' then // Проверка навыка
+
+  if output_data[1] = '3' then // Проверка навыка
   begin
-    b := ProcessCondition(StrToInt(output_data[1]), StrToInt(output_data[2]), StrToInt(output_data[3]), StrToInt(output_data[4]));
+    b := ProcessCondition(StrToInt(output_data[2]), StrToInt(output_data[3]), StrToInt(output_data[4]), StrToInt(output_data[5]));
     if b then
     begin
-      ProcessNode(Node.mnChild[0].mnChild[0]);
-      for i := 1 to Node.mnChild[0].mnChildCount-1 do
+      //ProcessNode(Node.mnChild[0].mnChild[0]);
+      for i := 0 to Node.mnChild[0].mnChildCount-1 do
       begin
         ProcessNode(Node.mnChild[0].mnChild[i]);
       end;
     end
     else
     begin
-      ProcessNode(Node.mnChild[1].mnChild[0]);
-      for i := 1 to Node.mnChild[1].mnChildCount-1 do
+      //ProcessNode(Node.mnChild[1].mnChild[0]);
+      for i := 0 to Node.mnChild[1].mnChildCount-1 do
       begin
         ProcessNode(Node.mnChild[1].mnChild[i]);
       end;
@@ -1117,10 +1118,25 @@ begin
     //ProcessAction(StrToInt(output_data[1]), StrToInt(output_data[2]));
   end;
 
-  if output_data[1] = '4' then // Получить что-либо
+  if output_data[1] = '4' then // Действие
   begin
     ProcessAction(StrToInt(output_data[2]), StrToInt(output_data[3]));
   end;
+
+  if output_data[1] = '2' then // OR
+  begin
+    if MessageDlg(output_data[3], mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+      //for i := 0 to Node.mnChild[0].mnChildCount-1 do
+        ProcessNode(Node.mnChild[0]);
+    end
+    else
+    begin
+      //for i := 0 to Node.mnChild[1].mnChildCount-1 do
+        ProcessNode(Node.mnChild[1]);
+    end;
+  end;
+
 
     //ProcessAction(StrToInt(output_data[1]), StrToInt(output_data[2]));
 
