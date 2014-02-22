@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 183
-  Top = 29
+  Left = 249
+  Top = 54
   Width = 1110
   Height = 656
   Caption = 'frmMain'
@@ -2016,6 +2016,7 @@ object frmMain: TfrmMain
       Height = 21
       TabOrder = 8
       Text = '0'
+      OnExit = edStatLoreExit
     end
     object edStatLuck: TEdit
       Left = 160
@@ -2050,6 +2051,7 @@ object frmMain: TfrmMain
       Height = 21
       TabOrder = 12
       Text = '0'
+      OnExit = edtPlaMoneyExit
     end
     object edtPlaInv: TEdit
       Left = 160

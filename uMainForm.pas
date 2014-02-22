@@ -135,6 +135,8 @@ type
     procedure btn2Click(Sender: TObject);
     procedure edStatWillExit(Sender: TObject);
     procedure edStatLuckExit(Sender: TObject);
+    procedure edtPlaMoneyExit(Sender: TObject);
+    procedure edStatLoreExit(Sender: TObject);
   private
     { Private declarations }
   public
@@ -201,7 +203,8 @@ var
   //function AdditionalChecks(player: TPlayer; stat: integer): boolean;
   //procedure XML2Tree(head: PMyNode;{tree   : TTreeView;} XMLDoc : TXMLDocument; file_name: string);
   function ProcessCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): boolean;
-  procedure ProcessAction(action: integer; action_value: integer; choise: integer = 0; n: integer = 0);
+  function ProcessMultiCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): integer;
+  procedure ProcessAction(action: integer; action_value: integer; suxxess: string = '0');
   //procedure Read_Mem(var_addr: Pointer);
   procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
   procedure ProcessNode(Node : PLLData);
@@ -622,30 +625,47 @@ var
 begin
   ProcessCondition := False;
   case cond of
-  1: begin // Если True
-    ProcessCondition := True;
-  end;
-  2: begin // Проверка скила
-    //frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(prm) + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(suxxess) + ')..');
-    skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n); // Choise - номер скилла
-    { TODO -oRonar : Choise is in dependence with structure of construction
-      of program. In another words if indices have been changed, program
-      will be broken }
-    //frmMain.lbLog.Items.Add('Проверка навыка ' + IntToStr(Choise - 1) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
-    if (skill_test >= suxxess) then
-      ProcessCondition := True
-    else
-    begin
-     ProcessCondition := False;
+    1: begin // Если True
+      ProcessCondition := True;
     end;
-  end;
-  3: begin // Проверка наличия
-    if gPlayer.CheckAvailability(prm, N) then //
-      ProcessCondition := True
-    else
-      ProcessCondition := False;
-    frmMain.lbLog.Items.Add('Проверка наличия');
-  end; // case 3
+    2: begin // Проверка скила
+      frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(prm) + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(suxxess) + ')..');
+      skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n); // Choise - номер скилла
+      { TODO -oRonar : Choise is in dependence with structure of construction
+        of program. In another words if indices have been changed, program
+        will be broken }
+      frmMain.lbLog.Items.Add('Проверка навыка ' + IntToStr(prm) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
+      if (skill_test >= suxxess) then
+        ProcessCondition := True
+      else
+      begin
+        ProcessCondition := False;
+      end;
+    end;
+    3: begin // Проверка наличия
+      if gPlayer.CheckAvailability(prm, N) then //
+        ProcessCondition := True
+      else
+        ProcessCondition := False;
+      frmMain.lbLog.Items.Add('Проверка наличия чего-либо у игрока');
+    end; // case 3
+    4: begin // Проверка наличия карты в колоде
+      case prm of
+        5: begin // Карта союзника
+          if Common_Items_Deck.CheckAvailability(N) then // Временно карты простых вещей
+            ProcessCondition := True
+          else
+            ProcessCondition := False;
+        end;
+      end;
+      frmMain.lbLog.Items.Add('Проверка наличия карты в колоде');
+    end; // case 4
+    5: begin // Отдать что-либо
+      if MessageDlg('Отдать ' + things[prm] + IntToStr(N) + '?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+        ProcessCondition := True
+      else
+        ProcessCondition := False;
+    end; // case 5
   {7: begin // Spec. card
     if MessageDlg('Confirm?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     begin
@@ -659,6 +679,18 @@ begin
     end;
   end;}
   end;
+end;
+
+function ProcessMultiCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): integer;
+var
+  skill_test: integer;
+begin
+  ProcessMultiCondition := 0;
+  // Проверка скила
+  frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(prm) + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(suxxess) + ')..');
+  skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n); // prm - order num of skill (1 - speed, ...)
+  frmMain.lbLog.Items.Add('Проверка навыка ' + IntToStr(prm) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
+  ProcessMultiCondition := skill_test;
 end;
 
 function Choise1(act1: integer; act2: integer): integer;
@@ -686,7 +718,7 @@ begin
 end;
 
 // Выполнение действия согласно карте
-procedure ProcessAction(action: integer; action_value: integer; choise: integer = 0; n: integer = 0);
+procedure ProcessAction(action: integer; action_value: integer; suxxess: string = '0');
 var
   i: integer;
 begin
@@ -741,7 +773,9 @@ begin
   end; // case 12
   13: begin // Draw ally card
     //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
-    frmMain.lbLog.Items.Add('Игрок вытянул карту союзника: ' + IntToStr(action_value) + '.');
+    for i := 1 to ALLIES_MAX do
+      if StrToInt(Allies[i, 1]) = action_value then
+        frmMain.lbLog.Items.Add('Игрок вытянул карту союзника: ' + Allies[i, 2] + '.');
   end; // case 13
   15: begin // Drop item of player's choise
     //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
@@ -792,7 +826,10 @@ begin
     //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
     frmMain.lbLog.Items.Add('Игрока затянуло во врата.');
   end; // case 35
-
+  36: begin // Monster apeeared
+    //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
+    frmMain.lbLog.Items.Add('Появился монстр.');
+  end; // case 36
   38: begin // Pass turn
     //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
     frmMain.lbLog.Items.Add('Игрок пропускает ход.');
@@ -813,6 +850,9 @@ begin
     begin
       frmMain.lbLog.Items.Add('Игрок тянет 1 простую вещь бесплатно из ' + IntToStr(action_value));
     end; // case 42
+    43: begin
+      frmMain.lbLog.Items.Add('Игрок берет 1 простое оружие бесплатно.');
+    end;
   28: // Move to location, enc
     if action_value = 0 then
     begin
@@ -1088,7 +1128,9 @@ var
   s: string;
   output_data: TStringList;
   b: boolean;
-  i: integer;
+  i, j: integer;
+  st: Integer; // skill_test
+  tmp_str: string;
 begin
 
   output_data := TStringList.Create;
@@ -1118,7 +1160,7 @@ begin
     //ProcessAction(StrToInt(output_data[1]), StrToInt(output_data[2]));
   end;
 
-  if output_data[1] = '4' then // Действие
+  if output_data[1] = '4' then // Action
   begin
     ProcessAction(StrToInt(output_data[2]), StrToInt(output_data[3]));
   end;
@@ -1137,7 +1179,56 @@ begin
     end;
   end;
 
+  if output_data[1] = '5' then // Condition with various num of suxxess
+  begin
+    st := ProcessMultiCondition(StrToInt(output_data[2]), StrToInt(output_data[3]), StrToInt(output_data[4]), StrToInt(output_data[5]));
+    for i := 0 to StrToInt(output_data[5])-1 do
+    begin
+      //tmp_str := TStringList.Create;
+      tmp_str := Node.mnChild[i].data;
 
+      if (tmp_str = 'zero')and(st = 0) then
+      begin
+        for j := 0 to Node.mnChild[i].mnChildCount-1 do
+          ProcessNode(Node.mnChild[i].mnChild[j]);
+      end
+      else
+        if (tmp_str = 'zero-one')and(st = 0) then
+          for j := 0 to Node.mnChild[i].mnChildCount-1 do
+            ProcessNode(Node.mnChild[i].mnChild[j]);
+
+      if (tmp_str = 'one')and(st = 1) then
+      begin
+        for j := 0 to Node.mnChild[i].mnChildCount-1 do
+          ProcessNode(Node.mnChild[i].mnChild[j]);
+      end
+      else
+        if (tmp_str = 'zero-one')and(st = 1) then
+          for j := 0 to Node.mnChild[i].mnChildCount-1 do
+            ProcessNode(Node.mnChild[i].mnChild[j]);
+
+      if (tmp_str = 'two')and(st = 2) then
+      begin
+        for j := 0 to Node.mnChild[i].mnChildCount-1 do
+          ProcessNode(Node.mnChild[i].mnChild[j]);
+      end
+      else
+        if (tmp_str = 'twoplus')and(st >= 2) then
+          for j := 0 to Node.mnChild[i].mnChildCount-1 do
+            ProcessNode(Node.mnChild[i].mnChild[j]);
+
+      if (tmp_str = 'three')and(st = 3) then
+      begin
+        for j := 0 to Node.mnChild[i].mnChildCount-1 do
+          ProcessNode(Node.mnChild[i].mnChild[j]);
+      end
+      else
+        if (tmp_str = 'threeplus')and(st >= 3) then
+          for j := 0 to Node.mnChild[i].mnChildCount-1 do
+            ProcessNode(Node.mnChild[i].mnChild[j]);
+
+    end;
+  end;
     //ProcessAction(StrToInt(output_data[1]), StrToInt(output_data[2]));
 
 
@@ -1188,19 +1279,6 @@ begin
   end;  }
 end; (*ProcessNode*)
 
-{function ProcessCondition(data: string): boolean;
-begin
-  if StrToInt(copy(data, 1, 2)) = 1 then
-    ShowMessage('Проверка скилла ' + (copy(data, 3, 2)));
-  ProcessCondition := true;
-end;
-}
-{procedure ProcessAction(prm1: integer; prm2: integer);
-begin
-  //if StrToInt(copy(data, 1, 2)) = 1 then
-  //ShowMessage('Process action.' + prm1 + ' ' + prm2);
-end;
-}
 procedure TfrmMain.btn1Click(Sender: TObject);
 var
   temp: TTreeView;
@@ -1246,6 +1324,26 @@ begin
     edStatLuck.Text := '0';
   end;
 
+end;
+
+procedure TfrmMain.edtPlaMoneyExit(Sender: TObject);
+begin
+  try
+    gCurrentPlayer.Money := StrToInt(edtPlaMoney.Text);
+  except
+    ShowMessage('No!');
+    edtPlaMoney.Text := '0';
+  end;
+end;
+
+procedure TfrmMain.edStatLoreExit(Sender: TObject);
+begin
+  try
+    gCurrentPlayer.Lore := StrToInt(edStatLore.Text);
+  except
+    ShowMessage('No!');
+    edStatLore.Text := '0';
+  end;
 end;
 
 end.

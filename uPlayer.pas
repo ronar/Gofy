@@ -335,18 +335,18 @@ var
 begin
   result := false;
 
-  if grade = 1 then // Проверка наличия карт
+  if grade = 4 then // Проверка наличия карт
     for i := 1 to fCardsCount do
       if fCards[i] = param then
         Result := True;
 
-  if (grade = 8) and (money >= param) then
+  if (grade = 1) and (money >= param) then
     result := true;
 
-  if (grade = 9) and (clues >= param) then
+  if (grade = 2) and (clues >= param) then
     result := true;
 
-  if (grade = 10) and (fMonsterTrophies >= param) then
+  if (grade = 3) and (fMonsterTrophies >= param) then
     result := true;
 
 end;

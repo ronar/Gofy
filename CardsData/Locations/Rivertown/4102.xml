@@ -3,7 +3,14 @@
 	<or data="|2|2|Пройти_проверку_или_сбросить_карту_'Виски'?">
 		<action type="c" data="|3|2|6|-2|1">
     		<true>
-  				<action type="a" data="|4|13|1|"></action>
+  				<action type="c" data="|3|4|5|41|1">
+    				<true>
+  						<action type="a" data="|4|13|41|"></action>
+  					</true>
+  					<false>
+  						<action type="a" data="|4|43|1|"></action>
+    				</false>
+    			</action>
   			</true>
   			<false>
   				<action type="a" data="|0|3|10|"></action>
@@ -11,7 +18,14 @@
 		</action>
 		<action type="c" data="|3|3|1|1582|1">
     		<true>
-  				<action type="a" data="|4|13|1|"></action>
+  				<action type="c" data="|3|4|5|41|1">
+    				<true>
+  						<action type="a" data="|4|13|41|"></action>
+  					</true>
+  					<false>
+  						<action type="a" data="|4|43|1|"></action>
+    				</false>
+    			</action>
   			</true>
   			<false>
   				<action type="a" data="|0|3|10|"></action>

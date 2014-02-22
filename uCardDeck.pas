@@ -46,6 +46,7 @@ type
     function FindCards(file_path: string): integer; override;
     function DrawCard: Integer; //overload;
     procedure Shuffle(); override;
+    function CheckAvailability(N: integer): boolean;
     //destructor Destroy; override;
   end;
 
@@ -173,6 +174,16 @@ begin
   end;
 end;
 
+function TItemCardDeck.CheckAvailability(N: integer): boolean;
+var
+  i: Integer;
+begin
+  result := false;
+  for i := 1 to fCount do
+    if fCards[i].id = N then
+      result := true;
+end;
+
 ///////////////////////////// TLocationCardDeck ////////////////////////////////
 
 // Конструктор
@@ -232,7 +243,7 @@ end;
 // n - номер локации на карте
 function TLocationCardsDeck.DrawCard(n: integer): TLocationCard;
 begin
-  DrawCard := fCards[2{fCount div 3}, 1];//n];
+  DrawCard := fCards[4{fCount div 3}, 1];//n];
   Shuffle;
 end;
 
