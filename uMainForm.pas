@@ -189,7 +189,6 @@ var
   player_count: integer;
   path_to_exe: string;
   //monCount: integer;
-  trees: array [1..50] of TTreeView;
   head_of_list: PLLData;
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; card: TLocationCard);
@@ -207,7 +206,7 @@ var
   procedure ProcessAction(action: integer; action_value: integer; suxxess: string = '0');
   //procedure Read_Mem(var_addr: Pointer);
   procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
-  procedure ProcessNode(Node : PLLData);
+  procedure ProcessNode(Node : PLLData; add_data: integer = 0);
 
 
 implementation
@@ -281,7 +280,9 @@ begin
     CT_ENCOUNTER: begin
       // Loading cards for diff. neighborhoods
       { TODO :  Implement auto load streets, not by explicit index }
+      Arkham_Streets[3].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Easttown\');
       Arkham_Streets[4].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Rivertown\');
+      Arkham_Streets[9].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Uptown\');
       //Arkham_Streets[5].mDeck.Shuffle;
 
     end; // CT_ENCOUNTER
@@ -321,11 +322,6 @@ begin
   PlStats[6] := 0; // Luck
 
   player_count := StrToInt(LabeledEdit1.Text);
-
-  for i := 1 to 50 do
-  begin
-    trees[i] := TTreeView.Create(nil);
-  end;
 
   for i := 1 to player_count do
   begin
@@ -434,11 +430,6 @@ procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   i: integer;
 begin
-  for i := 1 to 50 do
-  begin
-    trees[i].Free;
-  end;
-
   for i := 1 to player_count do
   begin
     // Освобождение ресурсов игрока
@@ -650,9 +641,9 @@ begin
       frmMain.lbLog.Items.Add('Проверка наличия чего-либо у игрока');
     end; // case 3
     4: begin // Проверка наличия карты в колоде
-      case prm of
-        5: begin // Карта союзника
-          if Common_Items_Deck.CheckAvailability(N) then // Временно карты простых вещей
+      case (prm div 1000) of // Extract 1st digit
+        1: begin // Common item
+          if Common_Items_Deck.CheckAvailability(prm) then // Временно карты простых вещей
             ProcessCondition := True
           else
             ProcessCondition := False;
@@ -693,28 +684,44 @@ begin
   ProcessMultiCondition := skill_test;
 end;
 
-function Choise1(act1: integer; act2: integer): integer;
+function Choise2(act1: string; act2: string): integer;
 begin
-  ChoiseForm.Choise1(act1, act2);
-  ChoiseForm.ShowModal;
-  if ChoiseForm.RadioButton1.Checked then
-    Choise1 := 1
-  else
-    if ChoiseForm.RadioButton2.Checked then
-      Choise1 := 2;
-end;
-
-function Choise2(act1: integer; act2: integer; act3: integer): integer;
-begin
-  ChoiseForm.Choise2(act1, act2, act3);
+  ChoiseForm.Choise2(act1, act2);
   ChoiseForm.ShowModal;
   if ChoiseForm.RadioButton1.Checked then
     Choise2 := 1
   else
     if ChoiseForm.RadioButton2.Checked then
-      Choise2 := 2
+      Choise2 := 2;
+end;
+
+function Choise3(act1: string; act2: string; act3: string): integer;
+begin
+  ChoiseForm.Choise3(act1, act2, act3);
+  ChoiseForm.ShowModal;
+  if ChoiseForm.RadioButton1.Checked then
+    Choise3 := 1
+  else
+    if ChoiseForm.RadioButton2.Checked then
+      Choise3 := 2
     else
-      Choise2 := 3;
+      Choise3 := 3;
+end;
+
+function Choise4(act1: string; act2: string; act3: string; act4: string): integer;
+begin
+  ChoiseForm.Choise4(act1, act2, act3, act4);
+  ChoiseForm.ShowModal;
+  if ChoiseForm.RadioButton1.Checked then
+    Choise4 := 1
+  else
+    if ChoiseForm.RadioButton2.Checked then
+      Choise4 := 2
+    else
+      if ChoiseForm.RadioButton3.Checked then
+        Choise4 := 3
+      else
+        Choise4 := 4;
 end;
 
 // Выполнение действия согласно карте
@@ -724,6 +731,11 @@ var
 begin
   case action of
   1: begin
+    if action_value = 772 then
+    begin
+      Randomize;
+      action_value := random(6)+1 + random(6)+1;
+    end;
     gPlayer.Money := gPlayer.Money + action_value;
     frmMain.lbLog.Items.Add('Игрок получил деньги: ' + IntToStr(action_value) + '.');
   end;
@@ -756,7 +768,10 @@ begin
     frmMain.lbLog.Items.Add('Игрок потерял улику(и): ' + IntToStr(action_value) + '.');
   end; // case 8
   9: begin // Draw common item
-    gCurrentPlayer.AddItem(Common_Items_Deck.DrawCard);
+    if action_value > 1000 then // id of card is defined
+        gCurrentPlayer.AddItem(action_value)
+    else
+      gCurrentPlayer.AddItem(Common_Items_Deck.DrawCard);
     frmMain.lbLog.Items.Add('Игрок вытянул карту простого предмета.');
   end; // case 9
   10: begin // Draw unique item
@@ -878,14 +893,10 @@ begin
   if card.crd_head <> nil then
   begin
     c_node := card.crd_head;
-    //processnode(c_node);
-  end;
 
-  for i := 0 to c_node.mnChildCount-1 do
-  begin
-    processnode(c_node.mnChild[i]);
+    for i := 0 to c_node.mnChildCount-1 do
+      processnode(c_node.mnChild[i]);
   end;
-
 {  c_data := card.Data;
   if c_data = '' then
   begin
@@ -931,7 +942,7 @@ begin
           Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
       end; // 4300
       //else Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
-      else Encounter(gCurrentPlayer, Arkham_Streets[4].deck.DrawCard(hon(gCurrentPlayer.Location)));
+      else Encounter(gCurrentPlayer, Arkham_Streets[3].deck.DrawCard(hon(gCurrentPlayer.Location)));
     end;
 
     Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.Shuffle;
@@ -1123,13 +1134,13 @@ begin
   end;
 end;
 
-procedure ProcessNode(Node : PLLData);
+procedure ProcessNode(Node : PLLData; add_data: integer);
 var
   s: string;
   output_data: TStringList;
   b: boolean;
   i, j: integer;
-  st: Integer; // skill_test
+  st, rolls, pl_choise: Integer; // skill_test
   tmp_str: string;
 begin
 
@@ -1137,7 +1148,7 @@ begin
 
   splitdata('|', Node.data, output_data);
 
-  if output_data[1] = '3' then // Проверка навыка
+  if output_data[1] = '3' then // Условие
   begin
     b := ProcessCondition(StrToInt(output_data[2]), StrToInt(output_data[3]), StrToInt(output_data[4]), StrToInt(output_data[5]));
     if b then
@@ -1162,25 +1173,65 @@ begin
 
   if output_data[1] = '4' then // Action
   begin
-    ProcessAction(StrToInt(output_data[2]), StrToInt(output_data[3]));
+    if output_data[3] = '77' then //
+      ProcessAction(StrToInt(output_data[2]), add_data)
+    else
+      ProcessAction(StrToInt(output_data[2]), StrToInt(output_data[3]));
+
   end;
 
   if output_data[1] = '2' then // OR
   begin
-    if MessageDlg(output_data[3], mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    if output_data[2] = '2' then
+      pl_choise := Choise2(output_data[3], output_data[4])
+    else
+      if output_data[2] = '3' then
+        pl_choise := Choise3(output_data[3], output_data[4], output_data[5])
+      else
+        if output_data[2] = '4' then
+          pl_choise := Choise4(output_data[3], output_data[4], output_data[5], output_data[6]);
+    if pl_choise = 1 then
     begin
       //for i := 0 to Node.mnChild[0].mnChildCount-1 do
-        ProcessNode(Node.mnChild[0]);
+        ProcessNode(Node.mnChild[0].mnChild[0]);
     end
     else
-    begin
-      //for i := 0 to Node.mnChild[1].mnChildCount-1 do
-        ProcessNode(Node.mnChild[1]);
-    end;
+      if pl_choise = 2 then
+      begin
+        //for i := 0 to Node.mnChild[1].mnChildCount-1 do
+          ProcessNode(Node.mnChild[1].mnChild[0]);
+      end
+      else
+        if pl_choise = 3 then
+        begin
+          //for i := 0 to Node.mnChild[1].mnChildCount-1 do
+            ProcessNode(Node.mnChild[2].mnChild[0]);
+        end;
+
   end;
 
-  if output_data[1] = '5' then // Condition with various num of suxxess
+  if output_data[1] = '5' then // condition with various num of suxxess
   begin
+    if output_data[2] = '1' then // just roll a dice
+    begin
+      randomize;
+      rolls := 0;
+      for i := 1 to StrToInt(output_data[4]) do // How many rolls
+        rolls := rolls + random(6) + 1;
+      for i := 0 to StrToInt(output_data[5])-1 do
+      begin
+        tmp_str := node.mnChild[i].data;
+
+        if (tmp_str = 'one-three')and(rolls > 0)and(rolls <= 3) then
+          for j := 0 to node.mnChild[i].mnChildCount-1 do
+            ProcessNode(node.mnChild[i].mnChild[j], rolls);
+        if (tmp_str = 'three-six')and(rolls > 3)and(rolls <= 6) then
+          for j := 0 to node.mnChild[i].mnChildCount-1 do
+            ProcessNode(node.mnChild[i].mnChild[j], rolls);
+      end;
+      exit;
+    end;
+
     st := ProcessMultiCondition(StrToInt(output_data[2]), StrToInt(output_data[3]), StrToInt(output_data[4]), StrToInt(output_data[5]));
     for i := 0 to StrToInt(output_data[5])-1 do
     begin
@@ -1295,9 +1346,9 @@ var
   tmp: StrDataArray;
 begin
   output_data.Clear;
+  output_data.QuoteChar := '''';
   output_data.Delimiter := delimiter;
   output_data.DelimitedText := str;
-  //tmp[1] := Copy(str, 1, 2);
 end;
 
 procedure TfrmMain.btn2Click(Sender: TObject);

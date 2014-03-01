@@ -210,6 +210,7 @@ begin
 end;
 
 // Бросок кубика (Возвращает число успехов, 0 - провал)
+// Rename this func to SkillCheck
 function TPlayer.RollADice(stat: integer): integer; // stat - exactly value of stat
 var
   r, i, s: integer;

@@ -13,34 +13,24 @@ type
     RadioButton2: TRadioButton;
     RadioButton3: TRadioButton;
     Button1: TButton;
+    RadioButton4: TRadioButton;
     procedure Button1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RadioButton1Click(Sender: TObject);
     procedure RadioButton2Click(Sender: TObject);
     procedure RadioButton3Click(Sender: TObject);
+    procedure RadioButton4Click(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
-    procedure Choise1(act: integer; act2: integer);
-    procedure Choise2(act: integer; act2: integer; act3: integer);
+    procedure Choise2(act1: string; act2: string);
+    procedure Choise3(act1: string; act2: string; act3: string);
+    procedure Choise4(act1: string; act2: string; act3: string; act4: string);
   end;
 
 var
   ChoiseForm: TChoiseForm;
-  actions: array [0..50] of string = ('Ничего', 'Получить $', 'Потерять $', 'Получить тело',
-   'Получить разум', 'Потерять тело', 'Потерять разум', 'Взять улику', 'Потерять улик',
-   'Взять простой предмет', 'Взять уник. предмет', 'Взять закл.', 'Взять навык',
-   'Взять карту союзника, если доступна', 'Взять карту спутника', 'Сбросить простую вещь',
-   'Сбросить уник. вещь', 'Сбросить улики', 'Сбросить заклинания', 'Сбросить навык',
-   'Иди на улицу', 'Взят в полицию', 'Благословлен', 'Проклят', 'Посм. карты простых вещей (кол-во)',
-   'Посм. карты уник. вещей (кол-во)', 'Купить любые из вытянутых на 1 $ дороже',
-   'Вытянуть простую вещь', 'Вытянуть уник. вещь', 'Купить на 1 дешевле', 'Купить любую прост. вещь',
-   'Купить любую уник. вещь', 'Взять простую вещь (ID)', 'Перейти на любую локацию, контакт',
-   'Перейти на любую улицу, контакт', 'Затянуло во врата', 'Появился монстр', 'Вытянуть карту мифа и идти к вратам',
-   'Выполнить др. условие', 'Комбинир. условие', 'Контакт', 'спец карта', 'пермещение  конт',
-   'б т д в', 'Сброс', 'сброс 2 (конк)', 'брос куб(+/-)', 'комбо нр мр', 'миф перем',
-   'хп    мп', 'д п у н з с');
 
 implementation
 
@@ -71,19 +61,33 @@ begin
   ChoiseForm.Tag := 3;
 end;
 
-procedure TChoiseForm.Choise1(act: integer; act2: integer);
+procedure TChoiseForm.Choise2(act1: string; act2: string);
 begin
-   RadioButton1.Caption := actions[act];
-   RadioButton2.Caption := actions[act2];
+   RadioButton1.Caption := act1;
+   RadioButton2.Caption := act2;
    RadioButton3.Visible := False;
 end;
 
-procedure TChoiseForm.Choise2(act: integer; act2: integer; act3: integer);
+procedure TChoiseForm.Choise3(act1: string; act2: string; act3: string);
 begin
    RadioButton3.Visible := True;
-   RadioButton1.Caption := actions[act];
-   RadioButton2.Caption := actions[act2];
-   RadioButton3.Caption := actions[act3];
+   RadioButton1.Caption := act1;
+   RadioButton2.Caption := act2;
+   RadioButton3.Caption := act3;
+end;
+
+procedure TChoiseForm.Choise4(act1: string; act2: string; act3: string; act4: string);
+begin
+   RadioButton4.Visible := True;
+   RadioButton1.Caption := act1;
+   RadioButton2.Caption := act2;
+   RadioButton3.Caption := act3;
+   RadioButton4.Caption := act4;
+end;
+
+procedure TChoiseForm.RadioButton4Click(Sender: TObject);
+begin
+  ChoiseForm.Tag := 4;
 end;
 
 end.

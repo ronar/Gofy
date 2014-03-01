@@ -243,8 +243,8 @@ end;
 // n - номер локации на карте
 function TLocationCardsDeck.DrawCard(n: integer): TLocationCard;
 begin
-  DrawCard := fCards[4{fCount div 3}, 1];//n];
-  Shuffle;
+  DrawCard := fCards[1{fCount div 3}, 3];//n];
+  //Shuffle;
 end;
 
 // Поиск файлов в картами

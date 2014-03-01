@@ -1,8 +1,8 @@
 object ChoiseForm: TChoiseForm
-  Left = 950
-  Top = 492
+  Left = 479
+  Top = 280
   Width = 679
-  Height = 208
+  Height = 307
   Caption = 'Choise'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -25,25 +25,25 @@ object ChoiseForm: TChoiseForm
   object RadioButton1: TRadioButton
     Left = 8
     Top = 56
-    Width = 201
+    Width = 361
     Height = 17
     Caption = '1'
     TabOrder = 0
     OnClick = RadioButton1Click
   end
   object RadioButton2: TRadioButton
-    Left = 216
-    Top = 56
-    Width = 209
+    Left = 8
+    Top = 80
+    Width = 369
     Height = 17
     Caption = '2'
     TabOrder = 1
     OnClick = RadioButton2Click
   end
   object RadioButton3: TRadioButton
-    Left = 432
-    Top = 56
-    Width = 217
+    Left = 8
+    Top = 104
+    Width = 369
     Height = 17
     Caption = '3'
     TabOrder = 2
@@ -51,11 +51,21 @@ object ChoiseForm: TChoiseForm
   end
   object Button1: TButton
     Left = 288
-    Top = 112
+    Top = 208
     Width = 75
     Height = 25
     Caption = 'OK'
     TabOrder = 3
     OnClick = Button1Click
+  end
+  object RadioButton4: TRadioButton
+    Left = 8
+    Top = 128
+    Width = 369
+    Height = 17
+    Caption = '4'
+    TabOrder = 4
+    Visible = False
+    OnClick = RadioButton4Click
   end
 end

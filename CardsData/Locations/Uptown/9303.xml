@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<action data="|2|2|Купить_за_5$_старый_запертый_сундук?|Нет|1|">
+		<or1>
+			<action data="|5|2|6|0|3">
+				<zero>
+					<action data="|0|0|0|"></action>
+				</zero>
+				<one>
+					<action data="|4|1|772|"></action>
+				</one>
+				<twoplus>
+					<action data="|4|10|2|"></action>
+				</twoplus>
+			</action>	
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+	</action>
+</actions>

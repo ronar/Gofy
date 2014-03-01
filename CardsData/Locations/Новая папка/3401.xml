@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="true"?>
+
+-<actions>
+    <or data="|2|2|Союзник?">
+          <action data="|3|4|32|0|0|">
+                <true> 
+                       <action data="|4|13|32|"></action>
+                </true>
+ 
+                <false>
+                       <action data="|4|9|2|">  
+                </false>
+         </action>
+         <action data="|0|0|0|">
+    </or>
+
+</actions>
