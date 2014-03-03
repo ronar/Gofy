@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <actions>
-	<action data="|2|2|Купить_за_5$_старый_запертый_сундук?|Нет|1|">
+	<action data="|2|2|'Купить за 5$ старый запертый сундук'|Нет|_|_|">
 		<or1>
 			<action data="|5|2|6|0|3">
 				<zero>

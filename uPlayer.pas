@@ -408,7 +408,7 @@ end;
 procedure TPlayer.MoveToLocation(id_lok: integer);
 begin
   fLocation := id_lok;
-  fNeighborhood := (id_lok div 1000) * 1000;
+  fNeighborhood := (id_lok div 1000) * 1000; // ?
 end;
 
 

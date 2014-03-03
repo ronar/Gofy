@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<condition data="|5|2|6|0|4">
+		<zero>
+			<action data="|4|6|1|"></action>
+		</zero>
+		<one>
+			<action data="|4|9|1|"></action>
+		</one>
+		<two>
+			<action data="|4|10|1|"></action>
+		</two>
+		<threeplus>
+			<action data="|4|1|10|"></action>
+		</threeplus>
+	</condition>	
+</actions>

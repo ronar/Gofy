@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Заплатить шерифу Энглу 5$'|'Сбросить все оружие'">
+		<or1>
+			<condition data="|3|3|1|5|0|">
+				<true>
+					<action data="|4|2|5|"></action>
+				</true>
+				<false>
+					<action data="|0|0|32|"></action>
+				</false>
+			</condition>
+		</or1>
+		<or2>
+			<action data="|4|16|99|"></action>
+		</or2>
+	</or>
+</actions>

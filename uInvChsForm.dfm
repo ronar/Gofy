@@ -1403,7 +1403,7 @@ object frmInv: TfrmInv
     Style = csOwnerDrawFixed
     ItemHeight = 13
     ItemIndex = 2
-    TabOrder = 0
+    TabOrder = 1
     Text = 'Amanda Sharpe'
     OnChange = cbInvPlayer1Change
     Items.Strings = (
@@ -1464,7 +1464,7 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    TabOrder = 1
+    TabOrder = 2
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1523,7 +1523,7 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    TabOrder = 2
+    TabOrder = 3
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1582,7 +1582,7 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    TabOrder = 3
+    TabOrder = 4
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1641,7 +1641,7 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    TabOrder = 4
+    TabOrder = 5
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1700,7 +1700,7 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    TabOrder = 5
+    TabOrder = 6
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1759,7 +1759,7 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    TabOrder = 6
+    TabOrder = 7
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1818,7 +1818,7 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    TabOrder = 7
+    TabOrder = 8
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1876,7 +1876,7 @@ object frmInv: TfrmInv
     Width = 75
     Height = 25
     Caption = #1053#1072#1095#1072#1090#1100' '#1080#1075#1088#1091
-    TabOrder = 8
+    TabOrder = 0
     OnClick = Button1Click
   end
   object Button2: TButton

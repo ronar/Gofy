@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 249
-  Top = 54
-  Width = 1110
+  Left = 175
+  Top = 43
+  Width = 1182
   Height = 656
   Caption = 'frmMain'
   Color = clBtnFace
@@ -30,35 +30,6 @@ object frmMain: TfrmMain
     Height = 13
     Caption = #1055#1077#1088#1077#1081#1090#1080' '#1074' '#1083#1086#1082#1072#1094#1080#1102':'
   end
-  object lblSkillCheck: TLabel
-    Left = 232
-    Top = 96
-    Width = 94
-    Height = 13
-    Caption = #1055#1088#1086#1074#1077#1088#1082#1072' '#1085#1072#1074#1099#1082#1072':'
-  end
-  object lblNSuccesses: TLabel
-    Left = 232
-    Top = 112
-    Width = 80
-    Height = 13
-    Caption = #1050#1086#1083'-'#1074#1086' '#1091#1089#1087#1077#1093#1086#1074':'
-  end
-  object lblSkill: TLabel
-    Left = 369
-    Top = 96
-    Width = 29
-    Height = 13
-    Alignment = taRightJustify
-    Caption = 'lblSkill'
-  end
-  object lblNumSuccesses: TLabel
-    Left = 320
-    Top = 112
-    Width = 84
-    Height = 13
-    Caption = 'lblNumSuccesses'
-  end
   object lblLocIDCaption: TLabel
     Left = 232
     Top = 80
@@ -74,16 +45,9 @@ object frmMain: TfrmMain
     Alignment = taRightJustify
     Caption = 'lblLocID'
   end
-  object lblLocCardDataCaption: TLabel
-    Left = 232
-    Top = 128
-    Width = 54
-    Height = 13
-    Caption = 'Card_Data:'
-  end
   object lblLocCardData: TLabel
-    Left = 374
-    Top = 520
+    Left = 6
+    Top = 512
     Width = 51
     Height = 13
     Alignment = taRightJustify
@@ -96,10 +60,10 @@ object frmMain: TfrmMain
     ParentFont = False
   end
   object imgEncounter: TImage
-    Left = 736
-    Top = 8
-    Width = 334
-    Height = 525
+    Left = 784
+    Top = 16
+    Width = 377
+    Height = 593
     Picture.Data = {
       0A544A504547496D616765F1B60000FFD8FFE000104A46494600010101006000
       600000FFE1004845786966000049492A00080000000200310102001100000026
@@ -1570,14 +1534,14 @@ object frmMain: TfrmMain
   end
   object lblCurrentPlayer: TLabel
     Left = 232
-    Top = 312
+    Top = 96
     Width = 80
     Height = 13
     Caption = #1058#1077#1082#1091#1097#1080#1081' '#1080#1075#1088#1086#1082':'
   end
   object lblCurPlayer: TLabel
-    Left = 320
-    Top = 312
+    Left = 344
+    Top = 96
     Width = 55
     Height = 13
     Caption = 'lblCurPlayer'
@@ -1669,22 +1633,22 @@ object frmMain: TfrmMain
     Caption = #1046#1091#1088#1085#1072#1083' '#1089#1086#1073#1099#1090#1080#1081':'
   end
   object lbl1: TLabel
-    Left = 784
-    Top = 544
+    Left = 432
+    Top = 464
     Width = 16
     Height = 13
     Caption = 'lbl1'
   end
   object lbl2: TLabel
-    Left = 784
-    Top = 560
+    Left = 432
+    Top = 480
     Width = 16
     Height = 13
     Caption = 'lbl2'
   end
   object lbl3: TLabel
-    Left = 784
-    Top = 576
+    Left = 432
+    Top = 496
     Width = 16
     Height = 13
     Caption = 'lbl3'
@@ -1695,12 +1659,12 @@ object frmMain: TfrmMain
     Width = 89
     Height = 25
     Caption = #1047#1072#1087#1080#1083#1080#1090#1100' '#1084#1086#1073#1072
-    TabOrder = 0
+    TabOrder = 2
     OnClick = Button1Click
   end
   object RadioGroup1: TRadioGroup
     Left = 232
-    Top = 152
+    Top = 144
     Width = 185
     Height = 105
     Caption = 'RadioGroup1'
@@ -1711,7 +1675,7 @@ object frmMain: TfrmMain
       '3rd phase (Arkham Encounter)'
       '4th phase (Other World Encounter) '
       '5th phase (Mythos)')
-    TabOrder = 1
+    TabOrder = 4
     OnClick = RadioGroup1Click
   end
   object btnInit: TButton
@@ -1720,7 +1684,8 @@ object frmMain: TfrmMain
     Width = 73
     Height = 25
     Caption = '1.'#1048#1085#1080#1094'-'#1103
-    TabOrder = 2
+    Enabled = False
+    TabOrder = 0
     OnClick = btnInitClick
   end
   object btnPlaData: TButton
@@ -1729,7 +1694,7 @@ object frmMain: TfrmMain
     Width = 81
     Height = 25
     Caption = #1044'-'#1077' '#1086#1073' '#1080#1075#1088#1086#1082#1077
-    TabOrder = 3
+    TabOrder = 5
     OnClick = btnPlaDataClick
   end
   object GroupBox2: TGroupBox
@@ -1738,7 +1703,7 @@ object frmMain: TfrmMain
     Width = 209
     Height = 377
     Caption = #1048#1075#1088#1086#1082
-    TabOrder = 4
+    TabOrder = 6
     object lblPlrStamina: TLabel
       Left = 97
       Top = 24
@@ -2068,7 +2033,7 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = #1041#1088#1086#1089#1080#1090#1100
-    TabOrder = 5
+    TabOrder = 7
     OnClick = btnRollADieClick
   end
   object Edit1: TEdit
@@ -2076,7 +2041,7 @@ object frmMain: TfrmMain
     Top = 432
     Width = 73
     Height = 21
-    TabOrder = 6
+    TabOrder = 8
     Text = '1'
   end
   object cbLocation: TComboBox
@@ -2086,7 +2051,7 @@ object frmMain: TfrmMain
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    TabOrder = 7
+    TabOrder = 3
     OnChange = cbLocationChange
   end
   object bntEncounter: TButton
@@ -2095,7 +2060,7 @@ object frmMain: TfrmMain
     Width = 65
     Height = 25
     Caption = 'Encounter'
-    TabOrder = 8
+    TabOrder = 9
     OnClick = bntEncounterClick
   end
   object btnProcess: TButton
@@ -2104,7 +2069,7 @@ object frmMain: TfrmMain
     Width = 81
     Height = 25
     Caption = 'Process phase'
-    TabOrder = 9
+    TabOrder = 10
     OnClick = btnProcessClick
   end
   object btnMoveToLok: TButton
@@ -2113,7 +2078,7 @@ object frmMain: TfrmMain
     Width = 65
     Height = 25
     Caption = 'Move 2 lok'
-    TabOrder = 10
+    TabOrder = 11
     OnClick = btnMoveToLokClick
   end
   object btnShuffle: TButton
@@ -2122,7 +2087,7 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = 'Shuffle'
-    TabOrder = 11
+    TabOrder = 12
     OnClick = btnShuffleClick
   end
   object LabeledEdit1: TLabeledEdit
@@ -2133,7 +2098,7 @@ object frmMain: TfrmMain
     EditLabel.Width = 73
     EditLabel.Height = 13
     EditLabel.Caption = 'Num of players:'
-    TabOrder = 12
+    TabOrder = 13
     Text = '1'
   end
   object btnNextPers: TButton
@@ -2142,7 +2107,7 @@ object frmMain: TfrmMain
     Width = 89
     Height = 25
     Caption = #1057#1083#1077#1076'. '#1087#1077#1088#1089#1086#1085#1072#1078
-    TabOrder = 13
+    TabOrder = 14
     OnClick = btnNextPersClick
   end
   object btnChsInv: TButton
@@ -2151,7 +2116,7 @@ object frmMain: TfrmMain
     Width = 105
     Height = 25
     Caption = '2.'#1042#1099#1073#1088#1072#1090#1100' '#1089#1099#1097#1080#1082#1072
-    TabOrder = 14
+    TabOrder = 1
     OnClick = btnChsInvClick
   end
   object btnUseCard: TButton
@@ -2206,30 +2171,22 @@ object frmMain: TfrmMain
     TabOrder = 20
     OnClick = btnMoveToExactLokClick
   end
-  object tv1: TTreeView
-    Left = 568
-    Top = 464
-    Width = 105
-    Height = 73
-    Indent = 19
-    TabOrder = 21
-  end
   object btn1: TButton
-    Left = 784
-    Top = 592
+    Left = 432
+    Top = 512
     Width = 75
     Height = 17
     Caption = 'btn1'
-    TabOrder = 22
+    TabOrder = 21
     OnClick = btn1Click
   end
   object btn2: TButton
-    Left = 864
-    Top = 592
+    Left = 512
+    Top = 512
     Width = 75
     Height = 17
     Caption = 'btn2'
-    TabOrder = 23
+    TabOrder = 22
     OnClick = btn2Click
   end
   object xmldoc1: TXMLDocument

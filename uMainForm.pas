@@ -27,15 +27,10 @@ type
     lblNRolls: TLabel;
     cbLocation: TComboBox;
     Label11: TLabel;
-    lblSkillCheck: TLabel;
-    lblNSuccesses: TLabel;
-    lblSkill: TLabel;
-    lblNumSuccesses: TLabel;
     bntEncounter: TButton;
     btnProcess: TButton;
     lblLocIDCaption: TLabel;
     lblLocID: TLabel;
-    lblLocCardDataCaption: TLabel;
     lblLocCardData: TLabel;
     imgEncounter: TImage;
     lblStatSpeed: TLabel;
@@ -98,7 +93,6 @@ type
     Label3: TLabel;
     edtLokID: TEdit;
     btnMoveToExactLok: TButton;
-    tv1: TTreeView;
     xmldoc1: TXMLDocument;
     btn1: TButton;
     lbl1: TLabel;
@@ -314,6 +308,21 @@ var
   i: integer;
   PlStats: array [1..6] of integer;
 begin
+  path_to_exe := ExtractFilePath(Application.ExeName);
+  Common_Items_Deck:= TItemCardDeck.Create(CT_COMMON_ITEM);
+  Unique_Items_Deck:= TItemCardDeck.Create(CT_UNIQUE_ITEM);
+  Spells_Deck:= TItemCardDeck.Create(CT_SPELL);
+  Skills_Deck:= TItemCardDeck.Create(CT_SKILL);
+
+  for i := 1 to NUMBER_OF_STREETS do
+    Arkham_Streets[i] := TStreet.Create(StrToInt(NeighborhoodsNames[i, 1]));
+
+  for i := 1 to NUMBER_OF_LOCATIONS do
+  begin
+    cbLocation.Items.Add(LocationsNames[i, 2]);
+  end;
+  gCurrentPhase := 3;
+
   PlStats[1] := 5; // Speed
   PlStats[2] := 1; // Sneak
   PlStats[3] := 4; // Fight
@@ -333,6 +342,7 @@ begin
 
   gPlayer := players[1];
   gCurrentPlayer := players[GetFirstPlayer];
+  gCurrentPlayer.Clues := 10; // Give 10 clues
   lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
 
   // Загрузка карт n-го типа (Контакты)
@@ -451,24 +461,7 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 var
   i, n: integer;
 begin
-  path_to_exe := ExtractFilePath(Application.ExeName);
-  //for i := 1 to ITEMS_CARD_NUMBER do
-  //begin
-    Common_Items_Deck:= TItemCardDeck.Create(CT_COMMON_ITEM);
-    Unique_Items_Deck:= TItemCardDeck.Create(CT_UNIQUE_ITEM);
-    Spells_Deck:= TItemCardDeck.Create(CT_SPELL);
-    Skills_Deck:= TItemCardDeck.Create(CT_SKILL);
-  //end;
-
-  for i := 1 to NUMBER_OF_STREETS do
-    Arkham_Streets[i] := TStreet.Create(StrToInt(NeighborhoodsNames[i, 1]));
-
-  for i := 1 to NUMBER_OF_LOCATIONS do
-  begin
-    cbLocation.Items.Add(LocationsNames[i, 2]);
-  end;
-  gCurrentPhase := 3;
-  
+  btnInitClick(Sender);
   //New(head_of_list);
 end;
 
@@ -582,11 +575,14 @@ end;
 
 procedure TfrmMain.btnMoveToLokClick(Sender: TObject);
 begin
-  if gCurrentPhase = PH_MOVE then
+  if 1=1{gCurrentPhase = PH_MOVE} then
   begin
     gCurrentPlayer.MoveToLocation(GetLokIDByName(cbLocation.Text));
     if Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).clues > 0 then
+    begin
       gCurrentPlayer.Clues := gCurrentPlayer.Clues + 1; // Сбор улик :)
+      ShowMessage('Игрок нашел улики! Аааа-а-аа-аа-ааа супер круто. *Игрок бегает по-кругу в порывах радости.*');
+    end;
     //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
     if Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).monsters[1] > 0 then
       if MessageDlg('Care for battle with an awful monster?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
@@ -634,11 +630,15 @@ begin
       end;
     end;
     3: begin // Проверка наличия
+      frmMain.lbLog.Items.Add('Проверка наличия чего-либо у игрока');
       if gPlayer.CheckAvailability(prm, N) then //
         ProcessCondition := True
       else
+      begin
         ProcessCondition := False;
-      frmMain.lbLog.Items.Add('Проверка наличия чего-либо у игрока');
+        frmMain.lbLog.Items.Add('Не хватат!');
+      end;
+
     end; // case 3
     4: begin // Проверка наличия карты в колоде
       case (prm div 1000) of // Extract 1st digit
@@ -649,6 +649,7 @@ begin
             ProcessCondition := False;
         end;
       end;
+      //ProcessCondition := True;
       frmMain.lbLog.Items.Add('Проверка наличия карты в колоде');
     end; // case 4
     5: begin // Отдать что-либо
@@ -731,6 +732,11 @@ var
 begin
   case action of
   1: begin
+    if action_value = 77 then
+    begin
+      Randomize;
+      action_value := random(6)+1;
+    end;
     if action_value = 772 then
     begin
       Randomize;
@@ -772,7 +778,7 @@ begin
         gCurrentPlayer.AddItem(action_value)
     else
       gCurrentPlayer.AddItem(Common_Items_Deck.DrawCard);
-    frmMain.lbLog.Items.Add('Игрок вытянул карту простого предмета.');
+    frmMain.lbLog.Items.Add('Игрок вытянул карту простого предмета: ' + IntToStr(action_value));
   end; // case 9
   10: begin // Draw unique item
     gCurrentPlayer.AddItem(Unique_Items_Deck.DrawCard);
@@ -796,6 +802,10 @@ begin
     //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
     frmMain.lbLog.Items.Add('Игрок потерял предмет (на выбор).');
   end; // case 15
+  16: begin // Drop weapon of player's choise or amt.
+    //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
+    frmMain.lbLog.Items.Add('Игрок потерял оружие ' + IntToStr(action_value));
+  end; // case 16
   18: begin // Drop spell
     //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
     frmMain.lbLog.Items.Add('Игрок потерял закл.');
@@ -820,7 +830,9 @@ begin
     gCurrentPlayer.Cursed := True;
     frmMain.lbLog.Items.Add('Игрок проклят.');
   end; // case 23
-
+  26: begin // Draw common items, buy for 1 above of it's price, any or all
+    frmMain.lbLog.Items.Add('Look at the top 3 cards of the Common Item deck. You may purchase any or all of them for $1 above the list price..');
+  end; // case 26
   33: begin // Move to lok (ID или если 0 - на любую)
     if action_value = 0 then
     begin
@@ -845,6 +857,10 @@ begin
     //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
     frmMain.lbLog.Items.Add('Появился монстр.');
   end; // case 36
+  37: begin // Gate appeared
+    //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
+    frmMain.lbLog.Items.Add('Появились врата.');
+  end; // case 37
   38: begin // Pass turn
     //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
     frmMain.lbLog.Items.Add('Игрок пропускает ход.');
@@ -875,7 +891,7 @@ begin
 
     end
     else
-      ; //gPlayer.Location := StrToInt(IntToStr(Round(action_value / 3 + 0.4)) + IntToStr(action_value - (Round(action_value / 3 + 0.4) - 1) * 3));
+      frmMain.lbLog.Items.Add('Насин хеппенд :).'); //gPlayer.Location := StrToInt(IntToStr(Round(action_value / 3 + 0.4)) + IntToStr(action_value - (Round(action_value / 3 + 0.4) - 1) * 3));
   end;
 end;
 
@@ -885,6 +901,21 @@ procedure Encounter(player: TPlayer; card: TLocationCard);
 var
   i: integer;
   c_node: PLLData;
+
+  function GetLokNameByID(id: integer): string;
+  var
+    k, card_id: Integer;
+  begin
+    card_id := ton(id)*1000;
+    for k := 1 to 9 do
+    begin
+      if StrToInt(NeighborhoodsNames[k,1]) = card_id then
+      begin
+        Result := NeighborhoodsNames[k,2];
+        break;
+      end;
+    end;
+  end;
 begin
   // TODO: таблицу с картами | N | ID_Card |, чтобы находить карты для условия
   // и добавлять новые
@@ -892,11 +923,14 @@ begin
   // Получили данные карты
   if card.crd_head <> nil then
   begin
+    frmMain.imgEncounter.Picture.LoadFromFile(path_to_exe+'\CardsData\Locations\' + GetLokNameByID(card.id) + '\' + IntToStr((ton(card.ID) * 1000) + StrToInt(IntToStr(card.ID)[4])) + '.jpg');
     c_node := card.crd_head;
 
     for i := 0 to c_node.mnChildCount-1 do
       processnode(c_node.mnChild[i]);
-  end;
+  end
+  else
+    ShowMessage('Почему-то карта пустая :(');
 {  c_data := card.Data;
   if c_data = '' then
   begin
@@ -915,7 +949,7 @@ var
   drawn_items: array [1..3] of integer;
 begin
   //lok := GetLokByID(gCurrentPlayer.Location);
-  if gCurrentPhase = PH_ENCOUNTER then
+  if 1=1{gCurrentPhase = PH_ENCOUNTER} then
   begin
     case gCurrentPlayer.Location of
       4300: begin
@@ -942,7 +976,7 @@ begin
           Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
       end; // 4300
       //else Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
-      else Encounter(gCurrentPlayer, Arkham_Streets[3].deck.DrawCard(hon(gCurrentPlayer.Location)));
+      else Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
     end;
 
     Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.Shuffle;
@@ -1056,7 +1090,7 @@ begin
 end;
 
 
-function hon(num: integer): integer; // hundredth of number // thousandth of number
+function hon(num: integer): integer; // hundredth of number
 var
   tmp: integer;
 begin
@@ -1148,6 +1182,11 @@ begin
 
   splitdata('|', Node.data, output_data);
 
+  if output_data[1] = '0' then // Action
+  begin
+    frmMain.lbLog.Items.Add('Насин хеппенд :).');
+  end;
+
   if output_data[1] = '3' then // Условие
   begin
     b := ProcessCondition(StrToInt(output_data[2]), StrToInt(output_data[3]), StrToInt(output_data[4]), StrToInt(output_data[5]));
@@ -1173,9 +1212,9 @@ begin
 
   if output_data[1] = '4' then // Action
   begin
-    if output_data[3] = '77' then //
+    {if output_data[3] = '77' then //
       ProcessAction(StrToInt(output_data[2]), add_data)
-    else
+    else  }
       ProcessAction(StrToInt(output_data[2]), StrToInt(output_data[3]));
 
   end;
@@ -1190,23 +1229,28 @@ begin
       else
         if output_data[2] = '4' then
           pl_choise := Choise4(output_data[3], output_data[4], output_data[5], output_data[6]);
+
     if pl_choise = 1 then
     begin
-      //for i := 0 to Node.mnChild[0].mnChildCount-1 do
-        ProcessNode(Node.mnChild[0].mnChild[0]);
+      for i := 0 to Node.mnChild[0].mnChildCount-1 do
+        ProcessNode(Node.mnChild[0].mnChild[i]);
     end
     else
       if pl_choise = 2 then
       begin
-        //for i := 0 to Node.mnChild[1].mnChildCount-1 do
-          ProcessNode(Node.mnChild[1].mnChild[0]);
+        for i := 0 to Node.mnChild[1].mnChildCount-1 do
+          ProcessNode(Node.mnChild[1].mnChild[i]);
       end
       else
         if pl_choise = 3 then
         begin
-          //for i := 0 to Node.mnChild[1].mnChildCount-1 do
-            ProcessNode(Node.mnChild[2].mnChild[0]);
-        end;
+          for i := 0 to Node.mnChild[2].mnChildCount-1 do
+            ProcessNode(Node.mnChild[2].mnChild[i]);
+        end
+        else
+          if pl_choise = 4 then
+            for i := 0 to Node.mnChild[3].mnChildCount-1 do
+              ProcessNode(Node.mnChild[3].mnChild[i]);
 
   end;
 
@@ -1238,46 +1282,50 @@ begin
       //tmp_str := TStringList.Create;
       tmp_str := Node.mnChild[i].data;
 
-      if (tmp_str = 'zero')and(st = 0) then
+      if st = 0 then
       begin
-        for j := 0 to Node.mnChild[i].mnChildCount-1 do
-          ProcessNode(Node.mnChild[i].mnChild[j]);
-      end
-      else
-        if (tmp_str = 'zero-one')and(st = 0) then
+        if pos('zero', tmp_str) <> 0 then
           for j := 0 to Node.mnChild[i].mnChildCount-1 do
             ProcessNode(Node.mnChild[i].mnChild[j]);
-
-      if (tmp_str = 'one')and(st = 1) then
+      end;
+      {else
+        if (tmp_str = 'zero-one') then
+          for j := 0 to Node.mnChild[i].mnChildCount-1 do
+            ProcessNode(Node.mnChild[i].mnChild[j]);
+      }
+      if st = 1 then
       begin
+         if pos('one', tmp_str) <> 0 then
         for j := 0 to Node.mnChild[i].mnChildCount-1 do
           ProcessNode(Node.mnChild[i].mnChild[j]);
-      end
+      end;{
       else
         if (tmp_str = 'zero-one')and(st = 1) then
           for j := 0 to Node.mnChild[i].mnChildCount-1 do
             ProcessNode(Node.mnChild[i].mnChild[j]);
-
-      if (tmp_str = 'two')and(st = 2) then
+      }
+      if st = 2 then
       begin
-        for j := 0 to Node.mnChild[i].mnChildCount-1 do
-          ProcessNode(Node.mnChild[i].mnChild[j]);
-      end
+        if pos('two', tmp_str) <> 0 then
+          for j := 0 to Node.mnChild[i].mnChildCount-1 do
+            ProcessNode(Node.mnChild[i].mnChild[j]);
+      end;{
       else
         if (tmp_str = 'twoplus')and(st >= 2) then
           for j := 0 to Node.mnChild[i].mnChildCount-1 do
             ProcessNode(Node.mnChild[i].mnChild[j]);
-
-      if (tmp_str = 'three')and(st = 3) then
+      }
+      if (st = 3) then
       begin
-        for j := 0 to Node.mnChild[i].mnChildCount-1 do
-          ProcessNode(Node.mnChild[i].mnChild[j]);
-      end
-      else
+        if pos('three', tmp_str) <> 0 then
+          for j := 0 to Node.mnChild[i].mnChildCount-1 do
+            ProcessNode(Node.mnChild[i].mnChild[j]);
+      end;
+      {else
         if (tmp_str = 'threeplus')and(st >= 3) then
           for j := 0 to Node.mnChild[i].mnChildCount-1 do
             ProcessNode(Node.mnChild[i].mnChild[j]);
-
+      }
     end;
   end;
     //ProcessAction(StrToInt(output_data[1]), StrToInt(output_data[2]));
