@@ -254,7 +254,7 @@ var
   SR: TSearchRec; // поисковая переменная
   FindRes: Integer; // переменная для записи результата поиска
   s: string[80];
-  i, n: integer;
+  i, n, crd_num: integer;
 begin
   // задание условий поиска и начало поиска
   FindRes := FindFirst(file_path + '*.xml', faAnyFile, SR);
@@ -267,13 +267,15 @@ begin
     //ShowMessage(Copy(SR.Name, 2, 1));
     if n <> StrToInt(Copy(SR.Name, 2, 1)) then
       i := 0;
+
     n := StrToInt(Copy(SR.Name, 2, 1));
+    crd_num := StrToInt(Copy(SR.Name, 4, 1));
     i := i + 1;
-    fCards[i, n].id := StrToInt(Copy(SR.Name, 1, 4));
-    New(fCards[i, n].crd_head);
-    fCards[i, n].crd_head.mnChildCount := 0;
-    fCards[i, n].crd_head.data := '';
-    XML2LL(fCards[i, n].crd_head, file_path + SR.Name);
+    fCards[crd_num, n].id := StrToInt(Copy(SR.Name, 1, 4));
+    New(fCards[crd_num, n].crd_head);
+    fCards[crd_num, n].crd_head.mnChildCount := 0;
+    fCards[crd_num, n].crd_head.data := '';
+    XML2LL(fCards[crd_num, n].crd_head, file_path + SR.Name);
     //ShowMessage(Format('%s', [fCards[i, n].crd_head.mnChild[0].data]));
     //Cards^.Cards.Type := CT_UNIQUE_ITEM;
 

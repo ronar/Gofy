@@ -937,7 +937,7 @@ begin
       processnode(c_node.mnChild[i]);
   end
   else
-    ShowMessage('Почему-то карта пустая :(#10#13Или вы не перешли на локацию.');
+    ShowMessage('Почему-то карта пустая :('+#10+#13+'Или вы не перешли на локацию.');
 {  c_data := card.Data;
   if c_data = '' then
   begin

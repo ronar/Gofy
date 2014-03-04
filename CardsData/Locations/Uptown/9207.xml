@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Остаться со стариком'|'Не оставаться'|_|_|">
+		<or1>
+			<action data="|4|38|0|"></action>
+			<condition data="|3|2|5|-2|1">
+				<true>
+					<or data="|2|2|'Получить 4 улики'|'Получить 1 навык'|_|_|">
+						<or1>
+							<action data="|4|7|4|"></action>
+						</or1>
+						<or2>
+							<action data="|4|12|1|"></action>
+						</or2>
+					</or>
+				</true>
+				<false>
+					<action data="|0|0|0|"></action>
+				</false>
+			</condition>	
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+	</or>
+</actions>
