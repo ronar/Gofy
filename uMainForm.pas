@@ -278,6 +278,7 @@ begin
     CT_ENCOUNTER: begin
       // Loading cards for diff. neighborhoods
       { TODO :  Implement auto load streets, not by explicit index }
+      Arkham_Streets[2].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Downtown\');
       Arkham_Streets[3].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Easttown\');
       Arkham_Streets[4].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Rivertown\');
       Arkham_Streets[5].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Merchant District\');
