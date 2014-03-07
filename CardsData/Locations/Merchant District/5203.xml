@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|’Да’|’Нет’|’Текст 3-го’|’4-го’">
+		<or1>
+			<condition data="|3|2|6|-1|1|">
+				<true>
+					<action data="|4|10|1|"></action>
+				</true>
+				<false>
+					<action data="|4|5|2|"></action>
+					<action data="|4|6|1|"></action>
+				</false>
+			</condition>
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+	</or>
+</actions>

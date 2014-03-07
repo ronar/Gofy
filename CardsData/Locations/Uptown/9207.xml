@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <actions>
-	<or data="|2|2|'Остаться со стариком'|'Не оставаться'|_|_|">
+	<or data="|2|2|'Пройти проверку скорости'|'Сбросить карту Еда'|_|_|">
 		<or1>
-			<action data="|4|38|0|"></action>
-			<condition data="|3|2|5|-2|1">
+			<condition data="|3|2|1|-2|1">
 				<true>
-					<or data="|2|2|'Получить 4 улики'|'Получить 1 навык'|_|_|">
-						<or1>
-							<action data="|4|7|4|"></action>
-						</or1>
-						<or2>
-							<action data="|4|12|1|"></action>
-						</or2>
-					</or>
+					<condition data="|3|4|14|4|0|">
+						<true>
+							<action data="|4|13|14|"></action>
+						</true>
+						<false>
+							<action data="|4|1|3|"></action>
+						</false>
+					</condition>
 				</true>
 				<false>
 					<action data="|0|0|0|"></action>
@@ -20,7 +19,7 @@
 			</condition>	
 		</or1>
 		<or2>
-			<action data="|0|0|0|"></action>
+			<action data="|4|15|1232|"></action>
 		</or2>
 	</or>
 </actions>

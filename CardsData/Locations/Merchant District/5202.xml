@@ -2,10 +2,11 @@
 <actions>
 	<condition data="|3|2|5|-1|1|">
 		<true>
-			<action data="|0|0|0|"></action>	
+			<action data="|4|11|1|"></action>
 		</true>
 		<false>
-			<action data="|4|23|0|"></action>
+			<action data="|4|38|1|"></action>
+			<action data="|4|7|2|"></action>
 		</false>
 	</condition>
 </actions>

@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 243
-  Top = 76
+  Left = 225
+  Top = 79
   Width = 1103
   Height = 656
   Caption = 'frmMain'
@@ -1633,24 +1633,24 @@ object frmMain: TfrmMain
     Caption = #1046#1091#1088#1085#1072#1083' '#1089#1086#1073#1099#1090#1080#1081':'
   end
   object lbl1: TLabel
-    Left = 432
-    Top = 464
+    Left = 320
+    Top = 472
     Width = 16
     Height = 13
     Caption = 'lbl1'
     Visible = False
   end
   object lbl2: TLabel
-    Left = 432
-    Top = 480
+    Left = 320
+    Top = 488
     Width = 16
     Height = 13
     Caption = 'lbl2'
     Visible = False
   end
   object lbl3: TLabel
-    Left = 432
-    Top = 496
+    Left = 320
+    Top = 504
     Width = 16
     Height = 13
     Caption = 'lbl3'
@@ -2164,13 +2164,13 @@ object frmMain: TfrmMain
     Left = 472
     Top = 24
     Width = 265
-    Height = 385
+    Height = 489
     ItemHeight = 13
     TabOrder = 18
   end
   object edtLokID: TEdit
-    Left = 440
-    Top = 424
+    Left = 104
+    Top = 472
     Width = 121
     Height = 21
     TabOrder = 19
@@ -2178,8 +2178,8 @@ object frmMain: TfrmMain
     Visible = False
   end
   object btnMoveToExactLok: TButton
-    Left = 568
-    Top = 424
+    Left = 232
+    Top = 472
     Width = 75
     Height = 25
     Caption = 'btnMoveToExactLok'
@@ -2188,8 +2188,8 @@ object frmMain: TfrmMain
     OnClick = btnMoveToExactLokClick
   end
   object btn1: TButton
-    Left = 432
-    Top = 512
+    Left = 320
+    Top = 520
     Width = 75
     Height = 17
     Caption = 'btn1'
@@ -2198,8 +2198,8 @@ object frmMain: TfrmMain
     OnClick = btn1Click
   end
   object btn2: TButton
-    Left = 512
-    Top = 512
+    Left = 400
+    Top = 520
     Width = 75
     Height = 17
     Caption = 'btn2'
@@ -2216,6 +2216,15 @@ object frmMain: TfrmMain
     MinValue = 1
     TabOrder = 23
     Value = 1
+  end
+  object btnLogClear: TButton
+    Left = 472
+    Top = 520
+    Width = 75
+    Height = 25
+    Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1083#1086#1075
+    TabOrder = 24
+    OnClick = btnLogClearClick
   end
   object xmldoc1: TXMLDocument
     Left = 328

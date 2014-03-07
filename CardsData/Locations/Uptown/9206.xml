@@ -5,13 +5,16 @@
 			<action data="|4|38|0|"></action>
 			<condition data="|3|2|5|-2|1">
 				<true>
-					<or data="|2|2|'Получить 4 улики'|'Получить 1 навык'|_|_|">
+					<or data="|2|3|'Получить 4 улики'|'Получить 1 навык'|'Получить 2 заклинания'|_|">
 						<or1>
 							<action data="|4|7|4|"></action>
 						</or1>
 						<or2>
 							<action data="|4|12|1|"></action>
 						</or2>
+						<or3>
+							<action data="|4|11|2|"></action>
+						</or3>
 					</or>
 				</true>
 				<false>

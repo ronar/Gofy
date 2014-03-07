@@ -92,7 +92,7 @@ const
         ('1200', 'Newspaper'),
         ('011', 'North Point Lighthouse'),
         ('3200', 'Police Station'),
-        ('5300', 'River Docks'),
+        ('5100', 'River Docks'),
         ('7200', 'Science Building'),
         ('6200', 'Silver Twilight Lodge'),
         ('8200', 'South Church'),
@@ -104,14 +104,14 @@ const
         ('5200', 'The Unnamable'),
         ('6100', 'The Witch House'),
         ('1100', 'Train Station'),
-        ('5100', 'Unvisited Isle'),
+        ('5300', 'Unvisited Isle'),
         ('3300', 'Velma''s Diner'),
         ('011', 'Whateley Farm'),
         ('011', 'Wireless Station'),
         ('011', 'Wizard''s Hill'),
-        ('9300', 'Woods'),
+        ('9200', 'Woods'),
         ('011', 'Y''ha-nthlei'),
-        ('9200', 'Ye Olde Magick Shoppe'));
+        ('9300', 'Ye Olde Magick Shoppe'));
   crd_ally: array [1..1] of string = ('Anna Kaslow');
   investigators: array [1..49] of string = ('Agnes Baker', 'Akachi Onyele',
         'Amanda Sharpe', '"Ashcan" Pete', 'Bob Jenkins', 'Calvin Wright',

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <actions>
 	<condition data="|3|2|1|-1|1|">
-		<true>
-			<action data="|4|11|1|"></action>
+		<true> 
+			<action data="|0|0|0|"></action>
 		</true>
-		<false>
-			<action data="|0|0|1|"></action>
+		<false> 
+			<action data="|4|6|1|"></action>
 		</false>
-	</condition>
+	</condition> 
 </actions>

@@ -350,6 +350,8 @@ begin
   if (grade = 3) and (fMonsterTrophies >= param) then
     result := true;
 
+  if (grade = 6) and (fSanity >= param) then
+    result := true;
 end;
 
 // Checks wether the player has the item or not

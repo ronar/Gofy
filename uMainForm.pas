@@ -101,6 +101,7 @@ type
     btn2: TButton;
     seCrdNum: TSpinEdit;
     Label7: TLabel;
+    btnLogClear: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -133,6 +134,7 @@ type
     procedure edStatLuckExit(Sender: TObject);
     procedure edtPlaMoneyExit(Sender: TObject);
     procedure edStatLoreExit(Sender: TObject);
+    procedure btnLogClearClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -278,6 +280,7 @@ begin
       { TODO :  Implement auto load streets, not by explicit index }
       Arkham_Streets[3].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Easttown\');
       Arkham_Streets[4].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Rivertown\');
+      Arkham_Streets[5].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Merchant District\');
       Arkham_Streets[9].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Uptown\');
       //Arkham_Streets[5].mDeck.Shuffle;
 
@@ -621,7 +624,7 @@ begin
       ProcessCondition := True;
     end;
     2: begin // Проверка скила
-      frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(prm) + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(suxxess) + ')..');
+      frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(prm) + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(n) + ')..');
       skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n); // Choise - номер скилла
       { TODO -oRonar : Choise is in dependence with structure of construction
         of program. In another words if indices have been changed, program
@@ -684,7 +687,7 @@ var
 begin
   ProcessMultiCondition := 0;
   // Проверка скила
-  frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(prm) + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(suxxess) + ')..');
+  frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(prm) + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(n) + ')..');
   skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n); // prm - order num of skill (1 - speed, ...)
   frmMain.lbLog.Items.Add('Проверка навыка ' + IntToStr(prm) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
   ProcessMultiCondition := skill_test;
@@ -754,10 +757,10 @@ begin
     gPlayer.Money := gPlayer.Money - action_value;
     frmMain.lbLog.Items.Add('Игрок потерял деньги: ' + IntToStr(action_value) + '.');
   end;
-  3: begin // Take stamina
-    gPlayer.Stamina := gPlayer.Stamina + action_value;
-    frmMain.lbLog.Items.Add('Игрок получил тело: ' + IntToStr(action_value) + '.');
-  end;
+    3: begin // Take stamina
+      gPlayer.Stamina := gPlayer.Stamina + action_value;
+      frmMain.lbLog.Items.Add('Игрок получил тело: ' + IntToStr(action_value) + '.');
+    end;
   4: begin // Take sanity
     gPlayer.Stamina := gPlayer.Sanity + action_value;
     frmMain.lbLog.Items.Add('Игрок получил разум: ' + IntToStr(action_value) + '.');
@@ -870,7 +873,10 @@ begin
     //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
     frmMain.lbLog.Items.Add('Игрок пропускает ход.');
   end; // case 38
-
+    39: begin // Lost in time and space
+      //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
+      frmMain.lbLog.Items.Add('Игрок потерян во сремени и пространстве.');
+    end; // case 39
  { 41: begin // Check skill
     frmMain.lbLog.Items.Add('Проверяется навык ' + IntToStr(Choise - 1) + '(=' + IntToStr(gCurrentPlayer.Stats[Choise - 1]) + ' -' + IntToStr(N) + ')..');
     skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[Choise - 1] - N); // Choise - номер скилла
@@ -1219,9 +1225,9 @@ begin
 
   if output_data[1] = '4' then // Action
   begin
-    {if output_data[3] = '77' then //
+    if output_data[3] = '77' then // Instead of certain amt, we use result of roll
       ProcessAction(StrToInt(output_data[2]), add_data)
-    else  }
+    else
       ProcessAction(StrToInt(output_data[2]), StrToInt(output_data[3]));
 
   end;
@@ -1450,6 +1456,11 @@ begin
     ShowMessage('No!');
     edStatLore.Text := '0';
   end;
+end;
+
+procedure TfrmMain.btnLogClearClick(Sender: TObject);
+begin
+  frmMain.lbLog.Clear;
 end;
 
 end.
