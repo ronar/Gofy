@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<condition data="|3|2|4|-1|2|">
+		<true>
+			<action data="|4|12|1|"></action>
+		</true>
+		<false>
+			<or data="|2|3|'Забыть 4 улики.'|'Забыть 2 заклинания.'|'Забыть 1 навык.'|">
+				<or1>
+					<action data="|4|8|4|"></action>
+				</or1>
+				<or2>
+					<action data="|4|18|2|"></action>
+				</or2>
+				<or3>
+					<action data="|4|19|1|"></action>
+				</or3>
+			</or>
+		</false>
+	</condition>
+</actions>

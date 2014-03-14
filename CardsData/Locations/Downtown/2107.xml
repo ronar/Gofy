@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Попытаться сопротивляться действию снотворного.'|'Не сопротивляться.'|">
+		<or1>
+			<condition data="|3|2|3|-2|1|">
+				<true>
+					<action data="|0|0|0|"></action>
+				</true>
+				<false>
+					<action data="|4|38|1|"></action>
+					<action data="|4|4|2|"></action>
+				</false>
+			</condition>
+		</or1>
+		<or2>
+			<action data="|4|38|1|"></action>
+			<action data="|4|4|2|"></action>
+		</or2>
+	</or>
+</actions>

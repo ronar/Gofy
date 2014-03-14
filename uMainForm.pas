@@ -282,6 +282,8 @@ begin
       Arkham_Streets[3].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Easttown\');
       Arkham_Streets[4].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Rivertown\');
       Arkham_Streets[5].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Merchant District\');
+      Arkham_Streets[6].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\French Hill\');
+      Arkham_Streets[7].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Miskatonic University\');
       Arkham_Streets[9].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Uptown\');
       //Arkham_Streets[5].mDeck.Shuffle;
 
@@ -1331,9 +1333,24 @@ begin
       }
       if (st = 3) then
       begin
-        if pos('three', tmp_str) <> 0 then
-          for j := 0 to Node.mnChild[i].mnChildCount-1 do
-            ProcessNode(Node.mnChild[i].mnChild[j]);
+        if pos('twoplus', tmp_str) <> 0 then
+            for j := 0 to Node.mnChild[i].mnChildCount-1 do
+              ProcessNode(Node.mnChild[i].mnChild[j])
+          else
+            if pos('three', tmp_str) <> 0 then
+              for j := 0 to Node.mnChild[i].mnChildCount-1 do
+                ProcessNode(Node.mnChild[i].mnChild[j]);
+      end;
+
+      if (st > 3) then
+      begin
+        if pos('twoplus', tmp_str) <> 0 then
+            for j := 0 to Node.mnChild[i].mnChildCount-1 do
+              ProcessNode(Node.mnChild[i].mnChild[j])
+          else
+            if pos('threeplus', tmp_str) <> 0 then
+              for j := 0 to Node.mnChild[i].mnChildCount-1 do
+                ProcessNode(Node.mnChild[i].mnChild[j]);
       end;
       {else
         if (tmp_str = 'threeplus')and(st >= 3) then

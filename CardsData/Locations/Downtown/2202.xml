@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Купить вещь у бедного человека чтобы помочь прокормить его семью.'|'Не покупть вещь у бедного человека чтобы не помочь прокормить его семью (и быть скотиной :-D).'|">
+		<or1>
+			<action data="|3|2|6|-1|1|">
+				<true>
+					<action data="|4|10|1|"></action>
+				</true>
+				<false>
+					<action data="|4|9|1|"></action>
+				</false>
+			</action>
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+	</or>
+</actions>
