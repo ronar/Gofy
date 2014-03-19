@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Эта вещь очень дорода для меня, но за две цены я, так и быть, готов с ней расстаться.'|'Извините, я не люблю деньги.'|">
+		<or1>
+			<action data="|4|50|1|"></action>
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+	</or>
+</actions>

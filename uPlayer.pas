@@ -12,6 +12,7 @@ type
     fNeighborhood: integer; // Neighbourhood of the player's location (for easy ref. instead of hon(..) func.)
     fCards: array [1..MAX_PLAYER_ITEMS] of integer; // Player's items
     fCardsCount: integer; // Amt. of player's items
+    fSpellsCount: integer; // Amt. of player's Spells
     fSanity: integer;
     fStamina: integer;
     fFocus: integer;
@@ -348,6 +349,12 @@ begin
     result := true;
 
   if (grade = 3) and (fMonsterTrophies >= param) then
+    result := true;
+
+  if (grade = 4) and (fSpellsCount >= param) then
+    result := true;
+
+  if (grade = 5) and (fSanity >= param) then
     result := true;
 
   if (grade = 6) and (fSanity >= param) then

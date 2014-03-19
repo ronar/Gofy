@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Отпить'|'Не отпить'|">
+		<or1>
+			<condition data="|3|2|6|0|1|">
+				<true>
+					<action data="|4|88|88|"></action>
+				</true>
+				<false>
+					<action data="|4|3|1|"></action>
+				</false>
+			</condition>
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+    </or>
+</actions>

@@ -777,6 +777,11 @@ begin
     frmMain.lbLog.Items.Add('Игрок потерял разум: ' + IntToStr(action_value) + '.');
   end; // case 6
   7: begin // Take clues
+    if action_value = 88 then
+    begin
+      Randomize;
+      action_value := random(6) + 1;
+    end;
     gCurrentPlayer.Clues := gCurrentPlayer.Clues + action_value;
     frmMain.lbLog.Items.Add('Игрок получил улику(и): ' + IntToStr(action_value) + '.');
   end; // case 7
@@ -896,8 +901,17 @@ begin
         frmMain.lbLog.Items.Add('Игрок тянет 1 простую вещь бесплатно из ' + IntToStr(action_value));
       end; // case 42
     43: begin
-      frmMain.lbLog.Items.Add('Игрок берет 1 простое оружие бесплатно.');
-    end;
+      frmMain.lbLog.Items.Add('Игрок берет верхнюю карту из любой колоды локаций. Она достанется тому сыщику, кто первый получит контакт в этой локации :)');
+    end; // case 43
+    51: // Take common weapon
+      begin
+        frmMain.lbLog.Items.Add('Игрок берет простое оружие бесплатно:' + IntToStr(action_value));
+      end; // case 51
+    53: // Take common tome
+      begin
+        frmMain.lbLog.Items.Add('Игрок берет первую попавшеюся простую книгу:' + IntToStr(action_value));
+      end; // case 51
+
     28: // Move to location, enc
       if action_value = 0 then
       begin
@@ -968,7 +982,7 @@ begin
   if 1=1{gCurrentPhase = PH_ENCOUNTER} then
   begin
     case gCurrentPlayer.Location of
-      4300: begin
+      4200: begin
         if MessageDlg('Trade?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         begin
           drawn_items[1] := Common_Items_Deck.DrawCard;
@@ -989,7 +1003,7 @@ begin
             gCurrentPlayer.AddItem(drawn_items[3]);
         end
         else
-          Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
+          Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.cards[seCrdNum.Value, hon(gCurrentPlayer.Location)]);
       end; // 4300
       //else Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
       else Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.cards[seCrdNum.Value, hon(gCurrentPlayer.Location)]); {DrawCard(hon(gCurrentPlayer.Location)));}

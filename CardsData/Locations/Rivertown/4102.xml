@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Испытать удачу на -2.'|'Дать бутылку виски'|">
+		<or1>
+			<condition data="|3|2|6|-2|1|">
+				<true>
+					<condition data="|3|4|41|1|0|">
+						<true>
+							<action data="|4|13|41|"></action>
+						</true>
+						<false>
+							<action data="|4|51|1|"></action>
+						</false>
+					</condition>
+				</true>
+				<false>
+					<action data="|0|0|0|"></action>
+				</false>
+			</condition>
+		</or1>
+		<or2>
+			<condition data="|3|3|1582|1|0|">
+				<true>
+					<condition data="|3|4|41|1|0|">
+						<true>
+							<action data="|4|13|41|"></action>
+						</true>
+						<false>
+							<action data="|4|51|1|"></action>
+						</false>
+					</condition>
+				</true>
+				<false>
+					<action data="|0|0|0|"></action>					
+				</false>
+			</condition>
+		</or2>
+    </or>
+</actions>
