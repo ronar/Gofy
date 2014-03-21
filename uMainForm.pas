@@ -285,6 +285,7 @@ begin
       Arkham_Streets[5].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Merchant District\');
       Arkham_Streets[6].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\French Hill\');
       Arkham_Streets[7].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Miskatonic University\');
+      Arkham_Streets[8].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Southside\');
       Arkham_Streets[9].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Uptown\');
       //Arkham_Streets[5].mDeck.Shuffle;
 
@@ -847,6 +848,9 @@ begin
     gCurrentPlayer.Cursed := True;
     frmMain.lbLog.Items.Add('Игрок проклят.');
   end; // case 23
+    25: begin // Draw another card for encounter
+      frmMain.lbLog.Items.Add('Игрок тянет другую карту контакта для локации');
+    end; // case 25
   26: begin // Draw common items, buy for 1 above of it's price, any or all
     frmMain.lbLog.Items.Add('Look at the top 3 cards of the Common Item deck. You may purchase any or all of them for $1 above the list price..');
   end; // case 26
