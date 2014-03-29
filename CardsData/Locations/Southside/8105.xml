@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Оплатить пропуск в частную библиотеку 3$.'|'Выйти на улицу.'|">
+		<or1>
+			<condition data="|3|2|6|-1|1|">
+				<true>
+					<action data="|4|11|1|"></action>
+				</true>
+				<false>
+					<action data="|4|29|1231|"></action>
+					<action data="|4|30|0|"></action>
+					<action data="|4|28|8100|"></action>
+				</false>
+			</condition>
+		</or1>
+		<or2>
+			<action data="|4|34|0|"></action>
+		</or2>
+	</or>
+</actions>

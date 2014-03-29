@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Пожертвовать половину своих денег.'|'Пожертвовать половину своих вещей.'|">
+		<or1>
+			<action data="|4|70|1|"></action>
+		</or1>
+		<or2>
+			<action data="|4|71|1|"></action>
+		</or2>
+	</or>
+</actions>

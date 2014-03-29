@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Пройти проверку воли.'|'Извини, Райан, дела ждут.'|">
+		<or1>
+			<condition data="|3|2|4|0|1|">
+				<true>
+					<or data="|2|2|'Посмотреть простой предмет.'|'Посмотреть уникальный предмет.'|">
+						<or1>
+							<action data="|4|47|1|"></action>
+						</or1>
+						<or2>
+							<action data="|4|48|1|"></action>
+						</or2>
+					</or>
+				</true>
+				<false>
+					<action data="|4|38|1|"></action>
+				</false>
+			</condition>
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+	</or>
+</actions>

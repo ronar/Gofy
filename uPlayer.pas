@@ -19,6 +19,7 @@ type
     fMoney: integer;
     fClues: integer;
     fMonsterTrophies: integer;
+    fGateTrophies:Integer;
     fStats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
     fBonusStats: array [1..6] of integer; // Прибавка от карт навыков, мифа.
     fBlessed: boolean;
@@ -359,6 +360,10 @@ begin
 
   if (grade = 6) and (fSanity >= param) then
     result := true;
+
+  if (grade = 8) and (fGateTrophies >= param) then
+    result := true;
+
 end;
 
 // Checks wether the player has the item or not

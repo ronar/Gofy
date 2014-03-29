@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Присоединиться к членам общества в их наблюдении за птицами в лесу.'|'Отказаться.'|">
+		<or1>
+			<action data="|4|28|9200|"></action>
+			<action data="|4|65|2|"></action>
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+	</or>
+</actions>

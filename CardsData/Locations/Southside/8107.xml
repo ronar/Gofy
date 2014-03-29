@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<condition data="|3|3|8|1|0|">
+		<true>
+			<action data="|4|56|1|"></action>
+			<condition data="|3|4|27|1|0|">
+				<true>
+					<action data="|4|13|27|"></action>
+				</true>
+				<false>
+					<action data="|4|10|1|"></action>
+				</false>
+			</condition>
+		</true>
+		<false>
+			<action data="|0|0|0|"></action>
+		</false>
+	</condition>
+</actions>

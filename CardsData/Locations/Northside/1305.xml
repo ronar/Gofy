@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|3|'Перейти в любую локацию.'|'Перейти на любую улицу.'|'Просто уйти.'|">
+		<or1>
+			<action data="|4|28|-1|"></action>
+			<action data="|4|30|0|"></action>			
+		</or1>
+		<or2>
+			<action data="|4|33|-1|"></action>
+			<action data="|4|30|0|"></action>	
+		</or2>
+		<or3>
+			<action data="|0|0|0|"></action>	
+		</or3>
+	</or>
+</actions>

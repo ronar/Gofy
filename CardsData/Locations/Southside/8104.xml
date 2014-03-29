@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Попытать двойную удачу -1 в изучении старых томов.'|'Лень читать эти книжки.'|">
+		<or1>
+			<condition data="|3|2|6|-1|2|">
+				<true>
+					<action data="|4|12|1|"></action>
+					<action data="|4|38|1|"></action>
+				</true>
+				<false>
+					<action data="|0|0|0|"></action>
+				</false>
+			</condition>
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+	</or>
+</actions>

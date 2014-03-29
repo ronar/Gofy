@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Взять святую воду.'|'Благодарю, святой отец, но, боюсь, тут нет того, что мне нужно.'|">
+		<or1>
+			<action data="|4|10|2411|"></action>
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+	</or>
+</actions>

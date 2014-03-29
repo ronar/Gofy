@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <actions>
-	<or data="|2|2|'Остаться у Мамаши'|'Отказаться'||">
-    	<or1>
-    		<action data="|4|2|3|"></action>
-    		<action data="|4|87|4|"></action>
+	<or data="|2|2|'Остаться у Мамаши.'|'Отказаться.'|">
+		<or1>
+			<action data="|4|2|3|"></action>
+			<action data="|4|87|4|"></action>
 		</or1>
 		<or2>
 			<action data="|0|0|0|"></action>

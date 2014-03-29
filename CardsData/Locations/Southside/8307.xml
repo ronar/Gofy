@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Обратиться к небесам за помощью, пожертвовав улику.'|'Не молиться.'|">
+		<or1>
+			<action data="|4|8|1|"></action>
+			<condition data="|3|5|1|0|1|">
+				<true>
+					<action data="|4|67|-1|"></action>
+				</true>
+				<false>
+					<action data="|0|0|0|"></action>
+				</false>
+			</condition>
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+	</or>
+</actions>
