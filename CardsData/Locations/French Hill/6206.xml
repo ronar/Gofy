@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Расстаться с 1 рассудком'|'Уйти'|">
+		<or1>
+			<action data="|4|6|1|"></action>
+			<action data="|4|8|2|"></action>
+			<condition data="|3|2|5|-2|1|">
+				<true>
+					<action data="|4|73|1|"></action>
+				</true>
+				<false>
+					<action data="|0|0|0|"></action>
+				</false>
+			</condition>
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+		</or2>
+	</or>
+</actions>

@@ -19,7 +19,22 @@
 			</condition>	
 		</or1>
 		<or2>
-			<action data="|4|15|1232|"></action>
+			<condition data="|3|3|10|1232|1">
+				<true>
+					<action data="|4|15|1232|"></action>
+					<condition data="|3|4|14|4|0|">
+						<true>
+							<action data="|4|13|14|"></action>
+						</true>
+						<false>
+							<action data="|4|1|3|"></action>
+						</false>
+					</condition>
+				</true>
+				<false>
+					<action data="|0|0|0|"></action>
+				</false>
+			</condition>
 		</or2>
 	</or>
 </actions>

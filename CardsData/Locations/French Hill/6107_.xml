@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Вступить в орден'|'Не вступать'">
+		<or1>
+			<action data="|4|2|3|"></action>
+		</or1>
+		<or2>
+			<condition data="|3|2|4|-1|1|">
+				<true>
+					<action data="|4|34|0|"></action>
+				</true>
+				<false>
+					<action data="|4|5|3|"></action>
+					<action data="|4|34|0|"></action>
+				</false>
+			</condition>
+		</or2>
+	</or>
+</actions>

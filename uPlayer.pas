@@ -338,7 +338,7 @@ var
 begin
   result := false;
 
-  if grade = 4 then // Проверка наличия карт
+  if grade = 10 then // Проверка наличия карт
     for i := 1 to fCardsCount do
       if fCards[i] = param then
         Result := True;

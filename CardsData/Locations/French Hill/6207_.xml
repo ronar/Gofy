@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<actions>
+	<or data="|2|2|'Заплатить 3$'|'Не платить'|">
+		<or1>
+			<condition data="|3|3|1|3|1|">
+				<true>
+					<action data="|4|2|3|"></action>
+				</true>
+				<false>
+					<!--<action data="|4|сдать карту сообщества|1|"></action>-->
+					<action data="|0|0|0|"></action>
+				</false>
+			</condition>
+		</or1>
+		<or2>
+			<action data="|0|0|0|"></action>
+			<!--<action data="|4|сдать карту сообщества|1|"></action>-->
+		</or2>
+	</or>
+</actions>
