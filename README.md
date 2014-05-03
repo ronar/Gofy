@@ -9,3 +9,8 @@ Now I implementing a card storing method (to store cards in separate files, not 
 I want make playable build ASAP with poor UI :). And then combine that code with graphics.
 
 All game's data borrowed from http://www.arkhamhorrorwiki.com/ along with scanning of real cards.
+
+UPD 03/05/2014: 
+Encounter cards ready (xml files)! Only left to code actions.
+
+Now implementing investigators and start of the game.
