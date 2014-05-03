@@ -202,13 +202,13 @@ end;
 
 procedure TPlayer.AssignInvestigator(inv: TInvestigator);
 begin
-  fInvestigator := inv;
-  fSanity := inv.sanity;
-  fStamina := inv.stamina;
-  fMoney := inv.money;
-  fClues := inv.clues;
-  fLocation := inv.start_lok;
-  fFocus := inv.focus;
+  //fInvestigator := inv;
+  //fSanity := inv.sanity;
+  //fStamina := inv.stamina;
+  //fMoney := inv.money;
+  ///fClues := inv.clues;
+  //fLocation := inv.start_lok;
+  //fFocus := inv.focus;
 end;
 
 // Бросок кубика (Возвращает число успехов, 0 - провал)
@@ -382,7 +382,7 @@ end;
 
 procedure TPlayer.ChangeSkills(r: integer; n: integer);
 begin
-  case r of
+ { case r of
   1: begin
     if fInvestigator.stats[1] < 3 then
       fStats[1] := fInvestigator.stats[1] + (n - 1)
@@ -416,7 +416,7 @@ begin
     else
       fStats[6] := fInvestigator.stats[6] - n - 1;
   end;
-  end;
+  end;                               }
 end;
 
 procedure TPlayer.MoveToLocation(id_lok: integer);

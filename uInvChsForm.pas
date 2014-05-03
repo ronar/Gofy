@@ -89,7 +89,7 @@ type
 
 var
   frmInv: TfrmInv;
-  inv: TInvestigator;
+  //inv: TInvestigator;
   take_common: integer = 0; // How many already taken
   take_uniq: integer = 0;
   take_spell: integer = 0;
@@ -121,13 +121,13 @@ var
   s: string[80];
 begin
   // Amanda Sharpe anyway :)
-  AssignFile (F, ExtractFilePath(Application.ExeName)+'\CardsData\Investigators\3.txt');
+  AssignFile (F, ExtractFilePath(Application.ExeName)+'\CardsData\Investigators\3.inv');
   //AssignFile (F, ExtractFilePath(Application.ExeName)+'\CardsData\Investigators\'+IntToStr(cbInvPlayer1.ItemIndex + 1) + '.txt');
   Reset(F);
   readln(F, s);
   CloseFile(F);
 
-  inv := TInvestigator.Create;
+  {inv := TInvestigator.Create;
   inv.name := cbInvPlayer1.Text; // Имя сыщика
   inv.Sanity := StrToInt(Copy(S, 1, 1)); // Разум сыщика
   inv.Stamina := StrToInt(Copy(S, 2, 1)); // Тело сыщика
@@ -183,7 +183,7 @@ begin
   Draw_Skills('Fight');
   Draw_Skills('Will');
   Draw_Skills('Lore');
-  Draw_Skills('Luck');
+  Draw_Skills('Luck');          }
 end;
 
 procedure Draw_Skills(skill: string);
@@ -213,7 +213,7 @@ procedure TfrmInv.Button11Click(Sender: TObject);
 var
   i, j: integer;
 begin
-  for i := 1 to 4 do
+{  for i := 1 to 4 do
   begin
     if inv.can_take[i, 1] = CT_COMMON_ITEM then
       for j := 1 to inv.can_take[i, 2] do
@@ -221,14 +221,14 @@ begin
         card_to_load := CT_COMMON_ITEM;
         frmCard.ShowModal;
       end;
-  end;
+  end;   }
 end;
 
 procedure TfrmInv.Button13Click(Sender: TObject);
 var
   i, j: integer;
 begin
-  for i := 1 to 4 do
+{  for i := 1 to 4 do
   begin
     if inv.can_take[i, 1] = CT_SPELL then
       for j := 1 to inv.can_take[i, 2] do
@@ -236,14 +236,14 @@ begin
         card_to_load := CT_SPELL;
         frmCard.ShowModal;
       end;
-  end;
+  end;        }
 end;
 
 procedure TfrmInv.Button12Click(Sender: TObject);
 var
   i, j: integer;
 begin
-  for i := 1 to 4 do
+ { for i := 1 to 4 do
   begin
     if inv.can_take[i, 1] = CT_UNIQUE_ITEM then
       for j := 1 to inv.can_take[i, 2] do
@@ -251,14 +251,14 @@ begin
         card_to_load := CT_UNIQUE_ITEM;
         frmCard.ShowModal;
       end;
-  end;
+  end;           }
 end;
 
 procedure TfrmInv.Button14Click(Sender: TObject);
 var
   i, j: integer;
 begin
-  for i := 1 to 4 do
+ { for i := 1 to 4 do
   begin
     if inv.can_take[i, 1] = CT_SKILL then
       for j := 1 to inv.can_take[i, 2] do
@@ -266,7 +266,7 @@ begin
         card_to_load := CT_SKILL;
         frmCard.ShowModal;
       end;
-  end;
+  end;        }
 
 end;
 

@@ -3,7 +3,7 @@ unit uCardDeck;
 interface
 
 uses
-  SysUtils, Dialogs, uCommon, uCardXML;
+  SysUtils, Dialogs, uCommon, uCardXML, uInvestigator;
 
 type
   TItemCard = record
@@ -71,6 +71,21 @@ type
     //function Get_Card_By_ID(id: integer): TCard; // Ќахождение карты по ее ID
   end;
 
+  TInvDeck = class(TCardDeck)
+  private
+    fCards: array [1..NUMBER_OF_INVESTIGATORS] of TInvestigator; // ƒанные о каждой карте
+    function GetCardByID(id: integer): TInvestigator;
+    function GetCardID(i: integer): Integer;
+    function GetCardData(i: integer): string;
+  public
+    constructor Create(crd_type: integer);
+    property card[i: integer]: integer read GetCardID;
+    function FindCards(file_path: string): integer; override;
+    function DrawCard: Integer; //overload;
+    procedure Shuffle(); override;
+    destructor Destroy; override;
+  end;
+
 implementation
 
 uses Classes;
@@ -80,8 +95,9 @@ destructor TCardDeck.Destroy;
 begin
   inherited;
 end;
-
+////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// TItemCardDeck //////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 //  онструктор
 constructor TItemCardDeck.Create(crd_type: integer);
@@ -148,7 +164,6 @@ begin
     readln(F, s);
     CloseFile(F);
     fCards[i].data := s;
-    //Cards^.Cards.Type := CT_UNIQUE_ITEM;
     fCards[i].id := StrToInt(Copy(SR.Name, 1, 4));
 
     FindRes := FindNext(SR); // продолжение поиска по заданным услови€м
@@ -184,7 +199,9 @@ begin
       result := true;
 end;
 
+////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////// TLocationCardDeck ////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 //  онструктор
 constructor TLocationCardsDeck.Create;
@@ -201,7 +218,8 @@ begin
     end;
 end;
 
-function TLocationCardsDeck.GetCard(ID: integer; n: integer): TLocationCard;
+// id - number of card in deck
+function TLocationCardsDeck.GetCard(id: integer; n: integer): TLocationCard;
 var
   i, j: integer;
 begin
@@ -308,5 +326,161 @@ begin
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
+/////////////////////////        TInvDeck          /////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+constructor TInvDeck.Create(crd_type: integer);
+var
+  i, j, k: Integer;
+begin
+  fCardType := crd_type;
+  for i := 1 to NUMBER_OF_INVESTIGATORS do
+  begin
+    fCards[i] := TInvestigator.Create;
+    with fCards[i] do
+    begin
+      name := 'Noname';
+      sanity := 0;
+      stamina := 0;
+      start_lok := 0;
+      money := 0;
+      clues := 0;
+      //for j := 1 to 10 do
+      //  items[j] := 0; // Random possessions
+      items_count := 0; // How many different items is in investigator's possession
+      ally := 0;
+      focus := 0;
+      speed := 0;
+      sneak := 0;
+      fight := 0;
+      will := 0;
+      lore := 0;
+      luck := 0;
+      //for j := 1 to 10 do
+      //  for k := 1 to 10 do
+      //can_take[j, k] := 0; // What, how many
+    end;
+  end;
+
+end;
+
+destructor TInvDeck.Destroy;
+var
+  i: Integer;
+begin
+  for i := 1 to NUMBER_OF_INVESTIGATORS do
+    fCards[i].Free;
+end;
+
+function TInvDeck.GetCardByID(id: integer): TInvestigator;
+var
+  i: integer;
+begin
+  for i:= 1 to fCount do
+  begin
+ {   if fCards[i].fId = id then
+      GetCardByID := fCards[i];    }
+  end;
+end;
+
+// ѕолучение ID карты
+function TInvDeck.GetCardID(i: integer): integer;
+begin
+ // GetCardID := fCards[i].fId;
+end;
+
+// ѕолучение данных карты (указатель на голову св€зного списка)
+function TInvDeck.GetCardData(i: integer): string;
+begin
+//  GetCardData := fCards[i].name;
+end;
+
+function TInvDeck.DrawCard: Integer;
+begin
+  //DrawCard := fCards[fCount].fId;
+  //Shuffle;
+end;
+
+function TInvDeck.FindCards(file_path: string): integer;
+var
+  F: TextFile;
+  SR: TSearchRec; // поискова€ переменна€
+  FindRes: Integer; // переменна€ дл€ записи результата поиска
+  s: string[100];
+  i, j, k, n, crd_num: integer;
+  output_data: TStringList;
+  procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
+  begin
+    output_data.Clear;
+    output_data.QuoteChar := '''';
+    output_data.Delimiter := delimiter;
+    output_data.DelimitedText := str;
+  end;
+begin
+  // задание условий поиска и начало поиска
+  FindRes := FindFirst(file_path + '*.inv', faAnyFile, SR);
+
+  i := 0;
+  n := 0;
+  output_data := TStringList.Create;
+
+  while FindRes = 0 do // пока мы находим файлы (каталоги), то выполн€ть цикл
+  begin
+    i := i + 1;
+    AssignFile (F, file_path + SR.Name);
+    Reset(F);
+    readln(F, s);
+    CloseFile(F);
+    SplitData('|', s, output_data);
+    crd_num := StrToInt(Copy(SR.Name, 1, 2));
+    with fCards[crd_num] do
+    begin
+      id := crd_num;
+      name := output_data[1];
+      sanity := StrToInt(output_data[0]);
+      stamina := StrToInt(output_data[1]);
+      start_lok := StrToInt(output_data[2]);
+      money := StrToInt(output_data[2]);
+      clues := StrToInt(output_data[2]);
+      //for j := 1 to 10 do
+      //  items[j] := StrToInt(output_data[2]); // Random possessions
+      items_count := StrToInt(output_data[2]); // How many different items is in investigator's possession
+      ally := StrToInt(output_data[2]);
+      focus := StrToInt(output_data[22]);
+      speed := StrToInt(output_data[23]);
+      sneak := StrToInt(output_data[24]);
+      fight := StrToInt(output_data[25]);
+      will := StrToInt(output_data[26]);
+      lore := StrToInt(output_data[27]);
+      luck := StrToInt(output_data[28]);
+      //for j := 1 to 10 do
+      //  for k := 1 to 10 do
+      //can_take[j, k] := StrToInt(output_data[2]); // What, how many
+    end;
+
+    FindRes := FindNext(SR); // продолжение поиска по заданным услови€м
+  end;
+
+  FindClose(SR); // закрываем поиск
+  FindCards := i;
+  fCount := i;
+
+end;
+
+// “асовка колоды
+procedure TInvDeck.Shuffle();
+var
+  i, r: integer;
+  temp: TInvestigator;
+begin
+  randomize;
+  for i := 1 to fCount do
+  begin
+{    temp := fCards[i];
+    r := random(Count);
+    fCards[i] := fCards[r+1];
+    fCards[r+1] := temp;      }
+  end;
+end;
 
 end.

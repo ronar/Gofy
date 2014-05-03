@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 585
-  Top = 266
+  Left = 739
+  Top = 268
   Width = 1103
   Height = 656
   Caption = 'frmMain'
@@ -2225,6 +2225,15 @@ object frmMain: TfrmMain
     Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1083#1086#1075
     TabOrder = 24
     OnClick = btnLogClearClick
+  end
+  object Button2: TButton
+    Left = 376
+    Top = 304
+    Width = 75
+    Height = 25
+    Caption = 'OpnTrdFrm'
+    TabOrder = 25
+    OnClick = Button2Click
   end
   object xmldoc1: TXMLDocument
     Left = 328
