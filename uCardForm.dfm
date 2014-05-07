@@ -1,6 +1,6 @@
 object frmCard: TfrmCard
-  Left = 956
-  Top = 231
+  Left = 695
+  Top = 161
   Width = 478
   Height = 510
   Caption = 'frmCard'

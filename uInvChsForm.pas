@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, CheckLst, ExtCtrls, jpeg, uInvestigator;
+  Dialogs, StdCtrls, CheckLst, ExtCtrls, jpeg, uInvestigator, uMainForm;
 
 type
   TfrmInv = class(TForm)
@@ -70,17 +70,19 @@ type
     lbLuck3: TLabel;
     lbLuck4: TLabel;
     GroupBox1: TGroupBox;
-    Button11: TButton;
-    Button12: TButton;
-    Button13: TButton;
-    Button14: TButton;
+    btnCommItem: TButton;
+    btnUniqItem: TButton;
+    btnSpell: TButton;
+    btnSkill: TButton;
+    btnAlly: TButton;
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure cbInvPlayer1Change(Sender: TObject);
-    procedure Button11Click(Sender: TObject);
-    procedure Button13Click(Sender: TObject);
-    procedure Button12Click(Sender: TObject);
-    procedure Button14Click(Sender: TObject);
+    procedure btnCommItemClick(Sender: TObject);
+    procedure btnSpellClick(Sender: TObject);
+    procedure btnUniqItemClick(Sender: TObject);
+    procedure btnSkillClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -110,7 +112,8 @@ end;
 
 procedure TfrmInv.Button1Click(Sender: TObject);
 begin
-  cbInvPlayer1Change(Sender);
+  //cbInvPlayer1Change(Sender);
+  players[1].GetItems();
   Close;
 end;
 
@@ -120,70 +123,33 @@ var
   F: TextFile;
   s: string[80];
 begin
-  // Amanda Sharpe anyway :)
-  AssignFile (F, ExtractFilePath(Application.ExeName)+'\CardsData\Investigators\3.inv');
-  //AssignFile (F, ExtractFilePath(Application.ExeName)+'\CardsData\Investigators\'+IntToStr(cbInvPlayer1.ItemIndex + 1) + '.txt');
-  Reset(F);
-  readln(F, s);
-  CloseFile(F);
+  players[1].AssignInvestigator(gInvestigators.card[cbInvPlayer1.ItemIndex + 1]);
+  players[1].Investigator.name := cbInvPlayer1.Text; // Имя сыщика
 
-  {inv := TInvestigator.Create;
-  inv.name := cbInvPlayer1.Text; // Имя сыщика
-  inv.Sanity := StrToInt(Copy(S, 1, 1)); // Разум сыщика
-  inv.Stamina := StrToInt(Copy(S, 2, 1)); // Тело сыщика
-  inv.Start_Lok := StrToInt(Copy(S, 3, 4)); // Стартовая локация сыщика
-  inv.items_count := 0;
-  for i := 1 to 3 do
-  begin
-    ip := StrToInt(Copy(S, 2 + (i * 5), 1));
-    case ip of // Investigator's possession
-    1: inv.money := StrToInt(Copy(S, 3 + (i * 5), 4)); // $
-    2: inv.clues := StrToInt(Copy(S, 3 + (i * 5), 4)); // Clues
-    3..7: begin
-      inv.items[inv.items_count + 1] := StrToInt(Copy(S, 3 + (i * 5), 4));
-      inv.items_count := inv.items_count + 1; end; // Common items, unique items, spells, allies, spec. cards
-    end;
-  end;
-  for i := 1 to 3 do
-  begin
-    ip := StrToInt(Copy(S, 2 + (i * 5), 1));
-    case ip of // Investigator's possession
-    1: inv.money := StrToInt(Copy(S, 3 + (i * 5), 4)); // $
-    2: inv.clues := StrToInt(Copy(S, 3 + (i * 5), 4)); // Clues
-    3..7: begin
-      inv.items[inv.items_count + 1] := StrToInt(Copy(S, 3 + (i * 5), 4));
-      inv.items_count := inv.items_count + 1; end; // Common items, unique items, spells, allies, spec. cards
-    end;
-  end;
-  inv.can_take[1, 1] := StrToInt(Copy(S, 35, 1));
-  inv.can_take[1, 2] := StrToInt(Copy(S, 36, 4));
-  inv.can_take[2, 1] := StrToInt(Copy(S, 40, 1));
-  inv.can_take[2, 2] := StrToInt(Copy(S, 41, 4));
-  inv.can_take[3, 1] := StrToInt(Copy(S, 45, 1));
-  inv.can_take[3, 2] := StrToInt(Copy(S, 46, 4));
-  inv.can_take[4, 1] := StrToInt(Copy(S, 50, 1));
-  inv.can_take[4, 2] := StrToInt(Copy(S, 51, 4));
-  inv.focus := StrToInt(Copy(S, 55, 1)) - 1;
-  inv.stats[1] := StrToInt(Copy(s, 56, 1));
-  inv.stats[2] := StrToInt(Copy(s, 57, 1));
-  inv.stats[3] := StrToInt(Copy(s, 58, 1));
-  inv.stats[4] := StrToInt(Copy(s, 59, 1));
-  inv.stats[5] := StrToInt(Copy(s, 60, 1));
-  inv.stats[6] := StrToInt(Copy(s, 61, 1));
+  if players[1].Investigator.can_take[1] <> 0 then
+    btnCommItem.Enabled := True;
+  if players[1].Investigator.can_take[2] <> 0 then
+    btnUniqItem.Enabled := True;
+  if players[1].Investigator.can_take[3] <> 0 then
+    btnSpell.Enabled := True;
+  if players[1].Investigator.can_take[4] <> 0 then
+    btnSkill.Enabled := True;
+  if players[1].Investigator.can_take[5] <> 0 then
+    btnAlly.Enabled := True;
 
-  lbSpeed1.Caption := Copy(s, 56, 1);
-  lbSneak1.Caption := Copy(s, 57, 1);
-  lbFight1.Caption := Copy(s, 58, 1);
-  lbWill1.Caption := Copy(s, 59, 1);
-  lbLore1.Caption := Copy(s, 60, 1);
-  lbLuck1.Caption := Copy(s, 61, 1);
+  lbSpeed1.Caption := IntToStr(players[1].Investigator.stat[1]);
+  lbSneak1.Caption := IntToStr(players[1].Investigator.stat[2]);
+  lbFight1.Caption := IntToStr(players[1].Investigator.stat[3]);
+  lbWill1.Caption := IntToStr(players[1].Investigator.stat[4]);
+  lbLore1.Caption := IntToStr(players[1].Investigator.stat[5]);
+  lbLuck1.Caption := IntToStr(players[1].Investigator.stat[6]);
 
   Draw_Skills('Speed');
   Draw_Skills('Sneak');
   Draw_Skills('Fight');
   Draw_Skills('Will');
   Draw_Skills('Lore');
-  Draw_Skills('Luck');          }
+  Draw_Skills('Luck');
 end;
 
 procedure Draw_Skills(skill: string);
@@ -209,22 +175,19 @@ begin
   end;
 end;
 
-procedure TfrmInv.Button11Click(Sender: TObject);
+procedure TfrmInv.btnCommItemClick(Sender: TObject);
 var
   i, j: integer;
 begin
-{  for i := 1 to 4 do
+  for i := 1 to players[1].Investigator.can_take[1] do
   begin
-    if inv.can_take[i, 1] = CT_COMMON_ITEM then
-      for j := 1 to inv.can_take[i, 2] do
-      begin
-        card_to_load := CT_COMMON_ITEM;
-        frmCard.ShowModal;
-      end;
-  end;   }
+    card_to_load := CT_COMMON_ITEM;
+    frmCard.ShowModal;
+    players[1].Investigator.AddItem(StrToInt(frmCard.cbCard.text));
+  end;
 end;
 
-procedure TfrmInv.Button13Click(Sender: TObject);
+procedure TfrmInv.btnSpellClick(Sender: TObject);
 var
   i, j: integer;
 begin
@@ -239,7 +202,7 @@ begin
   end;        }
 end;
 
-procedure TfrmInv.Button12Click(Sender: TObject);
+procedure TfrmInv.btnUniqItemClick(Sender: TObject);
 var
   i, j: integer;
 begin
@@ -254,7 +217,7 @@ begin
   end;           }
 end;
 
-procedure TfrmInv.Button14Click(Sender: TObject);
+procedure TfrmInv.btnSkillClick(Sender: TObject);
 var
   i, j: integer;
 begin
@@ -268,6 +231,15 @@ begin
       end;
   end;        }
 
+end;
+
+procedure TfrmInv.FormShow(Sender: TObject);
+begin
+  btnCommItem.Enabled := False;
+  btnUniqItem.Enabled := False;
+  btnSpell.Enabled := False;
+  btnSkill.Enabled := False;
+  btnAlly.Enabled := False;  
 end;
 
 end.

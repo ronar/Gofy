@@ -79,7 +79,7 @@ type
     function GetCardData(i: integer): string;
   public
     constructor Create(crd_type: integer);
-    property card[i: integer]: integer read GetCardID;
+    property card[i: integer]: TInvestigator read GetCardByID;
     function FindCards(file_path: string): integer; override;
     function DrawCard: Integer; //overload;
     procedure Shuffle(); override;
@@ -337,29 +337,6 @@ begin
   for i := 1 to NUMBER_OF_INVESTIGATORS do
   begin
     fCards[i] := TInvestigator.Create;
-    with fCards[i] do
-    begin
-      name := 'Noname';
-      sanity := 0;
-      stamina := 0;
-      start_lok := 0;
-      money := 0;
-      clues := 0;
-      //for j := 1 to 10 do
-      //  items[j] := 0; // Random possessions
-      items_count := 0; // How many different items is in investigator's possession
-      ally := 0;
-      focus := 0;
-      speed := 0;
-      sneak := 0;
-      fight := 0;
-      will := 0;
-      lore := 0;
-      luck := 0;
-      //for j := 1 to 10 do
-      //  for k := 1 to 10 do
-      //can_take[j, k] := 0; // What, how many
-    end;
   end;
 
 end;
@@ -376,11 +353,7 @@ function TInvDeck.GetCardByID(id: integer): TInvestigator;
 var
   i: integer;
 begin
-  for i:= 1 to fCount do
-  begin
- {   if fCards[i].fId = id then
-      GetCardByID := fCards[i];    }
-  end;
+  GetCardByID := fCards[i];
 end;
 
 // Получение ID карты
@@ -440,19 +413,29 @@ begin
       sanity := StrToInt(output_data[0]);
       stamina := StrToInt(output_data[1]);
       start_lok := StrToInt(output_data[2]);
-      money := StrToInt(output_data[2]);
-      clues := StrToInt(output_data[2]);
-      //for j := 1 to 10 do
-      //  items[j] := StrToInt(output_data[2]); // Random possessions
-      items_count := StrToInt(output_data[2]); // How many different items is in investigator's possession
-      ally := StrToInt(output_data[2]);
-      focus := StrToInt(output_data[22]);
-      speed := StrToInt(output_data[23]);
-      sneak := StrToInt(output_data[24]);
-      fight := StrToInt(output_data[25]);
-      will := StrToInt(output_data[26]);
-      lore := StrToInt(output_data[27]);
-      luck := StrToInt(output_data[28]);
+      money := StrToInt(output_data[3]);
+      clues := StrToInt(output_data[4]);
+      if (StrToInt(output_data[5]) <> 0) then               // Item
+        AddItem(StrToInt(output_data[5]));
+      if (StrToInt(output_data[6]) <> 0) then               // Item
+        AddItem(StrToInt(output_data[6]));
+      if (StrToInt(output_data[7]) <> 0) then               // Item
+        AddItem(StrToInt(output_data[7]));
+      can_take[1] := StrToInt(output_data[8]); // Common items
+      can_take[2] := StrToInt(output_data[9]); // What, how many
+      can_take[3] := StrToInt(output_data[10]); // What, how many
+      can_take[4] := StrToInt(output_data[11]); // What, how many
+      can_take[5] := StrToInt(output_data[12]); // What, how many
+
+      // Random possessions
+      // Stats
+      focus := StrToInt(output_data[14]);
+      speed := StrToInt(output_data[15]);
+      sneak := StrToInt(output_data[16]);
+      fight := StrToInt(output_data[17]);
+      will := StrToInt(output_data[18]);
+      lore := StrToInt(output_data[19]);
+      luck := StrToInt(output_data[20]);
       //for j := 1 to 10 do
       //  for k := 1 to 10 do
       //can_take[j, k] := StrToInt(output_data[2]); // What, how many

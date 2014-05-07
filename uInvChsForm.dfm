@@ -1,6 +1,6 @@
 object frmInv: TfrmInv
-  Left = 669
-  Top = 198
+  Left = 477
+  Top = 7
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'frmInv'
@@ -13,6 +13,7 @@ object frmInv: TfrmInv
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -1402,56 +1403,56 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    ItemIndex = 2
+    ItemIndex = 1
     TabOrder = 1
-    Text = 'Amanda Sharpe'
+    Text = 'Akachi Onyele'
     OnChange = cbInvPlayer1Change
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
-      'Amanda Sharpe'
-      '"Ashcan" Pete'
-      'Bob Jenkins'
+      #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+      'Ashcan Pete'
+      #1041#1086#1073' '#1044#1078#1077#1085#1082#1080#1085#1089
       'Calvin Wright'
-      'Carolyn Fern'
+      #1050#1101#1088#1086#1083#1080#1085' '#1060#1077#1088#1085
       'Charlie Kane'
       'Daisy Walker'
-      'Darrell Simmons'
-      'Dexter Drake'
+      #1044#1072#1088#1088#1077#1083#1083' '#1057#1080#1084#1084#1086#1085#1089
+      #1044#1077#1082#1089#1090#1077#1088' '#1044#1088#1077#1081#1082
       'Diana Stanley'
       'Finn Edwards'
       'George Barnaby'
-      'Gloria Goldberg'
+      #1043#1083#1086#1088#1080#1103' '#1043#1086#1083#1100#1076#1073#1077#1088#1075
       'Hank Samson'
-      'Harvey Walters'
+      #1061#1072#1088#1074#1080' '#1059#1086#1083#1090#1077#1088#1089
       'Jacqueline Fine'
-      'Jenny Barnes'
+      #1044#1078#1077#1085#1085#1080' '#1041#1072#1088#1085#1089
       'Jim Culver'
-      'Joe Diamond'
-      'Kate Winthrop'
+      #1044#1078#1086' '#1044#1072#1081#1084#1086#1085#1076
+      #1050#1077#1081#1090' '#1059#1080#1085#1090#1088#1086#1087
       'Leo Anderson'
       'Lily Chen'
       'Lola Hayes'
       'Luke Robinson'
-      'Mandy Thompson'
+      #1052#1077#1085#1076#1080' '#1058#1086#1084#1087#1089#1086#1085
       'Marie Lambeau'
       'Mark Harrigan'
-      'Michael McGlen'
+      #1052#1072#1081#1082#1083' '#1052#1072#1082#1075#1083#1077#1085#1085
       'Minh Thi Phan'
-      'Monterey Jack'
+      #1052#1086#1085#1090#1077#1088#1077#1081' '#1044#1078#1077#1082
       'Norman Withers'
       'Patrice Hathaway'
       'Rex Murphy'
       'Rita Young'
       'Roland Banks'
       'Silas Marsh'
-      'Sister Mary'
-      '"Skids" O'#39'Toole'
+      #1057#1077#1089#1090#1088#1072' '#1052#1101#1088#1080
+      'Skids O'#39'Toole'
       'Tommy Muldoon'
       'Tony Morgan'
       'Trish Scarborough'
       'Ursula Downs'
-      'Vincent Lee'
+      #1042#1080#1085#1089#1077#1085#1090' '#1051#1080
       'Wendy Adams'
       'William Yorick'
       'Wilson Richards'
@@ -1464,53 +1465,55 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
+    ItemIndex = 1
     TabOrder = 2
+    Text = 'Akachi Onyele'
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
-      'Amanda Sharpe'
-      '"Ashcan" Pete'
-      'Bob Jenkins'
+      #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+      'Ashcan Pete'
+      #1041#1086#1073' '#1044#1078#1077#1085#1082#1080#1085#1089
       'Calvin Wright'
-      'Carolyn Fern'
+      #1050#1101#1088#1086#1083#1080#1085' '#1060#1077#1088#1085
       'Charlie Kane'
       'Daisy Walker'
-      'Darrell Simmons'
-      'Dexter Drake'
+      #1044#1072#1088#1088#1077#1083#1083' '#1057#1080#1084#1084#1086#1085#1089
+      #1044#1077#1082#1089#1090#1077#1088' '#1044#1088#1077#1081#1082
       'Diana Stanley'
       'Finn Edwards'
       'George Barnaby'
-      'Gloria Goldberg'
+      #1043#1083#1086#1088#1080#1103' '#1043#1086#1083#1100#1076#1073#1077#1088#1075
       'Hank Samson'
-      'Harvey Walters'
+      #1061#1072#1088#1074#1080' '#1059#1086#1083#1090#1077#1088#1089
       'Jacqueline Fine'
-      'Jenny Barnes'
+      #1044#1078#1077#1085#1085#1080' '#1041#1072#1088#1085#1089
       'Jim Culver'
-      'Joe Diamond'
-      'Kate Winthrop'
+      #1044#1078#1086' '#1044#1072#1081#1084#1086#1085#1076
+      #1050#1077#1081#1090' '#1059#1080#1085#1090#1088#1086#1087
       'Leo Anderson'
       'Lily Chen'
       'Lola Hayes'
       'Luke Robinson'
-      'Mandy Thompson'
+      #1052#1077#1085#1076#1080' '#1058#1086#1084#1087#1089#1086#1085
       'Marie Lambeau'
       'Mark Harrigan'
-      'Michael McGlen'
+      #1052#1072#1081#1082#1083' '#1052#1072#1082#1075#1083#1077#1085#1085
       'Minh Thi Phan'
-      'Monterey Jack'
+      #1052#1086#1085#1090#1077#1088#1077#1081' '#1044#1078#1077#1082
       'Norman Withers'
       'Patrice Hathaway'
       'Rex Murphy'
       'Rita Young'
       'Roland Banks'
       'Silas Marsh'
-      'Sister Mary'
-      '"Skids" O'#39'Toole'
+      #1057#1077#1089#1090#1088#1072' '#1052#1101#1088#1080
+      'Skids O'#39'Toole'
       'Tommy Muldoon'
       'Tony Morgan'
       'Trish Scarborough'
       'Ursula Downs'
-      'Vincent Lee'
+      #1042#1080#1085#1089#1077#1085#1090' '#1051#1080
       'Wendy Adams'
       'William Yorick'
       'Wilson Richards'
@@ -1523,53 +1526,55 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
+    ItemIndex = 1
     TabOrder = 3
+    Text = 'Akachi Onyele'
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
-      'Amanda Sharpe'
-      '"Ashcan" Pete'
-      'Bob Jenkins'
+      #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+      'Ashcan Pete'
+      #1041#1086#1073' '#1044#1078#1077#1085#1082#1080#1085#1089
       'Calvin Wright'
-      'Carolyn Fern'
+      #1050#1101#1088#1086#1083#1080#1085' '#1060#1077#1088#1085
       'Charlie Kane'
       'Daisy Walker'
-      'Darrell Simmons'
-      'Dexter Drake'
+      #1044#1072#1088#1088#1077#1083#1083' '#1057#1080#1084#1084#1086#1085#1089
+      #1044#1077#1082#1089#1090#1077#1088' '#1044#1088#1077#1081#1082
       'Diana Stanley'
       'Finn Edwards'
       'George Barnaby'
-      'Gloria Goldberg'
+      #1043#1083#1086#1088#1080#1103' '#1043#1086#1083#1100#1076#1073#1077#1088#1075
       'Hank Samson'
-      'Harvey Walters'
+      #1061#1072#1088#1074#1080' '#1059#1086#1083#1090#1077#1088#1089
       'Jacqueline Fine'
-      'Jenny Barnes'
+      #1044#1078#1077#1085#1085#1080' '#1041#1072#1088#1085#1089
       'Jim Culver'
-      'Joe Diamond'
-      'Kate Winthrop'
+      #1044#1078#1086' '#1044#1072#1081#1084#1086#1085#1076
+      #1050#1077#1081#1090' '#1059#1080#1085#1090#1088#1086#1087
       'Leo Anderson'
       'Lily Chen'
       'Lola Hayes'
       'Luke Robinson'
-      'Mandy Thompson'
+      #1052#1077#1085#1076#1080' '#1058#1086#1084#1087#1089#1086#1085
       'Marie Lambeau'
       'Mark Harrigan'
-      'Michael McGlen'
+      #1052#1072#1081#1082#1083' '#1052#1072#1082#1075#1083#1077#1085#1085
       'Minh Thi Phan'
-      'Monterey Jack'
+      #1052#1086#1085#1090#1077#1088#1077#1081' '#1044#1078#1077#1082
       'Norman Withers'
       'Patrice Hathaway'
       'Rex Murphy'
       'Rita Young'
       'Roland Banks'
       'Silas Marsh'
-      'Sister Mary'
-      '"Skids" O'#39'Toole'
+      #1057#1077#1089#1090#1088#1072' '#1052#1101#1088#1080
+      'Skids O'#39'Toole'
       'Tommy Muldoon'
       'Tony Morgan'
       'Trish Scarborough'
       'Ursula Downs'
-      'Vincent Lee'
+      #1042#1080#1085#1089#1077#1085#1090' '#1051#1080
       'Wendy Adams'
       'William Yorick'
       'Wilson Richards'
@@ -1582,53 +1587,55 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
+    ItemIndex = 1
     TabOrder = 4
+    Text = 'Akachi Onyele'
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
-      'Amanda Sharpe'
-      '"Ashcan" Pete'
-      'Bob Jenkins'
+      #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+      'Ashcan Pete'
+      #1041#1086#1073' '#1044#1078#1077#1085#1082#1080#1085#1089
       'Calvin Wright'
-      'Carolyn Fern'
+      #1050#1101#1088#1086#1083#1080#1085' '#1060#1077#1088#1085
       'Charlie Kane'
       'Daisy Walker'
-      'Darrell Simmons'
-      'Dexter Drake'
+      #1044#1072#1088#1088#1077#1083#1083' '#1057#1080#1084#1084#1086#1085#1089
+      #1044#1077#1082#1089#1090#1077#1088' '#1044#1088#1077#1081#1082
       'Diana Stanley'
       'Finn Edwards'
       'George Barnaby'
-      'Gloria Goldberg'
+      #1043#1083#1086#1088#1080#1103' '#1043#1086#1083#1100#1076#1073#1077#1088#1075
       'Hank Samson'
-      'Harvey Walters'
+      #1061#1072#1088#1074#1080' '#1059#1086#1083#1090#1077#1088#1089
       'Jacqueline Fine'
-      'Jenny Barnes'
+      #1044#1078#1077#1085#1085#1080' '#1041#1072#1088#1085#1089
       'Jim Culver'
-      'Joe Diamond'
-      'Kate Winthrop'
+      #1044#1078#1086' '#1044#1072#1081#1084#1086#1085#1076
+      #1050#1077#1081#1090' '#1059#1080#1085#1090#1088#1086#1087
       'Leo Anderson'
       'Lily Chen'
       'Lola Hayes'
       'Luke Robinson'
-      'Mandy Thompson'
+      #1052#1077#1085#1076#1080' '#1058#1086#1084#1087#1089#1086#1085
       'Marie Lambeau'
       'Mark Harrigan'
-      'Michael McGlen'
+      #1052#1072#1081#1082#1083' '#1052#1072#1082#1075#1083#1077#1085#1085
       'Minh Thi Phan'
-      'Monterey Jack'
+      #1052#1086#1085#1090#1077#1088#1077#1081' '#1044#1078#1077#1082
       'Norman Withers'
       'Patrice Hathaway'
       'Rex Murphy'
       'Rita Young'
       'Roland Banks'
       'Silas Marsh'
-      'Sister Mary'
-      '"Skids" O'#39'Toole'
+      #1057#1077#1089#1090#1088#1072' '#1052#1101#1088#1080
+      'Skids O'#39'Toole'
       'Tommy Muldoon'
       'Tony Morgan'
       'Trish Scarborough'
       'Ursula Downs'
-      'Vincent Lee'
+      #1042#1080#1085#1089#1077#1085#1090' '#1051#1080
       'Wendy Adams'
       'William Yorick'
       'Wilson Richards'
@@ -1641,53 +1648,55 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
+    ItemIndex = 1
     TabOrder = 5
+    Text = 'Akachi Onyele'
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
-      'Amanda Sharpe'
-      '"Ashcan" Pete'
-      'Bob Jenkins'
+      #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+      'Ashcan Pete'
+      #1041#1086#1073' '#1044#1078#1077#1085#1082#1080#1085#1089
       'Calvin Wright'
-      'Carolyn Fern'
+      #1050#1101#1088#1086#1083#1080#1085' '#1060#1077#1088#1085
       'Charlie Kane'
       'Daisy Walker'
-      'Darrell Simmons'
-      'Dexter Drake'
+      #1044#1072#1088#1088#1077#1083#1083' '#1057#1080#1084#1084#1086#1085#1089
+      #1044#1077#1082#1089#1090#1077#1088' '#1044#1088#1077#1081#1082
       'Diana Stanley'
       'Finn Edwards'
       'George Barnaby'
-      'Gloria Goldberg'
+      #1043#1083#1086#1088#1080#1103' '#1043#1086#1083#1100#1076#1073#1077#1088#1075
       'Hank Samson'
-      'Harvey Walters'
+      #1061#1072#1088#1074#1080' '#1059#1086#1083#1090#1077#1088#1089
       'Jacqueline Fine'
-      'Jenny Barnes'
+      #1044#1078#1077#1085#1085#1080' '#1041#1072#1088#1085#1089
       'Jim Culver'
-      'Joe Diamond'
-      'Kate Winthrop'
+      #1044#1078#1086' '#1044#1072#1081#1084#1086#1085#1076
+      #1050#1077#1081#1090' '#1059#1080#1085#1090#1088#1086#1087
       'Leo Anderson'
       'Lily Chen'
       'Lola Hayes'
       'Luke Robinson'
-      'Mandy Thompson'
+      #1052#1077#1085#1076#1080' '#1058#1086#1084#1087#1089#1086#1085
       'Marie Lambeau'
       'Mark Harrigan'
-      'Michael McGlen'
+      #1052#1072#1081#1082#1083' '#1052#1072#1082#1075#1083#1077#1085#1085
       'Minh Thi Phan'
-      'Monterey Jack'
+      #1052#1086#1085#1090#1077#1088#1077#1081' '#1044#1078#1077#1082
       'Norman Withers'
       'Patrice Hathaway'
       'Rex Murphy'
       'Rita Young'
       'Roland Banks'
       'Silas Marsh'
-      'Sister Mary'
-      '"Skids" O'#39'Toole'
+      #1057#1077#1089#1090#1088#1072' '#1052#1101#1088#1080
+      'Skids O'#39'Toole'
       'Tommy Muldoon'
       'Tony Morgan'
       'Trish Scarborough'
       'Ursula Downs'
-      'Vincent Lee'
+      #1042#1080#1085#1089#1077#1085#1090' '#1051#1080
       'Wendy Adams'
       'William Yorick'
       'Wilson Richards'
@@ -1700,53 +1709,55 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
+    ItemIndex = 1
     TabOrder = 6
+    Text = 'Akachi Onyele'
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
-      'Amanda Sharpe'
-      '"Ashcan" Pete'
-      'Bob Jenkins'
+      #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+      'Ashcan Pete'
+      #1041#1086#1073' '#1044#1078#1077#1085#1082#1080#1085#1089
       'Calvin Wright'
-      'Carolyn Fern'
+      #1050#1101#1088#1086#1083#1080#1085' '#1060#1077#1088#1085
       'Charlie Kane'
       'Daisy Walker'
-      'Darrell Simmons'
-      'Dexter Drake'
+      #1044#1072#1088#1088#1077#1083#1083' '#1057#1080#1084#1084#1086#1085#1089
+      #1044#1077#1082#1089#1090#1077#1088' '#1044#1088#1077#1081#1082
       'Diana Stanley'
       'Finn Edwards'
       'George Barnaby'
-      'Gloria Goldberg'
+      #1043#1083#1086#1088#1080#1103' '#1043#1086#1083#1100#1076#1073#1077#1088#1075
       'Hank Samson'
-      'Harvey Walters'
+      #1061#1072#1088#1074#1080' '#1059#1086#1083#1090#1077#1088#1089
       'Jacqueline Fine'
-      'Jenny Barnes'
+      #1044#1078#1077#1085#1085#1080' '#1041#1072#1088#1085#1089
       'Jim Culver'
-      'Joe Diamond'
-      'Kate Winthrop'
+      #1044#1078#1086' '#1044#1072#1081#1084#1086#1085#1076
+      #1050#1077#1081#1090' '#1059#1080#1085#1090#1088#1086#1087
       'Leo Anderson'
       'Lily Chen'
       'Lola Hayes'
       'Luke Robinson'
-      'Mandy Thompson'
+      #1052#1077#1085#1076#1080' '#1058#1086#1084#1087#1089#1086#1085
       'Marie Lambeau'
       'Mark Harrigan'
-      'Michael McGlen'
+      #1052#1072#1081#1082#1083' '#1052#1072#1082#1075#1083#1077#1085#1085
       'Minh Thi Phan'
-      'Monterey Jack'
+      #1052#1086#1085#1090#1077#1088#1077#1081' '#1044#1078#1077#1082
       'Norman Withers'
       'Patrice Hathaway'
       'Rex Murphy'
       'Rita Young'
       'Roland Banks'
       'Silas Marsh'
-      'Sister Mary'
-      '"Skids" O'#39'Toole'
+      #1057#1077#1089#1090#1088#1072' '#1052#1101#1088#1080
+      'Skids O'#39'Toole'
       'Tommy Muldoon'
       'Tony Morgan'
       'Trish Scarborough'
       'Ursula Downs'
-      'Vincent Lee'
+      #1042#1080#1085#1089#1077#1085#1090' '#1051#1080
       'Wendy Adams'
       'William Yorick'
       'Wilson Richards'
@@ -1759,53 +1770,55 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
+    ItemIndex = 1
     TabOrder = 7
+    Text = 'Akachi Onyele'
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
-      'Amanda Sharpe'
-      '"Ashcan" Pete'
-      'Bob Jenkins'
+      #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+      'Ashcan Pete'
+      #1041#1086#1073' '#1044#1078#1077#1085#1082#1080#1085#1089
       'Calvin Wright'
-      'Carolyn Fern'
+      #1050#1101#1088#1086#1083#1080#1085' '#1060#1077#1088#1085
       'Charlie Kane'
       'Daisy Walker'
-      'Darrell Simmons'
-      'Dexter Drake'
+      #1044#1072#1088#1088#1077#1083#1083' '#1057#1080#1084#1084#1086#1085#1089
+      #1044#1077#1082#1089#1090#1077#1088' '#1044#1088#1077#1081#1082
       'Diana Stanley'
       'Finn Edwards'
       'George Barnaby'
-      'Gloria Goldberg'
+      #1043#1083#1086#1088#1080#1103' '#1043#1086#1083#1100#1076#1073#1077#1088#1075
       'Hank Samson'
-      'Harvey Walters'
+      #1061#1072#1088#1074#1080' '#1059#1086#1083#1090#1077#1088#1089
       'Jacqueline Fine'
-      'Jenny Barnes'
+      #1044#1078#1077#1085#1085#1080' '#1041#1072#1088#1085#1089
       'Jim Culver'
-      'Joe Diamond'
-      'Kate Winthrop'
+      #1044#1078#1086' '#1044#1072#1081#1084#1086#1085#1076
+      #1050#1077#1081#1090' '#1059#1080#1085#1090#1088#1086#1087
       'Leo Anderson'
       'Lily Chen'
       'Lola Hayes'
       'Luke Robinson'
-      'Mandy Thompson'
+      #1052#1077#1085#1076#1080' '#1058#1086#1084#1087#1089#1086#1085
       'Marie Lambeau'
       'Mark Harrigan'
-      'Michael McGlen'
+      #1052#1072#1081#1082#1083' '#1052#1072#1082#1075#1083#1077#1085#1085
       'Minh Thi Phan'
-      'Monterey Jack'
+      #1052#1086#1085#1090#1077#1088#1077#1081' '#1044#1078#1077#1082
       'Norman Withers'
       'Patrice Hathaway'
       'Rex Murphy'
       'Rita Young'
       'Roland Banks'
       'Silas Marsh'
-      'Sister Mary'
-      '"Skids" O'#39'Toole'
+      #1057#1077#1089#1090#1088#1072' '#1052#1101#1088#1080
+      'Skids O'#39'Toole'
       'Tommy Muldoon'
       'Tony Morgan'
       'Trish Scarborough'
       'Ursula Downs'
-      'Vincent Lee'
+      #1042#1080#1085#1089#1077#1085#1090' '#1051#1080
       'Wendy Adams'
       'William Yorick'
       'Wilson Richards'
@@ -1818,53 +1831,55 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
+    ItemIndex = 1
     TabOrder = 8
+    Text = 'Akachi Onyele'
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
-      'Amanda Sharpe'
-      '"Ashcan" Pete'
-      'Bob Jenkins'
+      #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+      'Ashcan Pete'
+      #1041#1086#1073' '#1044#1078#1077#1085#1082#1080#1085#1089
       'Calvin Wright'
-      'Carolyn Fern'
+      #1050#1101#1088#1086#1083#1080#1085' '#1060#1077#1088#1085
       'Charlie Kane'
       'Daisy Walker'
-      'Darrell Simmons'
-      'Dexter Drake'
+      #1044#1072#1088#1088#1077#1083#1083' '#1057#1080#1084#1084#1086#1085#1089
+      #1044#1077#1082#1089#1090#1077#1088' '#1044#1088#1077#1081#1082
       'Diana Stanley'
       'Finn Edwards'
       'George Barnaby'
-      'Gloria Goldberg'
+      #1043#1083#1086#1088#1080#1103' '#1043#1086#1083#1100#1076#1073#1077#1088#1075
       'Hank Samson'
-      'Harvey Walters'
+      #1061#1072#1088#1074#1080' '#1059#1086#1083#1090#1077#1088#1089
       'Jacqueline Fine'
-      'Jenny Barnes'
+      #1044#1078#1077#1085#1085#1080' '#1041#1072#1088#1085#1089
       'Jim Culver'
-      'Joe Diamond'
-      'Kate Winthrop'
+      #1044#1078#1086' '#1044#1072#1081#1084#1086#1085#1076
+      #1050#1077#1081#1090' '#1059#1080#1085#1090#1088#1086#1087
       'Leo Anderson'
       'Lily Chen'
       'Lola Hayes'
       'Luke Robinson'
-      'Mandy Thompson'
+      #1052#1077#1085#1076#1080' '#1058#1086#1084#1087#1089#1086#1085
       'Marie Lambeau'
       'Mark Harrigan'
-      'Michael McGlen'
+      #1052#1072#1081#1082#1083' '#1052#1072#1082#1075#1083#1077#1085#1085
       'Minh Thi Phan'
-      'Monterey Jack'
+      #1052#1086#1085#1090#1077#1088#1077#1081' '#1044#1078#1077#1082
       'Norman Withers'
       'Patrice Hathaway'
       'Rex Murphy'
       'Rita Young'
       'Roland Banks'
       'Silas Marsh'
-      'Sister Mary'
-      '"Skids" O'#39'Toole'
+      #1057#1077#1089#1090#1088#1072' '#1052#1101#1088#1080
+      'Skids O'#39'Toole'
       'Tommy Muldoon'
       'Tony Morgan'
       'Trish Scarborough'
       'Ursula Downs'
-      'Vincent Lee'
+      #1042#1080#1085#1089#1077#1085#1090' '#1051#1080
       'Wendy Adams'
       'William Yorick'
       'Wilson Richards'
@@ -2001,41 +2016,81 @@ object frmInv: TfrmInv
     Height = 73
     Caption = 'Random possessions'
     TabOrder = 21
-    object Button11: TButton
+    object btnCommItem: TButton
       Left = 8
       Top = 24
       Width = 75
       Height = 25
       Caption = 'Com. item'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 0
-      OnClick = Button11Click
+      OnClick = btnCommItemClick
     end
-    object Button12: TButton
+    object btnUniqItem: TButton
       Left = 88
       Top = 24
       Width = 75
       Height = 25
       Caption = 'Uniq. item'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 1
-      OnClick = Button12Click
+      OnClick = btnUniqItemClick
     end
-    object Button13: TButton
+    object btnSpell: TButton
       Left = 168
       Top = 24
       Width = 75
       Height = 25
       Caption = 'Spell'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 2
-      OnClick = Button13Click
+      OnClick = btnSpellClick
     end
-    object Button14: TButton
+    object btnSkill: TButton
       Left = 248
       Top = 24
       Width = 75
       Height = 25
       Caption = 'Skill'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 3
-      OnClick = Button14Click
+      OnClick = btnSkillClick
+    end
+    object btnAlly: TButton
+      Left = 328
+      Top = 24
+      Width = 75
+      Height = 25
+      Caption = 'Ally'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+      OnClick = btnSkillClick
     end
   end
 end

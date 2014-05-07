@@ -77,6 +77,7 @@ type
     function HasItem(ID: integer): boolean;
     procedure ChangeSkills(r: integer; n: integer);
     procedure MoveToLocation(id_lok: integer);
+    procedure GetItems; // Copy investigator's items to player
     //procedure
     //property Speed: integer read Stats[1] write Stats[1];
   end;
@@ -202,13 +203,13 @@ end;
 
 procedure TPlayer.AssignInvestigator(inv: TInvestigator);
 begin
-  //fInvestigator := inv;
-  //fSanity := inv.sanity;
-  //fStamina := inv.stamina;
-  //fMoney := inv.money;
-  ///fClues := inv.clues;
-  //fLocation := inv.start_lok;
-  //fFocus := inv.focus;
+  fInvestigator := inv;
+  fSanity := inv.sanity;
+  fStamina := inv.stamina;
+  fMoney := inv.money;
+  fClues := inv.clues;
+  fLocation := inv.start_lok;
+  fFocus := inv.focus;
 end;
 
 // Бросок кубика (Возвращает число успехов, 0 - провал)
@@ -423,6 +424,14 @@ procedure TPlayer.MoveToLocation(id_lok: integer);
 begin
   fLocation := id_lok;
   fNeighborhood := (id_lok div 1000) * 1000; // ?
+end;
+
+procedure TPlayer.GetItems;
+var
+  i: Integer;
+begin
+  for i := 1 to Investigator.items_count do
+    AddItem(Investigator.items[i]);
 end;
 
 

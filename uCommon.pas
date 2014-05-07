@@ -34,7 +34,7 @@ const
   NUMBER_OF_UNIQUE_ITEMS = 83;
   LOCATION_CARD_NUMBER = 20; // Число карт на каждую локацию
   ITEMS_CARD_NUMBER = 30;
-  NUMBER_OF_INVESTIGATORS = 19;
+  NUMBER_OF_INVESTIGATORS = 49;
   MAX_PLAYER_ITEMS = 20;
   MONSTER_MAX = 50;
   ALLIES_MAX = 50;
@@ -265,7 +265,7 @@ const
 ('2831', 'Zanthu Tablets'));
 
   crd_ally: array [1..1] of string = ('Anna Kaslow');
-  investigators: array [1..49] of string = ('Agnes Baker', 'Akachi Onyele',
+  aInvestigators: array [1..NUMBER_OF_INVESTIGATORS] of string = ('Agnes Baker', 'Akachi Onyele',
         'Amanda Sharpe', '"Ashcan" Pete', 'Bob Jenkins', 'Calvin Wright',
         'Carolyn Fern', 'Charlie Kane', 'Daisy Walker', 'Darrell Simmons',
         'Dexter Drake', 'Diana Stanley', 'Finn Edwards', 'George Barnaby',

@@ -379,7 +379,7 @@ begin
   lblPlaLoc.Caption := IntToStr(gCurrentPlayer.Location);
   lblPlaClue.Caption := IntToStr(gCurrentPlayer.Clues);
   lblPlaMoney.Caption := IntToStr(gCurrentPlayer.Money);
-  //lblPlaInv.Caption := gCurrentPlayer.investigator.name;
+  lblPlaInv.Caption := gCurrentPlayer.investigator.name;
   lbItems.Clear;
   for i := 1 to gPlayer.ItemsCount do
     lbItems.Items.Add(IntToStr(gCurrentPlayer.cards[i]));
@@ -1179,6 +1179,7 @@ procedure TfrmMain.btnChsInvClick(Sender: TObject);
 var
   i: integer;
 begin
+  //frmInv.cbInvPlayer1.Items.Add(aInvestigators[]);
   frmInv.ShowModal;
   //gCurrentPlayer.AssignInvestigator(inv); // Investigator := inv;
   gCurrentPlayer.ChangeSkills(1,1);
