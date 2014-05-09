@@ -75,7 +75,7 @@ type
     procedure Take_Action(action: integer; action_value: integer);
     function CheckAvailability(grade: integer; param: integer): boolean;
     function HasItem(ID: integer): boolean;
-    procedure ChangeSkills(r: integer; n: integer);
+    procedure ChangeSkills(x1: integer; x2: integer; x3: integer);
     procedure MoveToLocation(id_lok: integer);
     procedure GetItems; // Copy investigator's items to player
     //procedure
@@ -381,8 +381,17 @@ begin
     end;
 end;
 
-procedure TPlayer.ChangeSkills(r: integer; n: integer);
+procedure TPlayer.ChangeSkills(x1: integer; x2: integer; x3: integer);
 begin
+  fStats[1] := fInvestigator.stat[1] + x1;
+  fStats[2] := fInvestigator.stat[2] - x1;
+
+  fStats[3] := fInvestigator.stat[3] + x2;
+  fStats[4] := fInvestigator.stat[4] - x2;
+
+  fStats[5] := fInvestigator.stat[5] + x3;
+  fStats[6] := fInvestigator.stat[6] - x3;
+
  { case r of
   1: begin
     if fInvestigator.stats[1] < 3 then

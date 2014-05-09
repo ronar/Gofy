@@ -1,6 +1,6 @@
 object frmChsLok: TfrmChsLok
-  Left = 672
-  Top = 342
+  Left = 947
+  Top = 484
   BorderStyle = bsDialog
   Caption = 'Choose location'
   ClientHeight = 180

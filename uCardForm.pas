@@ -43,6 +43,7 @@ procedure TfrmCard.FormShow(Sender: TObject);
 var
   i: integer;
 begin
+  cbCard.Clear;
   case card_to_load of
   CT_COMMON_ITEM: for i := 1 to Common_Items_Count do cbCard.Items.Add(IntToStr(Common_Items_Deck.card[i]));
   CT_UNIQUE_ITEM: for i := 1 to Unique_Items_Count do cbCard.Items.Add(IntToStr(Unique_Items_Deck.card[i]));

@@ -9,21 +9,13 @@ uses
 type
   TfrmInv = class(TForm)
     cbInvPlayer1: TComboBox;
-    Label1: TLabel;
     cbInvPlayer2: TComboBox;
-    Label2: TLabel;
     cbInvPlayer3: TComboBox;
-    Label3: TLabel;
     cbInvPlayer4: TComboBox;
-    Label4: TLabel;
     cbInvPlayer5: TComboBox;
-    Label5: TLabel;
     cbInvPlayer6: TComboBox;
-    Label6: TLabel;
     cbInvPlayer7: TComboBox;
-    Label7: TLabel;
     cbInvPlayer8: TComboBox;
-    Label8: TLabel;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -35,7 +27,6 @@ type
     Button9: TButton;
     Button10: TButton;
     Image1: TImage;
-    Label9: TLabel;
     Label10: TLabel;
     Label11: TLabel;
     Label12: TLabel;
@@ -69,12 +60,42 @@ type
     lbLuck2: TLabel;
     lbLuck3: TLabel;
     lbLuck4: TLabel;
-    GroupBox1: TGroupBox;
-    btnCommItem: TButton;
-    btnUniqItem: TButton;
-    btnSpell: TButton;
-    btnSkill: TButton;
-    btnAlly: TButton;
+    lbl1: TLabel;
+    lbl2: TLabel;
+    lbl3: TLabel;
+    lbl4: TLabel;
+    lbl5: TLabel;
+    lbl6: TLabel;
+    lbl7: TLabel;
+    lbl8: TLabel;
+    lbl9: TLabel;
+    edt1: TEdit;
+    edt2: TEdit;
+    edt3: TEdit;
+    edt4: TEdit;
+    edt5: TEdit;
+    edt6: TEdit;
+    edt7: TEdit;
+    edt8: TEdit;
+    edt9: TEdit;
+    lbl10: TLabel;
+    lbl11: TLabel;
+    grp1: TGroupBox;
+    lbl12: TLabel;
+    lbl13: TLabel;
+    lbl14: TLabel;
+    lbl15: TLabel;
+    lbl16: TLabel;
+    lbl17: TLabel;
+    lbl18: TLabel;
+    rg1: TRadioGroup;
+    btn11: TButton;
+    btn12: TButton;
+    rg2: TRadioGroup;
+    cbb9: TComboBox;
+    btn13: TButton;
+    btn14: TButton;
+    btn15: TButton;
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure cbInvPlayer1Change(Sender: TObject);
@@ -82,7 +103,6 @@ type
     procedure btnSpellClick(Sender: TObject);
     procedure btnUniqItemClick(Sender: TObject);
     procedure btnSkillClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -111,9 +131,33 @@ begin
 end;
 
 procedure TfrmInv.Button1Click(Sender: TObject);
+var
+  i: integer;
 begin
   //cbInvPlayer1Change(Sender);
   players[1].GetItems();
+  if players[1].Investigator.can_take[1] > 0 then
+    for i := 1 to players[1].Investigator.can_take[1] do
+      players[1].AddItem(Common_Items_Deck.DrawCard);
+  if players[1].Investigator.can_take[2] > 0 then
+    for i := 1 to players[1].Investigator.can_take[2] do
+      players[1].AddItem(Unique_Items_Deck.DrawCard);
+  if players[1].Investigator.can_take[3] > 0 then
+    for i := 1 to players[1].Investigator.can_take[3] do
+      players[1].AddItem(Spells_Deck.DrawCard);
+  if players[1].Investigator.can_take[4] > 0 then
+    for i := 1 to players[1].Investigator.can_take[4] do
+      players[1].AddItem(Skills_Deck.DrawCard);
+
+  players[1].Speed := players[1].Investigator.stat[1] + RadioGroup1.ItemIndex;
+  players[1].Sneak := players[1].Investigator.stat[2] - RadioGroup1.ItemIndex;
+
+  players[1].Fight := players[1].Investigator.stat[3] + RadioGroup1.ItemIndex;
+  players[1].Will := players[1].Investigator.stat[4] - RadioGroup1.ItemIndex;
+
+  players[1].Lore := players[1].Investigator.stat[5] + RadioGroup1.ItemIndex;
+  players[1].Luck := players[1].Investigator.stat[6] - RadioGroup1.ItemIndex;
+
   Close;
 end;
 
@@ -125,17 +169,6 @@ var
 begin
   players[1].AssignInvestigator(gInvestigators.card[cbInvPlayer1.ItemIndex + 1]);
   players[1].Investigator.name := cbInvPlayer1.Text; // Имя сыщика
-
-  if players[1].Investigator.can_take[1] <> 0 then
-    btnCommItem.Enabled := True;
-  if players[1].Investigator.can_take[2] <> 0 then
-    btnUniqItem.Enabled := True;
-  if players[1].Investigator.can_take[3] <> 0 then
-    btnSpell.Enabled := True;
-  if players[1].Investigator.can_take[4] <> 0 then
-    btnSkill.Enabled := True;
-  if players[1].Investigator.can_take[5] <> 0 then
-    btnAlly.Enabled := True;
 
   lbSpeed1.Caption := IntToStr(players[1].Investigator.stat[1]);
   lbSneak1.Caption := IntToStr(players[1].Investigator.stat[2]);
@@ -191,55 +224,36 @@ procedure TfrmInv.btnSpellClick(Sender: TObject);
 var
   i, j: integer;
 begin
-{  for i := 1 to 4 do
+  for i := 1 to players[1].Investigator.can_take[3] do
   begin
-    if inv.can_take[i, 1] = CT_SPELL then
-      for j := 1 to inv.can_take[i, 2] do
-      begin
-        card_to_load := CT_SPELL;
-        frmCard.ShowModal;
-      end;
-  end;        }
+    card_to_load := CT_SPELL;
+    frmCard.ShowModal;
+    players[1].Investigator.AddItem(StrToInt(frmCard.cbCard.text));
+  end;
 end;
 
 procedure TfrmInv.btnUniqItemClick(Sender: TObject);
 var
   i, j: integer;
 begin
- { for i := 1 to 4 do
+  for i := 1 to players[1].Investigator.can_take[2] do
   begin
-    if inv.can_take[i, 1] = CT_UNIQUE_ITEM then
-      for j := 1 to inv.can_take[i, 2] do
-      begin
-        card_to_load := CT_UNIQUE_ITEM;
-        frmCard.ShowModal;
-      end;
-  end;           }
+    card_to_load := CT_UNIQUE_ITEM;
+    frmCard.ShowModal;
+    players[1].Investigator.AddItem(StrToInt(frmCard.cbCard.text));
+  end;
 end;
 
 procedure TfrmInv.btnSkillClick(Sender: TObject);
 var
   i, j: integer;
 begin
- { for i := 1 to 4 do
+  for i := 1 to players[1].Investigator.can_take[4] do
   begin
-    if inv.can_take[i, 1] = CT_SKILL then
-      for j := 1 to inv.can_take[i, 2] do
-      begin
-        card_to_load := CT_SKILL;
-        frmCard.ShowModal;
-      end;
-  end;        }
-
-end;
-
-procedure TfrmInv.FormShow(Sender: TObject);
-begin
-  btnCommItem.Enabled := False;
-  btnUniqItem.Enabled := False;
-  btnSpell.Enabled := False;
-  btnSkill.Enabled := False;
-  btnAlly.Enabled := False;  
+    card_to_load := CT_SKILL;
+    frmCard.ShowModal;
+    players[1].Investigator.AddItem(StrToInt(frmCard.cbCard.text));
+  end;
 end;
 
 end.
