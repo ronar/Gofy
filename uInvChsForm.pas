@@ -158,6 +158,9 @@ begin
   players[1].Lore := players[1].Investigator.stat[5] + RadioGroup1.ItemIndex;
   players[1].Luck := players[1].Investigator.stat[6] - RadioGroup1.ItemIndex;
 
+  ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
+  frmMain.btn17Click(Sender);  
+
   Close;
 end;
 

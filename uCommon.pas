@@ -14,7 +14,7 @@ const
   PH_UPKEEP = 1;
   PH_MOVE = 2;
   PH_ENCOUNTER = 3;
-  PH_KONTAKTI_V_INIH_MIRAH = 4;
+  PH_OTHER_WORLDS_ENCOUNTER = 4;
   PH_MYTHOS = 5;
   // Константы Типов Карт
   CT_SPELL = 3; // Заклинание
@@ -39,6 +39,7 @@ const
   MONSTER_MAX = 50;
   ALLIES_MAX = 50;
   COMMON_ITEMS_MAX = 100;
+  aPhasesNames: array [1..5] of string = ('UPKEEP', 'MOVE', 'ENCOUNTER', 'OTHER WORLDS ENCOUNTER', 'MYTHOS');
   aNeighborhoodsNames: array [1..NUMBER_OF_STREETS, 1..2] of string = (
         ('1000', 'Northside'),
         ('2000', 'Downtown'),

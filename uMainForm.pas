@@ -25,7 +25,6 @@ type
     cbLocation: TComboBox;
     Label11: TLabel;
     bntEncounter: TButton;
-    btnProcess: TButton;
     lblLocIDCaption: TLabel;
     lblLocID: TLabel;
     lblStatSpeed: TLabel;
@@ -124,14 +123,14 @@ type
     lblStaminaValue: TLabel;
     lblSanityValue: TLabel;
     img3: TImage;
-    pb1: TProgressBar;
-    pb2: TProgressBar;
+    pbStamina: TProgressBar;
+    pbSanity: TProgressBar;
     grp4: TGroupBox;
-    img5: TImage;
-    img6: TImage;
+    imgPlaCard2: TImage;
+    imgPlaCard3: TImage;
     btn14: TButton;
     btn15: TButton;
-    btn16: TButton;
+    btnProcess: TButton;
     pnl3: TPanel;
     lblSpeed: TLabel;
     lblSneak: TLabel;
@@ -155,7 +154,6 @@ type
     btn19: TButton;
     pb3: TProgressBar;
     pb4: TProgressBar;
-    imgEncounter: TImage;
     pnl4: TPanel;
     pgc2: TPageControl;
     ts3: TTabSheet;
@@ -166,6 +164,10 @@ type
     pnl5: TPanel;
     edt1: TEdit;
     lstLog: TListBox;
+    imgEncounter: TImage;
+    imgPlaCard1: TImage;
+    btnShowCards: TButton;
+    lbl1: TLabel;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -177,7 +179,6 @@ type
     procedure btnUseCardClick(Sender: TObject);
     procedure ComboBox2Change(Sender: TObject);
     procedure cbLocationChange(Sender: TObject);
-    procedure btnProcessClick(Sender: TObject);
     procedure DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edPlaStaminaChange(Sender: TObject);
@@ -191,7 +192,7 @@ type
     procedure btnMoveToExactLokClick(Sender: TObject);
     procedure edtPlaClueExit(Sender: TObject);
     procedure edStatFightExit(Sender: TObject);
-    procedure btn1Click(Sender: TObject);
+    procedure btnShowCardsClick(Sender: TObject);
     procedure edStatWillExit(Sender: TObject);
     procedure edStatLuckExit(Sender: TObject);
     procedure edtPlaMoneyExit(Sender: TObject);
@@ -199,6 +200,9 @@ type
     procedure btnLogClearClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure btn17Click(Sender: TObject);
+    procedure btn14Click(Sender: TObject);
+    procedure btn15Click(Sender: TObject);
+    procedure btnProcessClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -250,10 +254,12 @@ var
   Cards_Count: integer = 0;
   players: array [1..8] of TPlayer;
   gPlayer, gCurrentPlayer: TPlayer;
+  current_player: integer;
   player_count: integer;
   path_to_exe: string;
   //monCount: integer;
   head_of_list: PLLData;
+  player_current_card: array [1..8] of integer; // For displaying cards on form
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; card: TLocationCard);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
@@ -272,10 +278,11 @@ var
   procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
   procedure ProcessNode(Node : PLLData; add_data: integer = 0);
   function LokIdToName(lok_id: integer): string;
+  procedure ShowPlayerCards(pl: TPlayer; cur_cards: integer);
 
 implementation
 
-uses uChsLok, Math, uInvChsForm, uTradeForm, uUseForm;
+uses uChsLok, Math,  uTradeForm, uUseForm, uInvChsForm;
 
 {$R *.dfm}
 
@@ -368,16 +375,29 @@ end;
 
 procedure TfrmMain.RadioGroup1Click(Sender: TObject);
 begin
-  if RadioGroup1.ItemIndex = 0
-  then gCurrentPhase := PH_UPKEEP;
-  if RadioGroup1.ItemIndex = 1
-  then gCurrentPhase := 2;
-  if RadioGroup1.ItemIndex = 2
-  then gCurrentPhase := 3;
-  if RadioGroup1.ItemIndex = 3
-  then gCurrentPhase := 4;
-  if RadioGroup1.ItemIndex = 4
-  then gCurrentPhase := 5;
+  if RadioGroup1.ItemIndex = 0 then
+  begin
+    gCurrentPhase := PH_UPKEEP;
+  end;
+
+  if RadioGroup1.ItemIndex = 1 then
+  begin
+    gCurrentPhase := PH_MOVE;
+  end;
+
+  if RadioGroup1.ItemIndex = 2 then
+    gCurrentPhase := PH_ENCOUNTER;
+
+  if RadioGroup1.ItemIndex = 3 then
+  begin
+    gCurrentPhase := PH_OTHER_WORLDS_ENCOUNTER;
+  end;
+
+  if RadioGroup1.ItemIndex = 4 then
+  begin
+    gCurrentPhase := PH_MYTHOS;
+  end;
+  lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
 end;
 
 // Инициализация
@@ -390,11 +410,18 @@ begin
   players[1].bFirstPlayer := True;
   gPlayer := players[1];
   gCurrentPlayer := players[GetFirstPlayer];
+  current_player := 1;
+  lblCurPlayer.Caption := IntToStr(current_player);
+  gCurrentPhase := PH_UPKEEP;
+  lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
   gCurrentPlayer.Stamina := 5; // Give 5 stamina
   gCurrentPlayer.Sanity := 5; // Give 5 sanity
   gCurrentPlayer.Clues := 10; // Give 10 clues
   gCurrentPlayer.Money := 10; // Give 10$
   lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
+
+  for i := 1 to 8 do
+    player_current_card[i] := 1;
 
   // Загрузка карт n-го типа (Контакты)
 
@@ -599,46 +626,6 @@ begin
   8: lblSkill.Caption := 'Уход';
   end;         }
   //imEncounter.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\\CardsData\\Locations\\Downtown\\'+GetLokID(cbLocation.Text)+'.jpg');
-end;
-
-procedure TfrmMain.btnProcessClick(Sender: TObject);
-begin
-  case gCurrentPhase of
-    PH_UPKEEP: begin
-      gCurrentPhase := PH_MOVE;
-    end;
-    PH_MOVE: begin
-
-    end;
-    PH_ENCOUNTER: begin
-
-      //Encounter(gCurrentPlayer, Downtown.Deck, Downtown.Deck.DrawCard);
-    end;
-    PH_KONTAKTI_V_INIH_MIRAH: begin
-    end;
-    PH_MYTHOS: begin
-    end;
-  end;
-{  case cbLocation.ItemIndex of
-  0: ShowMessage('''Listen!'' An old man with a piercing gaze locks eyes with you, and you feel strange information squirming around in your head. Pass a Will (-1) check to gain 1 Spell.');
-  1: ;//ShowMessage('''Listen!'' An old man with a piercing gaze locks eyes with you, and you feel strange information squirming around in your head. Pass a Will (-1) check to gain 1 Spell.');
-  2: ;
-  3:  ;
-  4:   ;
-  5:    ;
-  6:     ;
-  7:      ;
-  8:       ;
-  9:       ;
-  10:       ;
-  11:        ;
-  12:         ;
-  13:          ;
-  14:           ;
-  15:            ;
-  16:             ;
-  end;
-}
 end;
 
 procedure TfrmMain.DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
@@ -1577,13 +1564,12 @@ begin
   end;  }
 end; (*ProcessNode*)
 
-procedure TfrmMain.btn1Click(Sender: TObject);
+procedure TfrmMain.btnShowCardsClick(Sender: TObject);
 var
   temp: TTreeView;
   tmp: PLLData;
 begin
-  head_of_list^.data := '1234';
-  head_of_list^.mnChildCount := 0;
+  ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
 
   //xml2tree(head_of_list, frmMain.xmldoc1, 'CardsData\Locations\Rivertown\4101');
 end;
@@ -1673,6 +1659,98 @@ begin
   lblWillValue.Caption := IntToStr(gCurrentPlayer.Stats[4]);
   lblLoreValue.Caption := IntToStr(gCurrentPlayer.Stats[5]);
   lblLuckValue.Caption := IntToStr(gCurrentPlayer.Stats[6]);
+  lblSanityValue.Caption := IntToStr(gCurrentPlayer.Sanity);
+  lblStaminaValue.Caption := IntToStr(gCurrentPlayer.Stamina);
+  pbSanity.Position := gCurrentPlayer.Sanity;
+  pbStamina.Position := gCurrentPlayer.Stamina;
+end;
+
+procedure ShowPlayerCards(pl: TPlayer; cur_cards: integer);
+var
+  i: integer;
+  card_name: string;
+begin
+  frmMain.imgPlaCard1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\Spells\30.jpg');
+  frmMain.imgPlaCard2.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\Spells\30.jpg');
+  frmMain.imgPlaCard3.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\Spells\30.jpg');
+
+  for i := 1 to 3 do
+  begin
+    card_name := IntTostr(pl.Cards[i + ((cur_cards - 1) * 3)]);
+    if card_name = '0' then exit;
+    if card_name[1] = '1' then
+      card_name := ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + card_name + '.jpg';
+    if card_name[1] = '2' then
+      card_name := ExtractFilePath(Application.ExeName) + 'CardsData\UniqueItems\' + card_name + '.jpg';
+    if card_name[1] = '3' then
+      card_name := ExtractFilePath(Application.ExeName) + 'CardsData\Spells\' + card_name + '.jpg';
+    if card_name[1] = '4' then
+      card_name := ExtractFilePath(Application.ExeName) + 'CardsData\Skills\' + card_name + '.jpg';
+
+    if i = 1 then
+      frmMain.imgPlaCard1.Picture.LoadFromFile(card_name);
+    if i = 2 then
+      frmMain.imgPlaCard2.Picture.LoadFromFile(card_name);
+    if i = 3 then
+      frmMain.imgPlaCard3.Picture.LoadFromFile(card_name);
+
+  end;
+
+
+end;
+
+procedure TfrmMain.btn14Click(Sender: TObject);
+begin
+  if player_current_card[current_player] > 1 then
+    player_current_card[current_player] := player_current_card[current_player] - 1;
+  ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);    
+end;
+
+procedure TfrmMain.btn15Click(Sender: TObject);
+begin
+  player_current_card[current_player] := player_current_card[current_player] + 1;
+  ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);  
+end;
+
+procedure TfrmMain.btnProcessClick(Sender: TObject);
+begin
+ case gCurrentPhase of
+    PH_UPKEEP: begin
+      gCurrentPhase := PH_MOVE;
+      lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
+    end;
+    PH_MOVE: begin
+
+    end;
+    PH_ENCOUNTER: begin
+
+      //Encounter(gCurrentPlayer, Downtown.Deck, Downtown.Deck.DrawCard);
+    end;
+    PH_OTHER_WORLDS_ENCOUNTER: begin
+    end;
+    PH_MYTHOS: begin
+    end;
+  end;
+{  case cbLocation.ItemIndex of
+  0: ShowMessage('''Listen!'' An old man with a piercing gaze locks eyes with you, and you feel strange information squirming around in your head. Pass a Will (-1) check to gain 1 Spell.');
+  1: ;//ShowMessage('''Listen!'' An old man with a piercing gaze locks eyes with you, and you feel strange information squirming around in your head. Pass a Will (-1) check to gain 1 Spell.');
+  2: ;
+  3:  ;
+  4:   ;
+  5:    ;
+  6:     ;
+  7:      ;
+  8:       ;
+  9:       ;
+  10:       ;
+  11:        ;
+  12:         ;
+  13:          ;
+  14:           ;
+  15:            ;
+  16:             ;
+  end;
+}
 end;
 
 end.
