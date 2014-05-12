@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 272
-  Top = 81
-  Width = 1345
+  Left = 224
+  Top = 112
+  Width = 1356
   Height = 802
   Caption = 'frmMain'
   Color = clBtnFace
@@ -2100,7 +2100,7 @@ object frmMain: TfrmMain
   object pgc1: TPageControl
     Left = 0
     Top = 476
-    Width = 1329
+    Width = 1340
     Height = 87
     ActivePage = ts1
     Align = alBottom
@@ -2151,7 +2151,7 @@ object frmMain: TfrmMain
       object pnl1: TPanel
         Left = 0
         Top = 31
-        Width = 1321
+        Width = 1332
         Height = 28
         Align = alBottom
         TabOrder = 0
@@ -2208,7 +2208,7 @@ object frmMain: TfrmMain
           ParentFont = False
         end
         object img1: TImage
-          Left = 1282
+          Left = 1293
           Top = 1
           Width = 38
           Height = 26
@@ -2748,7 +2748,7 @@ object frmMain: TfrmMain
   object pnl2: TPanel
     Left = 0
     Top = 563
-    Width = 1329
+    Width = 1340
     Height = 200
     Align = alBottom
     TabOrder = 20
@@ -5008,7 +5008,7 @@ object frmMain: TfrmMain
       TabOrder = 1
     end
     object grp4: TGroupBox
-      Left = 828
+      Left = 839
       Top = 1
       Width = 500
       Height = 198

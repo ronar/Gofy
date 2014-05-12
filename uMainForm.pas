@@ -1763,7 +1763,7 @@ end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
 begin
-frmInv.ShowModal;
+  frmInv.ShowModal;
 end;
 
 end.
