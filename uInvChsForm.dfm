@@ -1345,6 +1345,7 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 2'
+    Enabled = False
   end
   object lbl3: TLabel
     Left = 16
@@ -1352,6 +1353,7 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 3'
+    Enabled = False
   end
   object lbl4: TLabel
     Left = 16
@@ -1359,6 +1361,7 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 4'
+    Enabled = False
   end
   object lbl5: TLabel
     Left = 16
@@ -1366,6 +1369,7 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 5'
+    Enabled = False
   end
   object lbl6: TLabel
     Left = 16
@@ -1373,6 +1377,7 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 6'
+    Enabled = False
   end
   object lbl7: TLabel
     Left = 16
@@ -1380,6 +1385,7 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 7'
+    Enabled = False
   end
   object lbl8: TLabel
     Left = 16
@@ -1387,6 +1393,7 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 8'
+    Enabled = False
   end
   object lbl9: TLabel
     Left = 16
@@ -1428,9 +1435,9 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    ItemIndex = 1
+    ItemIndex = 2
     TabOrder = 1
-    Text = 'Akachi Onyele'
+    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
     OnChange = cbInvPlayer1Change
     Items.Strings = (
       'Agnes Baker'
@@ -1489,10 +1496,12 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
+    Enabled = False
     ItemHeight = 13
-    ItemIndex = 1
+    ItemIndex = 2
     TabOrder = 2
-    Text = 'Akachi Onyele'
+    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+    OnChange = cbInvPlayer2Change
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1550,10 +1559,12 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
+    Enabled = False
     ItemHeight = 13
-    ItemIndex = 1
+    ItemIndex = 2
     TabOrder = 3
-    Text = 'Akachi Onyele'
+    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+    OnChange = cbInvPlayer3Change
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1611,10 +1622,12 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
+    Enabled = False
     ItemHeight = 13
-    ItemIndex = 1
+    ItemIndex = 2
     TabOrder = 4
-    Text = 'Akachi Onyele'
+    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+    OnChange = cbInvPlayer4Change
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1672,10 +1685,12 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
+    Enabled = False
     ItemHeight = 13
-    ItemIndex = 1
+    ItemIndex = 2
     TabOrder = 5
-    Text = 'Akachi Onyele'
+    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+    OnChange = cbInvPlayer5Change
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1733,10 +1748,12 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
+    Enabled = False
     ItemHeight = 13
-    ItemIndex = 1
+    ItemIndex = 2
     TabOrder = 6
-    Text = 'Akachi Onyele'
+    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+    OnChange = cbInvPlayer6Change
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1794,10 +1811,12 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
+    Enabled = False
     ItemHeight = 13
-    ItemIndex = 1
+    ItemIndex = 2
     TabOrder = 7
-    Text = 'Akachi Onyele'
+    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+    OnChange = cbInvPlayer7Change
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1855,10 +1874,12 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
+    Enabled = False
     ItemHeight = 13
-    ItemIndex = 1
+    ItemIndex = 2
     TabOrder = 8
-    Text = 'Akachi Onyele'
+    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
+    OnChange = cbInvPlayer8Change
     Items.Strings = (
       'Agnes Baker'
       'Akachi Onyele'
@@ -1943,6 +1964,7 @@ object frmInv: TfrmInv
     Height = 21
     Caption = 'X'
     TabOrder = 11
+    OnClick = Button4Click
   end
   object Button5: TButton
     Left = 288
@@ -1951,6 +1973,7 @@ object frmInv: TfrmInv
     Height = 21
     Caption = 'X'
     TabOrder = 12
+    OnClick = Button5Click
   end
   object Button6: TButton
     Left = 288
@@ -1959,14 +1982,16 @@ object frmInv: TfrmInv
     Height = 21
     Caption = 'X'
     TabOrder = 13
+    OnClick = Button6Click
   end
   object Button7: TButton
     Left = 288
-    Top = 212
+    Top = 216
     Width = 21
-    Height = 21
+    Height = 17
     Caption = 'X'
     TabOrder = 14
+    OnClick = Button7Click
   end
   object Button8: TButton
     Left = 288
@@ -1975,6 +2000,7 @@ object frmInv: TfrmInv
     Height = 21
     Caption = 'X'
     TabOrder = 15
+    OnClick = Button8Click
   end
   object Button9: TButton
     Left = 288
@@ -1983,6 +2009,7 @@ object frmInv: TfrmInv
     Height = 21
     Caption = 'X'
     TabOrder = 16
+    OnClick = Button9Click
   end
   object Button10: TButton
     Left = 288
@@ -1991,6 +2018,7 @@ object frmInv: TfrmInv
     Height = 21
     Caption = 'X'
     TabOrder = 17
+    OnClick = Button10Click
   end
   object RadioGroup1: TRadioGroup
     Left = 816
@@ -2034,7 +2062,7 @@ object frmInv: TfrmInv
       ' ')
     TabOrder = 20
   end
-  object edt1: TEdit
+  object edtPlayer1: TEdit
     Left = 16
     Top = 53
     Width = 80
@@ -2042,59 +2070,66 @@ object frmInv: TfrmInv
     TabOrder = 21
     Text = #1048#1075#1088#1086#1082' 1'
   end
-  object edt2: TEdit
+  object edtPlayer2: TEdit
     Left = 16
     Top = 93
     Width = 80
     Height = 21
+    Enabled = False
     TabOrder = 22
     Text = #1048#1075#1088#1086#1082' 2'
   end
-  object edt3: TEdit
+  object edtPlayer3: TEdit
     Left = 16
     Top = 133
     Width = 80
     Height = 21
+    Enabled = False
     TabOrder = 23
     Text = #1048#1075#1088#1086#1082' 3'
   end
-  object edt4: TEdit
+  object edtPlayer4: TEdit
     Left = 16
     Top = 173
     Width = 80
     Height = 21
+    Enabled = False
     TabOrder = 24
     Text = #1048#1075#1088#1086#1082' 4'
   end
-  object edt5: TEdit
+  object edtPlayer5: TEdit
     Left = 16
     Top = 213
     Width = 80
     Height = 21
+    Enabled = False
     TabOrder = 25
     Text = #1048#1075#1088#1086#1082' 5'
   end
-  object edt6: TEdit
+  object edtPlayer6: TEdit
     Left = 16
     Top = 253
     Width = 80
     Height = 21
+    Enabled = False
     TabOrder = 26
     Text = #1048#1075#1088#1086#1082' 6'
   end
-  object edt7: TEdit
+  object edtPlayer7: TEdit
     Left = 16
     Top = 293
     Width = 80
     Height = 21
+    Enabled = False
     TabOrder = 27
     Text = #1048#1075#1088#1086#1082' 7'
   end
-  object edt8: TEdit
+  object edtPlayer8: TEdit
     Left = 16
     Top = 333
     Width = 80
     Height = 21
+    Enabled = False
     TabOrder = 28
     Text = #1048#1075#1088#1086#1082' 8'
   end

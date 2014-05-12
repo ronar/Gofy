@@ -69,14 +69,14 @@ type
     lbl7: TLabel;
     lbl8: TLabel;
     lbl9: TLabel;
-    edt1: TEdit;
-    edt2: TEdit;
-    edt3: TEdit;
-    edt4: TEdit;
-    edt5: TEdit;
-    edt6: TEdit;
-    edt7: TEdit;
-    edt8: TEdit;
+    edtPlayer1: TEdit;
+    edtPlayer2: TEdit;
+    edtPlayer3: TEdit;
+    edtPlayer4: TEdit;
+    edtPlayer5: TEdit;
+    edtPlayer6: TEdit;
+    edtPlayer7: TEdit;
+    edtPlayer8: TEdit;
     edt9: TEdit;
     lbl10: TLabel;
     lbl11: TLabel;
@@ -103,6 +103,20 @@ type
     procedure btnSpellClick(Sender: TObject);
     procedure btnUniqItemClick(Sender: TObject);
     procedure btnSkillClick(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
+    procedure Button7Click(Sender: TObject);
+    procedure Button8Click(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
+    procedure Button10Click(Sender: TObject);
+    procedure cbInvPlayer2Change(Sender: TObject);
+    procedure cbInvPlayer3Change(Sender: TObject);
+    procedure cbInvPlayer4Change(Sender: TObject);
+    procedure cbInvPlayer5Change(Sender: TObject);
+    procedure cbInvPlayer6Change(Sender: TObject);
+    procedure cbInvPlayer7Change(Sender: TObject);
+    procedure cbInvPlayer8Change(Sender: TObject);
   private
     { Private declarations }
   public
@@ -132,34 +146,35 @@ end;
 
 procedure TfrmInv.Button1Click(Sender: TObject);
 var
-  i: integer;
+  i, k: integer;
 begin
   //cbInvPlayer1Change(Sender);
-  players[1].GetItems();
-  if players[1].Investigator.can_take[1] > 0 then
-    for i := 1 to players[1].Investigator.can_take[1] do
-      players[1].AddItem(Common_Items_Deck.DrawCard);
-  if players[1].Investigator.can_take[2] > 0 then
-    for i := 1 to players[1].Investigator.can_take[2] do
-      players[1].AddItem(Unique_Items_Deck.DrawCard);
-  if players[1].Investigator.can_take[3] > 0 then
-    for i := 1 to players[1].Investigator.can_take[3] do
-      players[1].AddItem(Spells_Deck.DrawCard);
-  if players[1].Investigator.can_take[4] > 0 then
-    for i := 1 to players[1].Investigator.can_take[4] do
-      players[1].AddItem(Skills_Deck.DrawCard);
+  for k := 1 to player_count do
+    if players[k].Investigator = nil then
+    begin
+      ShowMessage('Сыщик не выбран!');
+      exit;
+    end;
 
-  players[1].Speed := players[1].Investigator.stat[1] + RadioGroup1.ItemIndex;
-  players[1].Sneak := players[1].Investigator.stat[2] - RadioGroup1.ItemIndex;
-
-  players[1].Fight := players[1].Investigator.stat[3] + RadioGroup1.ItemIndex;
-  players[1].Will := players[1].Investigator.stat[4] - RadioGroup1.ItemIndex;
-
-  players[1].Lore := players[1].Investigator.stat[5] + RadioGroup1.ItemIndex;
-  players[1].Luck := players[1].Investigator.stat[6] - RadioGroup1.ItemIndex;
+  for k := 1 to player_count do
+  begin
+    players[k].GetItems();
+    if players[k].Investigator.can_take[1] > 0 then
+      for i := 1 to players[k].Investigator.can_take[1] do
+        players[k].AddItem(Common_Items_Deck.DrawCard);
+    if players[k].Investigator.can_take[2] > 0 then
+      for i := 1 to players[k].Investigator.can_take[2] do
+        players[k].AddItem(Unique_Items_Deck.DrawCard);
+    if players[k].Investigator.can_take[3] > 0 then
+      for i := 1 to players[k].Investigator.can_take[3] do
+        players[k].AddItem(Spells_Deck.DrawCard);
+    if players[k].Investigator.can_take[4] > 0 then
+      for i := 1 to players[k].Investigator.can_take[4] do
+        players[k].AddItem(Skills_Deck.DrawCard);
+  end;
 
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
-  frmMain.btn17Click(Sender);  
+  frmMain.btn17Click(Sender);
 
   Close;
 end;
@@ -173,6 +188,8 @@ begin
   players[1].AssignInvestigator(gInvestigators.card[cbInvPlayer1.ItemIndex + 1]);
   players[1].Investigator.name := cbInvPlayer1.Text; // Имя сыщика
 
+  player_count := 1;
+
   lbSpeed1.Caption := IntToStr(players[1].Investigator.stat[1]);
   lbSneak1.Caption := IntToStr(players[1].Investigator.stat[2]);
   lbFight1.Caption := IntToStr(players[1].Investigator.stat[3]);
@@ -180,12 +197,8 @@ begin
   lbLore1.Caption := IntToStr(players[1].Investigator.stat[5]);
   lbLuck1.Caption := IntToStr(players[1].Investigator.stat[6]);
 
-  Draw_Skills('Speed');
-  Draw_Skills('Sneak');
-  Draw_Skills('Fight');
-  Draw_Skills('Will');
-  Draw_Skills('Lore');
-  Draw_Skills('Luck');
+  cbInvPlayer2.Enabled := True;
+  edtPlayer2.Enabled := True;
 end;
 
 procedure Draw_Skills(skill: string);
@@ -257,6 +270,171 @@ begin
     frmCard.ShowModal;
     players[1].Investigator.AddItem(StrToInt(frmCard.cbCard.text));
   end;
+end;
+
+procedure TfrmInv.Button4Click(Sender: TObject);
+begin
+  cbInvPlayer2.Enabled := False;
+  edtPlayer2.Enabled := False;
+end;
+
+procedure TfrmInv.Button5Click(Sender: TObject);
+begin
+  cbInvPlayer3.Enabled := False;
+  edtPlayer3.Enabled := False;
+end;
+
+procedure TfrmInv.Button6Click(Sender: TObject);
+begin
+  cbInvPlayer4.Enabled := False;
+  edtPlayer4.Enabled := False;
+end;
+
+procedure TfrmInv.Button7Click(Sender: TObject);
+begin
+  cbInvPlayer5.Enabled := False;
+  edtPlayer5.Enabled := False;
+end;
+
+procedure TfrmInv.Button8Click(Sender: TObject);
+begin
+  cbInvPlayer6.Enabled := False;
+  edtPlayer6.Enabled := False;
+end;
+
+procedure TfrmInv.Button9Click(Sender: TObject);
+begin
+  cbInvPlayer7.Enabled := False;
+  edtPlayer7.Enabled := False;
+end;
+
+procedure TfrmInv.Button10Click(Sender: TObject);
+begin
+  cbInvPlayer8.Enabled := False;
+  edtPlayer8.Enabled := False;
+end;
+
+procedure TfrmInv.cbInvPlayer2Change(Sender: TObject);
+begin
+  players[2].AssignInvestigator(gInvestigators.card[cbInvPlayer2.ItemIndex + 1]);
+  players[2].Investigator.name := cbInvPlayer2.Text; // Имя сыщика
+
+  player_count := 2;
+
+  lbSpeed1.Caption := IntToStr(players[2].Investigator.stat[1]);
+  lbSneak1.Caption := IntToStr(players[2].Investigator.stat[2]);
+  lbFight1.Caption := IntToStr(players[2].Investigator.stat[3]);
+  lbWill1.Caption := IntToStr(players[2].Investigator.stat[4]);
+  lbLore1.Caption := IntToStr(players[2].Investigator.stat[5]);
+  lbLuck1.Caption := IntToStr(players[2].Investigator.stat[6]);
+
+  cbInvPlayer3.Enabled := True;
+  edtPlayer3.Enabled := True;
+end;
+
+procedure TfrmInv.cbInvPlayer3Change(Sender: TObject);
+begin
+  players[3].AssignInvestigator(gInvestigators.card[cbInvPlayer3.ItemIndex + 1]);
+  players[3].Investigator.name := cbInvPlayer3.Text; // Имя сыщика
+
+  player_count := 3;
+
+  lbSpeed1.Caption := IntToStr(players[3].Investigator.stat[1]);
+  lbSneak1.Caption := IntToStr(players[3].Investigator.stat[2]);
+  lbFight1.Caption := IntToStr(players[3].Investigator.stat[3]);
+  lbWill1.Caption := IntToStr(players[3].Investigator.stat[4]);
+  lbLore1.Caption := IntToStr(players[3].Investigator.stat[5]);
+  lbLuck1.Caption := IntToStr(players[3].Investigator.stat[6]);
+
+  cbInvPlayer4.Enabled := True;
+  edtPlayer4.Enabled := True;
+end;
+
+procedure TfrmInv.cbInvPlayer4Change(Sender: TObject);
+begin
+  players[4].AssignInvestigator(gInvestigators.card[cbInvPlayer4.ItemIndex + 1]);
+  players[4].Investigator.name := cbInvPlayer4.Text; // Имя сыщика
+
+  player_count := 4;
+
+  lbSpeed1.Caption := IntToStr(players[4].Investigator.stat[1]);
+  lbSneak1.Caption := IntToStr(players[4].Investigator.stat[2]);
+  lbFight1.Caption := IntToStr(players[4].Investigator.stat[3]);
+  lbWill1.Caption := IntToStr(players[4].Investigator.stat[4]);
+  lbLore1.Caption := IntToStr(players[4].Investigator.stat[5]);
+  lbLuck1.Caption := IntToStr(players[4].Investigator.stat[6]);
+
+  cbInvPlayer5.Enabled := True;
+  edtPlayer5.Enabled := True;
+end;
+
+procedure TfrmInv.cbInvPlayer5Change(Sender: TObject);
+begin
+  players[5].AssignInvestigator(gInvestigators.card[cbInvPlayer5.ItemIndex + 1]);
+  players[5].Investigator.name := cbInvPlayer5.Text; // Имя сыщика
+
+  player_count := 5;
+
+  lbSpeed1.Caption := IntToStr(players[5].Investigator.stat[1]);
+  lbSneak1.Caption := IntToStr(players[5].Investigator.stat[2]);
+  lbFight1.Caption := IntToStr(players[5].Investigator.stat[3]);
+  lbWill1.Caption := IntToStr(players[5].Investigator.stat[4]);
+  lbLore1.Caption := IntToStr(players[5].Investigator.stat[5]);
+  lbLuck1.Caption := IntToStr(players[5].Investigator.stat[6]);
+
+  cbInvPlayer6.Enabled := True;
+  edtPlayer6.Enabled := True;
+end;
+
+procedure TfrmInv.cbInvPlayer6Change(Sender: TObject);
+begin
+  players[6].AssignInvestigator(gInvestigators.card[cbInvPlayer6.ItemIndex + 1]);
+  players[6].Investigator.name := cbInvPlayer6.Text; // Имя сыщика
+
+  player_count := 6;
+
+  lbSpeed1.Caption := IntToStr(players[6].Investigator.stat[1]);
+  lbSneak1.Caption := IntToStr(players[6].Investigator.stat[2]);
+  lbFight1.Caption := IntToStr(players[6].Investigator.stat[3]);
+  lbWill1.Caption := IntToStr(players[6].Investigator.stat[4]);
+  lbLore1.Caption := IntToStr(players[6].Investigator.stat[5]);
+  lbLuck1.Caption := IntToStr(players[6].Investigator.stat[6]);
+
+  cbInvPlayer7.Enabled := True;
+  edtPlayer7.Enabled := True;
+end;
+
+procedure TfrmInv.cbInvPlayer7Change(Sender: TObject);
+begin
+  players[7].AssignInvestigator(gInvestigators.card[cbInvPlayer7.ItemIndex + 1]);
+  players[7].Investigator.name := cbInvPlayer7.Text; // Имя сыщика
+
+  player_count := 7;
+
+  lbSpeed1.Caption := IntToStr(players[7].Investigator.stat[1]);
+  lbSneak1.Caption := IntToStr(players[7].Investigator.stat[2]);
+  lbFight1.Caption := IntToStr(players[7].Investigator.stat[3]);
+  lbWill1.Caption := IntToStr(players[7].Investigator.stat[4]);
+  lbLore1.Caption := IntToStr(players[7].Investigator.stat[5]);
+  lbLuck1.Caption := IntToStr(players[7].Investigator.stat[6]);
+
+  cbInvPlayer8.Enabled := True;
+  edtPlayer8.Enabled := True;
+end;
+
+procedure TfrmInv.cbInvPlayer8Change(Sender: TObject);
+begin
+  players[8].AssignInvestigator(gInvestigators.card[cbInvPlayer8.ItemIndex + 1]);
+  players[8].Investigator.name := cbInvPlayer8.Text; // Имя сыщика
+
+  player_count := 8;
+
+  lbSpeed1.Caption := IntToStr(players[8].Investigator.stat[1]);
+  lbSneak1.Caption := IntToStr(players[8].Investigator.stat[2]);
+  lbFight1.Caption := IntToStr(players[8].Investigator.stat[3]);
+  lbWill1.Caption := IntToStr(players[8].Investigator.stat[4]);
+  lbLore1.Caption := IntToStr(players[8].Investigator.stat[5]);
+  lbLuck1.Caption := IntToStr(players[8].Investigator.stat[6]);
 end;
 
 end.

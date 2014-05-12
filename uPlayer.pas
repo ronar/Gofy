@@ -26,6 +26,7 @@ type
     fCursed: boolean;
     fFirstPlayer: boolean; // Флаг первого игрока
     fInvestigator: TInvestigator;
+    fPlNumber: integer;
     Roll_results: array [1..12] of integer;
     function GetPlayerCard(indx: integer): integer;
     function GetPlayerStat(indx: integer): integer;

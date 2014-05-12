@@ -59,8 +59,6 @@ type
     Label27: TLabel;
     lblPlaMoney: TLabel;
     edtPlaMoney: TEdit;
-    lblCurrentPlayer: TLabel;
-    lblCurPlayer: TLabel;
     btnNextPers: TButton;
     btnChsInv: TButton;
     lblPlaInv: TLabel;
@@ -97,7 +95,7 @@ type
     btn7: TButton;
     pnl1: TPanel;
     lbl4: TLabel;
-    lbl5: TLabel;
+    lblPlNum: TLabel;
     lblCurPhase: TLabel;
     lbl7: TLabel;
     img1: TImage;
@@ -168,6 +166,7 @@ type
     imgPlaCard1: TImage;
     btnShowCards: TButton;
     lbl1: TLabel;
+    lblCurPlayer: TLabel;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -203,6 +202,7 @@ type
     procedure btn14Click(Sender: TObject);
     procedure btn15Click(Sender: TObject);
     procedure btnProcessClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -449,6 +449,7 @@ begin
   // Загрузка monsters
   LoadMonsterCards(Monsters, ExtractFilePath(Application.ExeName));
 
+  
   // И т.д.
 end;
 
@@ -489,6 +490,7 @@ begin
     fp := GetFirstPlayer;
     players[fp].bFirstPlayer := False;
     players[fp + 1].bFirstPlayer := true;
+    //current_player := fp + 1;
   end
   else
   begin
@@ -499,6 +501,11 @@ begin
 
   lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
   gCurrentPlayer := players[GetFirstPlayer];
+  current_player := GetFirstPlayer;
+
+  frmMain.btn17Click(Sender);
+  ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
+  
 
 //  cards0[StrToInt(ComboBox1.Text)].Dejstvie_karti;
   //if ComboBox1.ItemIndex < 1 then
@@ -568,7 +575,7 @@ begin
 
   gCurrentPhase := 2;
 
-  player_count := 1;
+  player_count := 8;
 
   for i := 1 to player_count do
   begin
@@ -578,6 +585,7 @@ begin
   end;
 
   btnInitClick(Sender);
+
 end;
 
 
@@ -1751,6 +1759,11 @@ begin
   16:             ;
   end;
 }
+end;
+
+procedure TfrmMain.FormShow(Sender: TObject);
+begin
+frmInv.ShowModal;
 end;
 
 end.
