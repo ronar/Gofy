@@ -19,13 +19,13 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
-    Button4: TButton;
-    Button5: TButton;
-    Button6: TButton;
-    Button7: TButton;
-    Button8: TButton;
-    Button9: TButton;
-    Button10: TButton;
+    btnAdd2ndPlayer: TButton;
+    btnAdd3rdPlayer: TButton;
+    btnAdd4thPlayer: TButton;
+    btnAdd5thPlayer: TButton;
+    btnAdd6thPlayer: TButton;
+    btnAdd7thPlayer: TButton;
+    btnAdd8thPlayer: TButton;
     Image1: TImage;
     Label10: TLabel;
     Label11: TLabel;
@@ -96,6 +96,8 @@ type
     btn13: TButton;
     btn14: TButton;
     btn15: TButton;
+    lbl19: TLabel;
+    lblPlNum: TLabel;
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure cbInvPlayer1Change(Sender: TObject);
@@ -103,13 +105,13 @@ type
     procedure btnSpellClick(Sender: TObject);
     procedure btnUniqItemClick(Sender: TObject);
     procedure btnSkillClick(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
-    procedure Button7Click(Sender: TObject);
-    procedure Button8Click(Sender: TObject);
-    procedure Button9Click(Sender: TObject);
-    procedure Button10Click(Sender: TObject);
+    procedure btnAdd2ndPlayerClick(Sender: TObject);
+    procedure btnAdd3rdPlayerClick(Sender: TObject);
+    procedure btnAdd4thPlayerClick(Sender: TObject);
+    procedure btnAdd5thPlayerClick(Sender: TObject);
+    procedure btnAdd6thPlayerClick(Sender: TObject);
+    procedure btnAdd7thPlayerClick(Sender: TObject);
+    procedure btnAdd8thPlayerClick(Sender: TObject);
     procedure cbInvPlayer2Change(Sender: TObject);
     procedure cbInvPlayer3Change(Sender: TObject);
     procedure cbInvPlayer4Change(Sender: TObject);
@@ -117,6 +119,7 @@ type
     procedure cbInvPlayer6Change(Sender: TObject);
     procedure cbInvPlayer7Change(Sender: TObject);
     procedure cbInvPlayer8Change(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -162,15 +165,21 @@ begin
     if players[k].Investigator.can_take[1] > 0 then
       for i := 1 to players[k].Investigator.can_take[1] do
         players[k].AddItem(Common_Items_Deck.DrawCard);
+
     if players[k].Investigator.can_take[2] > 0 then
       for i := 1 to players[k].Investigator.can_take[2] do
-        players[k].AddItem(Unique_Items_Deck.DrawCard);
+        //players[k].AddItem(Unique_Items_Deck.DrawCard);
+        players[k].AddItem(Common_Items_Deck.DrawCard);
+
     if players[k].Investigator.can_take[3] > 0 then
       for i := 1 to players[k].Investigator.can_take[3] do
-        players[k].AddItem(Spells_Deck.DrawCard);
+        //players[k].AddItem(Spells_Deck.DrawCard);
+        players[k].AddItem(Common_Items_Deck.DrawCard);
+
     if players[k].Investigator.can_take[4] > 0 then
       for i := 1 to players[k].Investigator.can_take[4] do
-        players[k].AddItem(Skills_Deck.DrawCard);
+        //players[k].AddItem(Skills_Deck.DrawCard);
+        players[k].AddItem(Common_Items_Deck.DrawCard);
   end;
 
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
@@ -188,8 +197,6 @@ begin
   players[1].AssignInvestigator(gInvestigators.card[cbInvPlayer1.ItemIndex + 1]);
   players[1].Investigator.name := cbInvPlayer1.Text; // Имя сыщика
 
-  player_count := 1;
-
   lbSpeed1.Caption := IntToStr(players[1].Investigator.stat[1]);
   lbSneak1.Caption := IntToStr(players[1].Investigator.stat[2]);
   lbFight1.Caption := IntToStr(players[1].Investigator.stat[3]);
@@ -197,8 +204,7 @@ begin
   lbLore1.Caption := IntToStr(players[1].Investigator.stat[5]);
   lbLuck1.Caption := IntToStr(players[1].Investigator.stat[6]);
 
-  cbInvPlayer2.Enabled := True;
-  edtPlayer2.Enabled := True;
+  btnAdd2ndPlayer.Enabled := True;  
 end;
 
 procedure Draw_Skills(skill: string);
@@ -272,43 +278,44 @@ begin
   end;
 end;
 
-procedure TfrmInv.Button4Click(Sender: TObject);
+procedure TfrmInv.btnAdd2ndPlayerClick(Sender: TObject);
 begin
-  cbInvPlayer2.Enabled := False;
-  edtPlayer2.Enabled := False;
+  player_count := 2;
+  cbInvPlayer2.Enabled := True;
+  edtPlayer2.Enabled := True;
 end;
 
-procedure TfrmInv.Button5Click(Sender: TObject);
+procedure TfrmInv.btnAdd3rdPlayerClick(Sender: TObject);
 begin
   cbInvPlayer3.Enabled := False;
   edtPlayer3.Enabled := False;
 end;
 
-procedure TfrmInv.Button6Click(Sender: TObject);
+procedure TfrmInv.btnAdd4thPlayerClick(Sender: TObject);
 begin
   cbInvPlayer4.Enabled := False;
   edtPlayer4.Enabled := False;
 end;
 
-procedure TfrmInv.Button7Click(Sender: TObject);
+procedure TfrmInv.btnAdd5thPlayerClick(Sender: TObject);
 begin
   cbInvPlayer5.Enabled := False;
   edtPlayer5.Enabled := False;
 end;
 
-procedure TfrmInv.Button8Click(Sender: TObject);
+procedure TfrmInv.btnAdd6thPlayerClick(Sender: TObject);
 begin
   cbInvPlayer6.Enabled := False;
   edtPlayer6.Enabled := False;
 end;
 
-procedure TfrmInv.Button9Click(Sender: TObject);
+procedure TfrmInv.btnAdd7thPlayerClick(Sender: TObject);
 begin
   cbInvPlayer7.Enabled := False;
   edtPlayer7.Enabled := False;
 end;
 
-procedure TfrmInv.Button10Click(Sender: TObject);
+procedure TfrmInv.btnAdd8thPlayerClick(Sender: TObject);
 begin
   cbInvPlayer8.Enabled := False;
   edtPlayer8.Enabled := False;
@@ -318,8 +325,6 @@ procedure TfrmInv.cbInvPlayer2Change(Sender: TObject);
 begin
   players[2].AssignInvestigator(gInvestigators.card[cbInvPlayer2.ItemIndex + 1]);
   players[2].Investigator.name := cbInvPlayer2.Text; // Имя сыщика
-
-  player_count := 2;
 
   lbSpeed1.Caption := IntToStr(players[2].Investigator.stat[1]);
   lbSneak1.Caption := IntToStr(players[2].Investigator.stat[2]);
@@ -435,6 +440,11 @@ begin
   lbWill1.Caption := IntToStr(players[8].Investigator.stat[4]);
   lbLore1.Caption := IntToStr(players[8].Investigator.stat[5]);
   lbLuck1.Caption := IntToStr(players[8].Investigator.stat[6]);
+end;
+
+procedure TfrmInv.FormShow(Sender: TObject);
+begin
+  player_count := 1;
 end;
 
 end.

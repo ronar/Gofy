@@ -13,11 +13,12 @@ object frmInv: TfrmInv
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
     Left = 320
-    Top = 16
+    Top = 40
     Width = 297
     Height = 337
     Picture.Data = {
@@ -1410,14 +1411,14 @@ object frmInv: TfrmInv
   end
   object lbl10: TLabel
     Left = 24
-    Top = 368
+    Top = 408
     Width = 45
     Height = 13
     Caption = #1044#1088#1077#1074#1085#1080#1081
   end
   object lbl11: TLabel
     Left = 514
-    Top = 352
+    Top = 392
     Width = 101
     Height = 16
     Caption = #1057#1099#1097#1080#1082' '#1080#1075#1088#1086#1082#1072' '#1061
@@ -1427,6 +1428,20 @@ object frmInv: TfrmInv
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     ParentFont = False
+  end
+  object lbl19: TLabel
+    Left = 320
+    Top = 16
+    Width = 81
+    Height = 13
+    Caption = #1050#1086#1083'-'#1074#1086' '#1080#1075#1088#1086#1082#1086#1074':'
+  end
+  object lblPlNum: TLabel
+    Left = 408
+    Top = 16
+    Width = 6
+    Height = 13
+    Caption = '1'
   end
   object cbInvPlayer1: TComboBox
     Left = 106
@@ -1933,7 +1948,7 @@ object frmInv: TfrmInv
   end
   object Button1: TButton
     Left = 536
-    Top = 376
+    Top = 416
     Width = 75
     Height = 25
     Caption = #1057#1086#1079#1076#1072#1090#1100' '#1080#1075#1088#1091
@@ -1942,7 +1957,7 @@ object frmInv: TfrmInv
   end
   object Button2: TButton
     Left = 536
-    Top = 512
+    Top = 552
     Width = 75
     Height = 25
     Caption = #1042#1099#1093#1086#1076
@@ -1954,71 +1969,79 @@ object frmInv: TfrmInv
     Top = 52
     Width = 21
     Height = 21
-    Caption = 'X'
+    Caption = '+'
+    Enabled = False
     TabOrder = 10
   end
-  object Button4: TButton
+  object btnAdd2ndPlayer: TButton
     Left = 288
-    Top = 92
+    Top = 88
     Width = 21
-    Height = 21
-    Caption = 'X'
+    Height = 25
+    Caption = '+'
+    Enabled = False
     TabOrder = 11
-    OnClick = Button4Click
+    OnClick = btnAdd2ndPlayerClick
   end
-  object Button5: TButton
+  object btnAdd3rdPlayer: TButton
     Left = 288
     Top = 132
     Width = 21
     Height = 21
-    Caption = 'X'
+    Caption = '+'
+    Enabled = False
     TabOrder = 12
-    OnClick = Button5Click
+    OnClick = btnAdd3rdPlayerClick
   end
-  object Button6: TButton
+  object btnAdd4thPlayer: TButton
     Left = 288
     Top = 172
     Width = 21
     Height = 21
-    Caption = 'X'
+    Caption = '+'
+    Enabled = False
     TabOrder = 13
-    OnClick = Button6Click
+    OnClick = btnAdd4thPlayerClick
   end
-  object Button7: TButton
+  object btnAdd5thPlayer: TButton
     Left = 288
     Top = 216
     Width = 21
     Height = 17
-    Caption = 'X'
+    Caption = '+'
+    Enabled = False
     TabOrder = 14
-    OnClick = Button7Click
+    OnClick = btnAdd5thPlayerClick
   end
-  object Button8: TButton
+  object btnAdd6thPlayer: TButton
     Left = 288
     Top = 252
     Width = 21
     Height = 21
-    Caption = 'X'
+    Caption = '+'
+    Enabled = False
     TabOrder = 15
-    OnClick = Button8Click
+    OnClick = btnAdd6thPlayerClick
   end
-  object Button9: TButton
+  object btnAdd7thPlayer: TButton
     Left = 288
     Top = 292
     Width = 21
     Height = 21
-    Caption = 'X'
+    Caption = '+'
+    Enabled = False
     TabOrder = 16
-    OnClick = Button9Click
+    OnClick = btnAdd7thPlayerClick
   end
-  object Button10: TButton
+  object btnAdd8thPlayer: TButton
     Left = 288
     Top = 332
     Width = 21
     Height = 21
-    Caption = 'X'
+    Caption = '+'
+    Enabled = False
     TabOrder = 17
-    OnClick = Button10Click
+    OnClick = btnAdd8thPlayerClick
   end
   object RadioGroup1: TRadioGroup
     Left = 816
@@ -2143,7 +2166,7 @@ object frmInv: TfrmInv
   end
   object grp1: TGroupBox
     Left = 304
-    Top = 368
+    Top = 408
     Width = 225
     Height = 137
     Caption = #1057#1077#1089#1089#1080#1103
@@ -2200,7 +2223,7 @@ object frmInv: TfrmInv
   end
   object rg1: TRadioGroup
     Left = 24
-    Top = 408
+    Top = 448
     Width = 161
     Height = 97
     Caption = #1055#1077#1088#1074#1099#1081' '#1080#1075#1088#1086#1082
@@ -2214,7 +2237,7 @@ object frmInv: TfrmInv
   end
   object btn11: TButton
     Left = 536
-    Top = 406
+    Top = 446
     Width = 75
     Height = 27
     Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100
@@ -2222,7 +2245,7 @@ object frmInv: TfrmInv
   end
   object btn12: TButton
     Left = 536
-    Top = 438
+    Top = 478
     Width = 75
     Height = 22
     Caption = #1057#1087#1088#1072#1074#1082#1072
@@ -2230,7 +2253,7 @@ object frmInv: TfrmInv
   end
   object rg2: TRadioGroup
     Left = 192
-    Top = 392
+    Top = 432
     Width = 105
     Height = 113
     Caption = #1058#1072#1081#1084#1077#1088' '#1093#1086#1076#1072
@@ -2245,7 +2268,7 @@ object frmInv: TfrmInv
   end
   object cbb9: TComboBox
     Left = 72
-    Top = 365
+    Top = 405
     Width = 193
     Height = 21
     ItemHeight = 13
@@ -2263,7 +2286,7 @@ object frmInv: TfrmInv
   end
   object btn13: TButton
     Left = 272
-    Top = 365
+    Top = 405
     Width = 21
     Height = 21
     Caption = 'X'
@@ -2271,7 +2294,7 @@ object frmInv: TfrmInv
   end
   object btn14: TButton
     Left = 536
-    Top = 462
+    Top = 502
     Width = 75
     Height = 22
     Caption = #1055#1088#1072#1074#1080#1083#1072
@@ -2279,7 +2302,7 @@ object frmInv: TfrmInv
   end
   object btn15: TButton
     Left = 536
-    Top = 486
+    Top = 526
     Width = 75
     Height = 22
     Caption = #1044#1086#1089#1090#1080#1078#1077#1085#1080#1103

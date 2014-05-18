@@ -6,10 +6,16 @@ uses
   SysUtils, Dialogs, uCommon, uCardXML, uInvestigator;
 
 type
-  TItemCard = record
+  TCommonItemCard = record
     id: integer;
     data: string;
+    crd_type: Integer;
     exposed: boolean;
+    hands: integer;
+    price: integer;
+    phase_use: integer;
+    prm: integer;
+    prm_value: integer;
   end;
 
   TLocationCard = record
@@ -34,10 +40,10 @@ type
     //function Get_Card_By_ID(id: integer): TCard; // Нахождение карты по ее ID
   end;
 
-  TItemCardDeck = class(TCardDeck)
+  TCommonItemCardDeck = class(TCardDeck)
   private
-    fCards: array [1..ITEMS_CARD_NUMBER] of TItemCard; // Данные о каждой карте
-    function GetCardByID(id: integer): TItemCard;
+    fCards: array [1..COMMON_ITEMS_CARD_NUMBER] of TCommonItemCard; // Данные о каждой карте
+    function GetCardByID(id: integer): TCommonItemCard;
     function GetCardID(i: integer): Integer;
     function GetCardData(i: integer): string;
   public
@@ -100,12 +106,12 @@ end;
 ////////////////////////////////////////////////////////////////////////////////
 
 // Конструктор
-constructor TItemCardDeck.Create(crd_type: integer);
+constructor TCommonItemCardDeck.Create(crd_type: integer);
 var
   i: Integer;
 begin
   fCardType := crd_type;
-  for i := 1 to ITEMS_CARD_NUMBER do
+  for i := 1 to COMMON_ITEMS_CARD_NUMBER do
   begin
     fCards[i].id := 0;
     fCards[i].data := '';
@@ -113,7 +119,7 @@ begin
   end;
 end;
 
-function TItemCardDeck.GetCardByID(id: integer): TItemCard;
+function TCommonItemCardDeck.GetCardByID(id: integer): TCommonItemCard;
 var
   i: integer;
 begin
@@ -125,36 +131,45 @@ begin
 end;
 
 // Получение ID карты
-function TItemCardDeck.GetCardID(i: integer): integer;
+function TCommonItemCardDeck.GetCardID(i: integer): integer;
 begin
   GetCardID := fCards[i].id;
 end;
 
 // Получение данных карты (указатель на голову связного списка)
-function TItemCardDeck.GetCardData(i: integer): string;
+function TCommonItemCardDeck.GetCardData(i: integer): string;
 begin
   GetCardData := fCards[i].data;
 end;
 
-function TItemCardDeck.DrawCard: Integer;
+function TCommonItemCardDeck.DrawCard: Integer;
 begin
   DrawCard := fCards[fCount].id;
   Shuffle;
 end;
 
 // Поиск файлов в картами
-function TItemCardDeck.FindCards(file_path: string): integer;
+function TCommonItemCardDeck.FindCards(file_path: string): integer;
 var
   F: TextFile;
   SR: TSearchRec; // поисковая переменная
   FindRes: Integer; // переменная для записи результата поиска
   s: string[80];
   i: integer;
+  output_data: TStringList;
+  procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
+  begin
+    output_data.Clear;
+    output_data.QuoteChar := '''';
+    output_data.Delimiter := delimiter;
+    output_data.DelimitedText := str;
+  end;
 begin
   // задание условий поиска и начало поиска
   FindRes := FindFirst(file_path + '*.txt', faAnyFile, SR);
 
   i := 0;
+  output_data := TStringList.Create;
 
   while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
   begin
@@ -163,8 +178,22 @@ begin
     Reset(F);
     readln(F, s);
     CloseFile(F);
+    SplitData('|', s, output_data);
     fCards[i].data := s;
-    fCards[i].id := StrToInt(Copy(SR.Name, 1, 4));
+    //fCards[i].id :=
+    with fCards[i] do
+    begin
+      id := StrToInt(Copy(SR.Name, 1, 4));
+      exposed := False;
+      crd_type := StrToInt(output_data[0]);
+      price := StrToInt(output_data[1]);
+
+      hands := StrToInt(output_data[3]);
+      phase_use := StrToInt(output_data[4]);
+      prm := StrToInt(output_data[5]);
+      prm_value := StrToInt(output_data[6]);
+     end;
+
 
     FindRes := FindNext(SR); // продолжение поиска по заданным условиям
   end;
@@ -174,10 +203,10 @@ begin
 end;
 
 // Тасовка колоды
-procedure TItemCardDeck.Shuffle();
+procedure TCommonItemCardDeck.Shuffle();
 var
   i, r: integer;
-  temp: TItemCard;
+  temp: TCommonItemCard;
 begin
   randomize;
   for i := 1 to fCount do
@@ -189,7 +218,7 @@ begin
   end;
 end;
 
-function TItemCardDeck.CheckAvailability(N: integer): boolean;
+function TCommonItemCardDeck.CheckAvailability(N: integer): boolean;
 var
   i: Integer;
 begin

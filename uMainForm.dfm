@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 224
-  Top = 112
+  Left = 459
+  Top = 148
   Width = 1356
   Height = 802
   Caption = 'frmMain'
@@ -5021,26 +5021,21 @@ object frmMain: TfrmMain
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      object imgPlaCard2: TImage
-        Left = 177
-        Top = 16
-        Width = 145
-        Height = 177
-        Stretch = True
-      end
-      object imgPlaCard3: TImage
-        Left = 329
-        Top = 16
-        Width = 145
-        Height = 177
-        Stretch = True
-      end
-      object imgPlaCard1: TImage
-        Left = 25
-        Top = 13
-        Width = 145
-        Height = 177
-        Stretch = True
+      object pnlCard1: TPanel
+        Left = 22
+        Top = 10
+        Width = 153
+        Height = 182
+        Color = clLime
+        TabOrder = 2
+        object imgPlaCard1: TImage
+          Left = 4
+          Top = 3
+          Width = 145
+          Height = 176
+          Stretch = True
+          OnClick = imgPlaCard1Click
+        end
       end
       object btn14: TButton
         Left = 2
@@ -5061,6 +5056,38 @@ object frmMain: TfrmMain
         Caption = '>'
         TabOrder = 1
         OnClick = btn15Click
+      end
+      object pnlCard2: TPanel
+        Left = 176
+        Top = 10
+        Width = 153
+        Height = 182
+        Color = clLime
+        TabOrder = 3
+        object imgPlaCard2: TImage
+          Left = 3
+          Top = 3
+          Width = 145
+          Height = 176
+          Stretch = True
+          OnClick = imgPlaCard2Click
+        end
+      end
+      object pnlCard3: TPanel
+        Left = 328
+        Top = 10
+        Width = 153
+        Height = 182
+        Color = clLime
+        TabOrder = 4
+        object imgPlaCard3: TImage
+          Left = 3
+          Top = 3
+          Width = 145
+          Height = 176
+          Stretch = True
+          OnClick = imgPlaCard3Click
+        end
       end
     end
     object btnProcess: TButton

@@ -46,9 +46,9 @@ begin
   cbCard.Clear;
   case card_to_load of
   CT_COMMON_ITEM: for i := 1 to Common_Items_Count do cbCard.Items.Add(IntToStr(Common_Items_Deck.card[i]));
-  CT_UNIQUE_ITEM: for i := 1 to Unique_Items_Count do cbCard.Items.Add(IntToStr(Unique_Items_Deck.card[i]));
-  CT_SPELL: for i := 1 to Spells_Count do cbCard.Items.Add(IntToStr(Spells_Deck.card[i]));
-  CT_SKILL: for i := 1 to Skills_Count do cbCard.Items.Add(IntToStr(Skills_Deck.card[i]));
+  //CT_UNIQUE_ITEM: for i := 1 to Unique_Items_Count do cbCard.Items.Add(IntToStr(Unique_Items_Deck.card[i]));
+  //CT_SPELL: for i := 1 to Spells_Count do cbCard.Items.Add(IntToStr(Spells_Deck.card[i]));
+  //CT_SKILL: for i := 1 to Skills_Count do cbCard.Items.Add(IntToStr(Skills_Deck.card[i]));
   end;
 end;
 

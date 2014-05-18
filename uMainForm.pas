@@ -124,8 +124,6 @@ type
     pbStamina: TProgressBar;
     pbSanity: TProgressBar;
     grp4: TGroupBox;
-    imgPlaCard2: TImage;
-    imgPlaCard3: TImage;
     btn14: TButton;
     btn15: TButton;
     btnProcess: TButton;
@@ -163,10 +161,15 @@ type
     edt1: TEdit;
     lstLog: TListBox;
     imgEncounter: TImage;
-    imgPlaCard1: TImage;
     btnShowCards: TButton;
     lbl1: TLabel;
     lblCurPlayer: TLabel;
+    pnlCard1: TPanel;
+    imgPlaCard1: TImage;
+    pnlCard2: TPanel;
+    imgPlaCard2: TImage;
+    pnlCard3: TPanel;
+    imgPlaCard3: TImage;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -203,6 +206,9 @@ type
     procedure btn15Click(Sender: TObject);
     procedure btnProcessClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure imgPlaCard1Click(Sender: TObject);
+    procedure imgPlaCard2Click(Sender: TObject);
+    procedure imgPlaCard3Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -237,10 +243,10 @@ type
 var
   frmMain: TfrmMain;
   gCurrentPhase: integer;
-  Common_Items_Deck: TItemCardDeck;
-  Unique_Items_Deck: TItemCardDeck;
-  Spells_Deck: TItemCardDeck;
-  Skills_Deck: TItemCardDeck;
+  Common_Items_Deck: TCommonItemCardDeck;
+  //Unique_Items_Deck: TItemCardDeck;
+  //Spells_Deck: TItemCardDeck;
+  //Skills_Deck: TItemCardDeck;
   gInvestigators: TInvDeck;
   Monsters: TMonsterArray;//array [1..MONSTER_MAX] of TMonster;
   Arkham_Streets: array [1..NUMBER_OF_STREETS] of TStreet;
@@ -319,33 +325,23 @@ begin
     CT_COMMON_ITEM: begin
       // Загружаем все карты, находящиеся в каталоге
       Common_Items_Count :=  Common_Items_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\CommonItems\\');
-      //Main_frm.ComboBox2.Clear;
-      //Main_frm.ComboBox2.Text := 'Choose a card';
-      //for i := 1 to Common_Items_Count do
-      //  Main_frm.ComboBox1.Items.Add(IntToStr(Common_Items_Deck.Get_Card_ID(i)));
     end; // CT_COMMON_ITEM
 
     CT_UNIQUE_ITEM: begin
       // задание условий поиска и начало поиска
-      Unique_Items_Count := Unique_Items_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\UniqueItems\\');
+      //Unique_Items_Count := Unique_Items_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\UniqueItems\\');
 
-      {Form1.ComboBox2.Clear;
-      Form1.ComboBox2.Text := 'Choose a card';
-      Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));  }
     end; // CT_UNIQUE_ITEM
 
     CT_SPELL: begin
       // задание условий поиска и начало поиска
-      Spells_Count := Spells_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Spells\\');
+      //Spells_Count := Spells_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Spells\\');
 
-      {Form1.ComboBox2.Clear;
-      Form1.ComboBox2.Text := 'Choose a card';
-      Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));  }
     end; // CT_UNIQUE_ITEM
 
     CT_SKILL: begin
       // задание условий поиска и начало поиска
-      Skills_Count := Skills_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Skills\\');
+//      Skills_Count := Skills_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Skills\\');
     end; // CT_UNIQUE_ITEM
 
     CT_ENCOUNTER: begin
@@ -535,9 +531,9 @@ begin
   end;
 
   Common_Items_Deck.Free;
-  Unique_Items_Deck.Free;
-  Spells_Deck.Free;
-  Skills_Deck.Free;
+  //Unique_Items_Deck.Free;
+  //Spells_Deck.Free;
+  //Skills_Deck.Free;
   gInvestigators.Free;
 
   for i := 1 to NUMBER_OF_STREETS do
@@ -559,10 +555,10 @@ begin
   PlStats[6] := 2; // Luck
 
   path_to_exe := ExtractFilePath(Application.ExeName);
-  Common_Items_Deck:= TItemCardDeck.Create(CT_COMMON_ITEM);
-  Unique_Items_Deck:= TItemCardDeck.Create(CT_UNIQUE_ITEM);
-  Spells_Deck:= TItemCardDeck.Create(CT_SPELL);
-  Skills_Deck:= TItemCardDeck.Create(CT_SKILL);
+  Common_Items_Deck:= TCommonItemCardDeck.Create(CT_COMMON_ITEM);
+  //Unique_Items_Deck:= TItemCardDeck.Create(CT_UNIQUE_ITEM);
+  //Spells_Deck:= TItemCardDeck.Create(CT_SPELL);
+  //Skills_Deck:= TItemCardDeck.Create(CT_SKILL);
   gInvestigators := TInvDeck.Create(CT_INVESTIGATOR);
 
   for i := 1 to NUMBER_OF_STREETS do
@@ -932,12 +928,13 @@ begin
       else
       begin
         for i := 1 to action_value do // Draw 'action_value' number of cards
-          gCurrentPlayer.AddItem(Unique_Items_Deck.DrawCard);
+          //gCurrentPlayer.AddItem(Unique_Items_Deck.DrawCard);
+          gCurrentPlayer.AddItem(Common_Items_Deck.DrawCard);
       end;
       frmMain.lstLog.Items.Add('Игрок вытянул карту уникального предмета.');
     end; // case 10
     11: begin // Draw spell
-      gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
+      //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
       frmMain.lstLog.Items.Add('Игрок вытянул карту закла.');
     end; // case 11
     12: begin // Draw skill
@@ -1688,10 +1685,13 @@ begin
     if card_name = '0' then exit;
     if card_name[1] = '1' then
       card_name := ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + card_name + '.jpg';
+
     if card_name[1] = '2' then
       card_name := ExtractFilePath(Application.ExeName) + 'CardsData\UniqueItems\' + card_name + '.jpg';
+
     if card_name[1] = '3' then
       card_name := ExtractFilePath(Application.ExeName) + 'CardsData\Spells\' + card_name + '.jpg';
+
     if card_name[1] = '4' then
       card_name := ExtractFilePath(Application.ExeName) + 'CardsData\Skills\' + card_name + '.jpg';
 
@@ -1764,6 +1764,21 @@ end;
 procedure TfrmMain.FormShow(Sender: TObject);
 begin
   frmInv.ShowModal;
+end;
+
+procedure TfrmMain.imgPlaCard1Click(Sender: TObject);
+begin
+  pnlCard1.Color := clRed;
+end;
+
+procedure TfrmMain.imgPlaCard2Click(Sender: TObject);
+begin
+  pnlCard2.Color := clRed;
+end;
+
+procedure TfrmMain.imgPlaCard3Click(Sender: TObject);
+begin
+  pnlCard3.Color := clRed;
 end;
 
 end.
