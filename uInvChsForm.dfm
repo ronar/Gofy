@@ -1450,9 +1450,7 @@ object frmInv: TfrmInv
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    ItemIndex = 2
     TabOrder = 1
-    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
     OnChange = cbInvPlayer1Change
     Items.Strings = (
       'Agnes Baker'
@@ -1513,9 +1511,7 @@ object frmInv: TfrmInv
     Style = csOwnerDrawFixed
     Enabled = False
     ItemHeight = 13
-    ItemIndex = 2
     TabOrder = 2
-    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
     OnChange = cbInvPlayer2Change
     Items.Strings = (
       'Agnes Baker'
@@ -1576,9 +1572,7 @@ object frmInv: TfrmInv
     Style = csOwnerDrawFixed
     Enabled = False
     ItemHeight = 13
-    ItemIndex = 2
     TabOrder = 3
-    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
     OnChange = cbInvPlayer3Change
     Items.Strings = (
       'Agnes Baker'
@@ -1639,9 +1633,7 @@ object frmInv: TfrmInv
     Style = csOwnerDrawFixed
     Enabled = False
     ItemHeight = 13
-    ItemIndex = 2
     TabOrder = 4
-    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
     OnChange = cbInvPlayer4Change
     Items.Strings = (
       'Agnes Baker'
@@ -1702,9 +1694,7 @@ object frmInv: TfrmInv
     Style = csOwnerDrawFixed
     Enabled = False
     ItemHeight = 13
-    ItemIndex = 2
     TabOrder = 5
-    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
     OnChange = cbInvPlayer5Change
     Items.Strings = (
       'Agnes Baker'
@@ -1765,9 +1755,7 @@ object frmInv: TfrmInv
     Style = csOwnerDrawFixed
     Enabled = False
     ItemHeight = 13
-    ItemIndex = 2
     TabOrder = 6
-    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
     OnChange = cbInvPlayer6Change
     Items.Strings = (
       'Agnes Baker'
@@ -1828,9 +1816,7 @@ object frmInv: TfrmInv
     Style = csOwnerDrawFixed
     Enabled = False
     ItemHeight = 13
-    ItemIndex = 2
     TabOrder = 7
-    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
     OnChange = cbInvPlayer7Change
     Items.Strings = (
       'Agnes Baker'
@@ -1891,9 +1877,7 @@ object frmInv: TfrmInv
     Style = csOwnerDrawFixed
     Enabled = False
     ItemHeight = 13
-    ItemIndex = 2
     TabOrder = 8
-    Text = #1040#1084#1072#1085#1076#1072' '#1064#1072#1088#1087
     OnChange = cbInvPlayer8Change
     Items.Strings = (
       'Agnes Baker'

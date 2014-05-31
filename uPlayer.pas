@@ -42,6 +42,7 @@ type
     function IsCursed: boolean;
     procedure Curse(b: boolean);
   public
+    evadedmosnters: array [1..5] of integer; // id of mobs which player succesfully evaded
     constructor Create(var init_stats: array of integer; first_player: boolean);
     destructor Destroy; override;
     property Location: integer read fLocation write fLocation; // id локации в виде xxy, где (хх - номер улицы, y - номер локации)
@@ -66,7 +67,7 @@ type
     property bFirstPlayer: boolean read fFirstPlayer write fFirstPlayer;
     property Investigator: TInvestigator read fInvestigator;
     procedure DrawCard(card_id: integer);
-    procedure AddItem(indx: integer);
+    procedure AddItem(var cards: TCommonItemCardDeck; id: integer);
     procedure AssignInvestigator(inv: TInvestigator);
     //function Get_Item(indx: integer): integer;
     function RollADice(stat: integer): integer;
@@ -79,6 +80,7 @@ type
     procedure ChangeSkills(x1: integer; x2: integer; x3: integer);
     procedure MoveToLocation(id_lok: integer);
     procedure GetItems; // Copy investigator's items to player
+    function CardBonus(stat: integer): Integer;
     //procedure
     //property Speed: integer read Stats[1] write Stats[1];
   end;
@@ -196,10 +198,11 @@ begin
     fCursed := b;
 end;
 
-procedure TPlayer.AddItem(indx: integer);
+procedure TPlayer.AddItem(var cards: TCommonItemCardDeck; id: integer);
 begin
   fCardsCount := fCardsCount + 1;
-  fCards[fCardsCount] := indx;
+  fCards[fCardsCount] := id;
+  cards.DecCounter(cards.IndexOfCard(id));
 end;
 
 procedure TPlayer.AssignInvestigator(inv: TInvestigator);
@@ -393,41 +396,6 @@ begin
   fStats[5] := fInvestigator.stat[5] + x3;
   fStats[6] := fInvestigator.stat[6] - x3;
 
- { case r of
-  1: begin
-    if fInvestigator.stats[1] < 3 then
-      fStats[1] := fInvestigator.stats[1] + (n - 1)
-    else
-      fStats[1] := fInvestigator.stats[1] - (n - 1);
-
-    if fInvestigator.stats[2] < 3 then
-      fStats[2] := fInvestigator.stats[2] + (n - 1)
-    else
-      fStats[2] := fInvestigator.stats[2] - (n - 1);
-  end;
-  2: begin
-    if fInvestigator.stats[3] < 3 then
-      fStats[3] := fInvestigator.Stats[3] + (n - 1)
-    else
-      fStats[3] := fInvestigator.Stats[3] - (n - 1);
-
-    if fInvestigator.stats[4] < 3 then
-      fStats[4] := fInvestigator.stats[4] + (n - 1)
-    else
-      fStats[4] := fInvestigator.stats[4] - (n - 1);
-  end;
-  3: begin
-    if fInvestigator.stats[5] < 3 then
-      fStats[5] := fInvestigator.stats[5] + n - 1
-    else
-      fStats[5] := fInvestigator.stats[5] - n - 1;
-
-    if fInvestigator.stats[6] < 3 then
-      fStats[6] := fInvestigator.stats[6] + n - 1
-    else
-      fStats[6] := fInvestigator.stats[6] - n - 1;
-  end;
-  end;                               }
 end;
 
 procedure TPlayer.MoveToLocation(id_lok: integer);
@@ -441,8 +409,34 @@ var
   i: Integer;
 begin
   for i := 1 to Investigator.items_count do
-    AddItem(Investigator.items[i]);
+    AddItem(Common_Items_Deck, Investigator.items[i]);
 end;
 
+function TPlayer.CardBonus(stat: integer): integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  case stat of
+    ST_SPEED:;
+    ST_SNEAK:;
+    ST_FIGHT:
+    begin
+      for i := 1 to fCardsCount do
+      begin
+        if ((Common_Items_Deck.GetCardByID(fCards[i]).crd_type = CT_WEAPON) and
+          (Common_Items_Deck.GetCardByID(fCards[i]).prm = 2)) then
+          begin
+            Common_Items_Deck.IncCounter(i);
+            ShowMessage(IntToStr(Common_Items_Deck.GetCardByID(fCards[i]).ccounter));
+            Result := Result + Common_Items_Deck.GetCardByID(fCards[i]).prm_value;
+          end;
+      end;
+    end;
+    ST_WILL:;
+    ST_LORE:;
+    ST_LUCK:;
+  end;
+end;
 
 end.

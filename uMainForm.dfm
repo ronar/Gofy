@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
-  Left = 459
-  Top = 148
+  Left = 481
+  Top = 120
   Width = 1356
-  Height = 802
+  Height = 822
   Caption = 'frmMain'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -2080,8 +2080,8 @@ object frmMain: TfrmMain
     Value = 1
   end
   object btnLogClear: TButton
-    Left = 672
-    Top = 416
+    Left = 664
+    Top = 384
     Width = 75
     Height = 25
     Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1083#1086#1075
@@ -2099,7 +2099,7 @@ object frmMain: TfrmMain
   end
   object pgc1: TPageControl
     Left = 0
-    Top = 476
+    Top = 496
     Width = 1340
     Height = 87
     ActivePage = ts1
@@ -2747,7 +2747,7 @@ object frmMain: TfrmMain
   end
   object pnl2: TPanel
     Left = 0
-    Top = 563
+    Top = 583
     Width = 1340
     Height = 200
     Align = alBottom
@@ -5452,13 +5452,31 @@ object frmMain: TfrmMain
     end
   end
   object btnShowCards: TButton
-    Left = 584
-    Top = 416
+    Left = 576
+    Top = 384
     Width = 75
     Height = 25
     Caption = 'btnShowCards'
     TabOrder = 22
     OnClick = btnShowCardsClick
+  end
+  object btn1: TButton
+    Left = 608
+    Top = 440
+    Width = 75
+    Height = 25
+    Caption = 'btn1'
+    TabOrder = 23
+    OnClick = btn1Click
+  end
+  object btn2: TButton
+    Left = 568
+    Top = 88
+    Width = 75
+    Height = 25
+    Caption = #1041#1086#1081
+    TabOrder = 24
+    OnClick = btn2Click
   end
   object xmldoc1: TXMLDocument
     Left = 320

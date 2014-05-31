@@ -14,7 +14,8 @@ uses
   uTradeForm in 'uTradeForm.pas' {frmTrade},
   uUseForm in 'uUseForm.pas' {frmUse},
   uMonster in 'uMonster.pas',
-  uCardXML in 'uCardXML.pas';
+  uCardXML in 'uCardXML.pas',
+  uMonsterForm in 'uMonsterForm.pas' {frmMonster};
 
 {$R *.res}
 
@@ -28,5 +29,6 @@ begin
   Application.CreateForm(TfrmCard, frmCard);
   Application.CreateForm(TfrmTrade, frmTrade);
   Application.CreateForm(TfrmUse, frmUse);
+  Application.CreateForm(TfrmMonster, frmMonster);
   Application.Run;
 end.

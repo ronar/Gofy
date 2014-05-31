@@ -164,22 +164,22 @@ begin
     players[k].GetItems();
     if players[k].Investigator.can_take[1] > 0 then
       for i := 1 to players[k].Investigator.can_take[1] do
-        players[k].AddItem(Common_Items_Deck.DrawCard);
+        players[k].AddItem(Common_Items_Deck, Common_Items_Deck.DrawCard);
 
     if players[k].Investigator.can_take[2] > 0 then
       for i := 1 to players[k].Investigator.can_take[2] do
         //players[k].AddItem(Unique_Items_Deck.DrawCard);
-        players[k].AddItem(Common_Items_Deck.DrawCard);
+        players[k].AddItem(Common_Items_Deck, Common_Items_Deck.DrawCard);
 
     if players[k].Investigator.can_take[3] > 0 then
       for i := 1 to players[k].Investigator.can_take[3] do
         //players[k].AddItem(Spells_Deck.DrawCard);
-        players[k].AddItem(Common_Items_Deck.DrawCard);
+        players[k].AddItem(Common_Items_Deck, Common_Items_Deck.DrawCard);
 
     if players[k].Investigator.can_take[4] > 0 then
       for i := 1 to players[k].Investigator.can_take[4] do
         //players[k].AddItem(Skills_Deck.DrawCard);
-        players[k].AddItem(Common_Items_Deck.DrawCard);
+        players[k].AddItem(Common_Items_Deck, Common_Items_Deck.DrawCard);
   end;
 
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);

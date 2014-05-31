@@ -170,6 +170,8 @@ type
     imgPlaCard2: TImage;
     pnlCard3: TPanel;
     imgPlaCard3: TImage;
+    btn1: TButton;
+    btn2: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -209,6 +211,8 @@ type
     procedure imgPlaCard1Click(Sender: TObject);
     procedure imgPlaCard2Click(Sender: TObject);
     procedure imgPlaCard3Click(Sender: TObject);
+    procedure btn1Click(Sender: TObject);
+    procedure btn2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -288,7 +292,7 @@ var
 
 implementation
 
-uses uChsLok, Math,  uTradeForm, uUseForm, uInvChsForm;
+uses uChsLok, Math,  uTradeForm, uUseForm, uInvChsForm, uMonsterForm;
 
 {$R *.dfm}
 
@@ -914,22 +918,22 @@ begin
     end; // case 8
     9: begin // Draw common item
       if action_value > 1000 then // id of card is defined
-        gCurrentPlayer.AddItem(action_value)
+        gCurrentPlayer.AddItem(Common_Items_Deck, action_value)
       else
       begin
         for i := 1 to action_value do // Draw 'action_value' number of cards
-          gCurrentPlayer.AddItem(Common_Items_Deck.DrawCard);
+          gCurrentPlayer.AddItem(Common_Items_Deck, Common_Items_Deck.DrawCard);
       end;
       frmMain.lstLog.Items.Add('Игрок вытянул карту простого предмета: ' + IntToStr(action_value));
     end; // case 9
     10: begin // Draw unique item
       if action_value > 1000 then // id of card is defined
-        gCurrentPlayer.AddItem(action_value)
+        gCurrentPlayer.AddItem(Common_Items_Deck, action_value)
       else
       begin
         for i := 1 to action_value do // Draw 'action_value' number of cards
           //gCurrentPlayer.AddItem(Unique_Items_Deck.DrawCard);
-          gCurrentPlayer.AddItem(Common_Items_Deck.DrawCard);
+          gCurrentPlayer.AddItem(Common_Items_Deck, Common_Items_Deck.DrawCard);
       end;
       frmMain.lstLog.Items.Add('Игрок вытянул карту уникального предмета.');
     end; // case 10
@@ -1146,11 +1150,11 @@ begin
           frmTrade.RadioButton3.Caption := IntToStr(drawn_items[3]);
           frmTrade.ShowModal;
           If frmTrade.RadioButton1.Checked then
-            gCurrentPlayer.AddItem(drawn_items[1]);
+            gCurrentPlayer.AddItem(Common_Items_Deck, drawn_items[1]);
           If frmTrade.RadioButton2.Checked then
-            gCurrentPlayer.AddItem(drawn_items[2]);
+            gCurrentPlayer.AddItem(Common_Items_Deck, drawn_items[2]);
           If frmTrade.RadioButton3.Checked then
-            gCurrentPlayer.AddItem(drawn_items[3]);
+            gCurrentPlayer.AddItem(Common_Items_Deck, drawn_items[3]);
         end
         else
           Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.cards[seCrdNum.Value, hon(gCurrentPlayer.Location)]);
@@ -1315,7 +1319,7 @@ end;
 
 procedure TfrmMain.btnGiveItemClick(Sender: TObject);
 begin
-  gCurrentPlayer.AddItem(1582);
+  //gCurrentPlayer.AddItem(1582);
 end;
 
 procedure TfrmMain.btnMoveToExactLokClick(Sender: TObject);
@@ -1779,6 +1783,21 @@ end;
 procedure TfrmMain.imgPlaCard3Click(Sender: TObject);
 begin
   pnlCard3.Color := clRed;
+end;
+
+procedure TfrmMain.btn1Click(Sender: TObject);
+begin
+  Common_Items_Deck.AddCardToDeck(1);
+  ShowMessage(IntToStr(gCurrentPlayer.CardBonus(ST_FIGHT)));
+end;
+
+procedure TfrmMain.btn2Click(Sender: TObject);
+var
+  p_addr: ^Integer;
+begin
+  frmMonster.PrepareMonster(monsters[1], gCurrentPlayer);
+  frmMonster.ShowModal;
+  //ShowMessage(IntToStr(p_addr));
 end;
 
 end.

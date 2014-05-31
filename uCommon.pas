@@ -17,6 +17,8 @@ const
   PH_OTHER_WORLDS_ENCOUNTER = 4;
   PH_MYTHOS = 5;
   // Константы Типов Карт
+  CT_WEAPON = 1; // Оружие
+  CT_TOME = 2; // Книга
   CT_SPELL = 3; // Заклинание
   CT_ALLY = 7; // Союзник
   CT_MYTHOS = 8; // Миф
