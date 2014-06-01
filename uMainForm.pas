@@ -172,6 +172,7 @@ type
     imgPlaCard3: TImage;
     btn1: TButton;
     btn2: TButton;
+    btnTakeWeapon: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -213,6 +214,7 @@ type
     procedure imgPlaCard3Click(Sender: TObject);
     procedure btn1Click(Sender: TObject);
     procedure btn2Click(Sender: TObject);
+    procedure btnTakeWeaponClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -270,6 +272,7 @@ var
   //monCount: integer;
   head_of_list: PLLData;
   player_current_card: array [1..8] of integer; // For displaying cards on form
+  selected_cards: array [1..3] of boolean;
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; card: TLocationCard);
   function GetFirstPlayer: integer; // ѕолучение номера игрока с жетоном первого игрока
@@ -583,6 +586,10 @@ begin
     players[i] := TPlayer.Create(PlStats, False);
     //
   end;
+
+  selected_cards[1] := false;
+  selected_cards[2] := false;
+  selected_cards[3] := false;
 
   btnInitClick(Sender);
 
@@ -1772,17 +1779,29 @@ end;
 
 procedure TfrmMain.imgPlaCard1Click(Sender: TObject);
 begin
-  pnlCard1.Color := clRed;
+  selected_cards[1] := not selected_cards[1];
+  if selected_cards[1] then
+    pnlCard1.Color := clRed
+  else
+    pnlCard1.Color := clLime;
 end;
 
 procedure TfrmMain.imgPlaCard2Click(Sender: TObject);
 begin
-  pnlCard2.Color := clRed;
+  selected_cards[2] := not selected_cards[2];
+  if selected_cards[2] then
+    pnlCard2.Color := clRed
+  else
+    pnlCard2.Color := clLime;
 end;
 
 procedure TfrmMain.imgPlaCard3Click(Sender: TObject);
 begin
-  pnlCard3.Color := clRed;
+  selected_cards[3] := not selected_cards[3];
+  if selected_cards[3] then
+    pnlCard3.Color := clRed
+  else
+    pnlCard3.Color := clLime;
 end;
 
 procedure TfrmMain.btn1Click(Sender: TObject);
@@ -1798,6 +1817,19 @@ begin
   frmMonster.PrepareMonster(monsters[1], gCurrentPlayer);
   frmMonster.ShowModal;
   //ShowMessage(IntToStr(p_addr));
+end;
+
+procedure TfrmMain.btnTakeWeaponClick(Sender: TObject);
+begin
+  if selected_cards[1] then
+    gCurrentPlayer.TakeWeapon(gCurrentPlayer.Cards[1 + ((player_current_card[current_player] - 1) * 3)]);
+  if selected_cards[2] then
+    gCurrentPlayer.TakeWeapon(gCurrentPlayer.Cards[2 + ((player_current_card[current_player] - 1) * 3)]);
+  if selected_cards[3] then
+    gCurrentPlayer.TakeWeapon(gCurrentPlayer.Cards[3 + ((player_current_card[current_player] - 1) * 3)]);
+
+  ShowMessage(IntToStr(gCurrentPlayer.active_cards[1]) + ' '+ IntToStr(gCurrentPlayer.active_cards[2]) + ' ' + IntToStr(gCurrentPlayer.active_cards[3]));
+
 end;
 
 end.

@@ -27,6 +27,7 @@ type
     fFirstPlayer: boolean; // Флаг первого игрока
     fInvestigator: TInvestigator;
     fPlNumber: integer;
+    fHands: Integer; // Number of hands :)
     Roll_results: array [1..12] of integer;
     function GetPlayerCard(indx: integer): integer;
     function GetPlayerStat(indx: integer): integer;
@@ -42,6 +43,8 @@ type
     function IsCursed: boolean;
     procedure Curse(b: boolean);
   public
+    active_cards: array [1..4] of integer; // i.e. on hands
+    hands_taken: integer;
     evadedmosnters: array [1..5] of integer; // id of mobs which player succesfully evaded
     constructor Create(var init_stats: array of integer; first_player: boolean);
     destructor Destroy; override;
@@ -66,6 +69,7 @@ type
     property Cursed: boolean read IsCursed write Curse;
     property bFirstPlayer: boolean read fFirstPlayer write fFirstPlayer;
     property Investigator: TInvestigator read fInvestigator;
+    //property Hands: integer read fHands;
     procedure DrawCard(card_id: integer);
     procedure AddItem(var cards: TCommonItemCardDeck; id: integer);
     procedure AssignInvestigator(inv: TInvestigator);
@@ -80,6 +84,8 @@ type
     procedure ChangeSkills(x1: integer; x2: integer; x3: integer);
     procedure MoveToLocation(id_lok: integer);
     procedure GetItems; // Copy investigator's items to player
+    procedure TakeWeapon(item1: integer); // Take choosen card to hands
+    procedure activate_item(item_id: Integer);
     function CardBonus(stat: integer): Integer;
     //procedure
     //property Speed: integer read Stats[1] write Stats[1];
@@ -98,6 +104,12 @@ begin
   fStamina := 0;
   fSanity := 0;
   fFocus := 0;
+  for i := 1 to 5 do
+  begin
+    active_cards[i] := 0;
+    evadedmosnters[i] := 0;
+  end;
+
   for i := 1 to 6 do
   begin
     fStats[i] := init_stats[i - 1];
@@ -106,6 +118,9 @@ begin
 
   for i := 1 to MAX_PLAYER_ITEMS do
     fCards[i] := 0;
+
+  fHands := 2; // 2 hands
+  hands_taken := 0;
   fFirstPlayer := False;
   fInvestigator := nil;
 end;
@@ -410,6 +425,49 @@ var
 begin
   for i := 1 to Investigator.items_count do
     AddItem(Common_Items_Deck, Investigator.items[i]);
+end;
+
+procedure TPlayer.activate_item(item_id: Integer);
+var
+  item_count: integer;
+begin
+  item_count := 1;
+  if active_cards[1] <> 0 then
+    item_count := item_count + 1
+  else
+    if active_cards[2] <> 0 then
+      item_count := item_count + 1
+    else
+      if active_cards[3] <> 0 then
+        item_count := item_count + 1;
+
+  active_cards[item_count] := item_id;
+
+end;
+
+procedure TPlayer.TakeWeapon(item1: integer);
+begin
+  if IntToStr(item1)[1] = '1' then // Common item
+  begin
+    hands_taken := hands_taken + Common_Items_Deck.GetCardByID(item1).hands;
+    if hands_taken <= fHands then
+      activate_item(item1);
+  end;
+
+ { if IntToStr(item1)[1] = '2' then // Unique item
+  begin
+    hands_taken := hands_taken + Unique_Items_Deck.GetCardByID(item1).hands;
+    if hands_taken <= fHands then
+      activate_item(item1);
+  end;
+
+  if IntToStr(item1)[1] = '3' then // Spell
+  begin
+    hands_taken := hands_taken + Spells_Deck.GetCardByID(item1).hands;
+    if hands_taken <= fHands then
+      activate_item(item1);
+  end;  }
+
 end;
 
 function TPlayer.CardBonus(stat: integer): integer;

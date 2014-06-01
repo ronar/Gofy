@@ -144,7 +144,10 @@ begin
   for i:= 1 to fCount do
   begin
     if fCards[i].id = id then
+    begin
       GetCardByID := fCards[i];
+      break;
+    end;
   end;
 end;
 

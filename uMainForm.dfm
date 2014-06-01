@@ -2099,8 +2099,8 @@ object frmMain: TfrmMain
   end
   object pgc1: TPageControl
     Left = 0
-    Top = 496
-    Width = 1340
+    Top = 497
+    Width = 1323
     Height = 87
     ActivePage = ts1
     Align = alBottom
@@ -2151,7 +2151,7 @@ object frmMain: TfrmMain
       object pnl1: TPanel
         Left = 0
         Top = 31
-        Width = 1332
+        Width = 1315
         Height = 28
         Align = alBottom
         TabOrder = 0
@@ -2208,7 +2208,7 @@ object frmMain: TfrmMain
           ParentFont = False
         end
         object img1: TImage
-          Left = 1293
+          Left = 1276
           Top = 1
           Width = 38
           Height = 26
@@ -2747,8 +2747,8 @@ object frmMain: TfrmMain
   end
   object pnl2: TPanel
     Left = 0
-    Top = 583
-    Width = 1340
+    Top = 584
+    Width = 1323
     Height = 200
     Align = alBottom
     TabOrder = 20
@@ -5008,7 +5008,7 @@ object frmMain: TfrmMain
       TabOrder = 1
     end
     object grp4: TGroupBox
-      Left = 839
+      Left = 822
       Top = 1
       Width = 500
       Height = 198
@@ -5477,6 +5477,15 @@ object frmMain: TfrmMain
     Caption = #1041#1086#1081
     TabOrder = 24
     OnClick = btn2Click
+  end
+  object btnTakeWeapon: TButton
+    Left = 952
+    Top = 472
+    Width = 75
+    Height = 25
+    Caption = #1042#1079#1103#1090#1100' '#1086#1088#1091#1078#1080#1077' '#1074' '#1088#1091#1082#1091
+    TabOrder = 25
+    OnClick = btnTakeWeaponClick
   end
   object xmldoc1: TXMLDocument
     Left = 320
