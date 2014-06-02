@@ -1821,6 +1821,7 @@ end;
 
 procedure TfrmMain.btnTakeWeaponClick(Sender: TObject);
 begin
+  gCurrentPlayer.DropWeapon;
   if selected_cards[1] then
     gCurrentPlayer.TakeWeapon(gCurrentPlayer.Cards[1 + ((player_current_card[current_player] - 1) * 3)]);
   if selected_cards[2] then

@@ -85,6 +85,7 @@ type
     procedure MoveToLocation(id_lok: integer);
     procedure GetItems; // Copy investigator's items to player
     procedure TakeWeapon(item1: integer); // Take choosen card to hands
+    procedure DropWeapon; // Take choosen card to hands
     procedure activate_item(item_id: Integer);
     function CardBonus(stat: integer): Integer;
     //procedure
@@ -119,7 +120,7 @@ begin
   for i := 1 to MAX_PLAYER_ITEMS do
     fCards[i] := 0;
 
-  fHands := 2; // 2 hands
+  fHands := 4; // 2 hands
   hands_taken := 0;
   fFirstPlayer := False;
   fInvestigator := nil;
@@ -429,19 +430,15 @@ end;
 
 procedure TPlayer.activate_item(item_id: Integer);
 var
-  item_count: integer;
+  item_count, i: integer;
 begin
   item_count := 1;
-  if active_cards[1] <> 0 then
-    item_count := item_count + 1
-  else
-    if active_cards[2] <> 0 then
-      item_count := item_count + 1
-    else
-      if active_cards[3] <> 0 then
-        item_count := item_count + 1;
+  for i := 1 to 4 do
+    if active_cards[i] <> 0 then
+      item_count := item_count + 1;
 
-  active_cards[item_count] := item_id;
+  if item_count < 5 then
+    active_cards[item_count] := item_id;
 
 end;
 
@@ -467,6 +464,16 @@ begin
     if hands_taken <= fHands then
       activate_item(item1);
   end;  }
+
+end;
+
+procedure TPlayer.DropWeapon;
+begin
+  hands_taken := 0;
+  active_cards[1] := 0;
+  active_cards[2] := 0;
+  active_cards[3] := 0;
+  active_cards[4] := 0;
 
 end;
 
