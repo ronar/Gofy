@@ -14,6 +14,10 @@ type
     btnBattle: TButton;
     btnEvade: TButton;
     lst1: TListBox;
+    lbl1: TLabel;
+    imgPlaCard1: TImage;
+    imgPlaCard2: TImage;
+    imgPlaCard3: TImage;
     procedure btnEvadeClick(Sender: TObject);
     procedure btnBattleClick(Sender: TObject);
     procedure imgMonsterClick(Sender: TObject);
@@ -44,6 +48,18 @@ begin
   gMonster := monster;
   gPlayer := player;
   imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(monster.fId)+'-1.jpg');
+  if player.active_cards[1] <> 0 then
+    imgPlaCard1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\'+IntToStr(player.active_cards[1])+'.jpg')
+  else
+    imgPlaCard1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Spells\30.jpg');
+  if player.active_cards[2] <> 0 then
+    imgPlaCard2.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\'+IntToStr(player.active_cards[2])+'.jpg')
+  else
+    imgPlaCard2.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Spells\30.jpg');
+  if player.active_cards[3] <> 0 then
+    imgPlaCard3.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\'+IntToStr(player.active_cards[3])+'.jpg')
+  else
+    imgPlaCard3.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Spells\30.jpg');
   mon_pic := not mon_pic;
 end;
 

@@ -21,6 +21,34 @@ object frmMonster: TfrmMonster
     Stretch = True
     OnClick = imgMonsterClick
   end
+  object lbl1: TLabel
+    Left = 8
+    Top = 272
+    Width = 75
+    Height = 13
+    Caption = #1050#1072#1088#1090#1099' '#1080#1075#1088#1086#1082#1072':'
+  end
+  object imgPlaCard1: TImage
+    Left = 8
+    Top = 296
+    Width = 105
+    Height = 129
+    Stretch = True
+  end
+  object imgPlaCard2: TImage
+    Left = 120
+    Top = 296
+    Width = 105
+    Height = 129
+    Stretch = True
+  end
+  object imgPlaCard3: TImage
+    Left = 232
+    Top = 296
+    Width = 105
+    Height = 129
+    Stretch = True
+  end
   object btnNextMob: TButton
     Left = 16
     Top = 120

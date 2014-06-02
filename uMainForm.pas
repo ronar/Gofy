@@ -1829,7 +1829,7 @@ begin
   if selected_cards[3] then
     gCurrentPlayer.TakeWeapon(gCurrentPlayer.Cards[3 + ((player_current_card[current_player] - 1) * 3)]);
 
-  ShowMessage(IntToStr(gCurrentPlayer.active_cards[1]) + ' '+ IntToStr(gCurrentPlayer.active_cards[2]) + ' ' + IntToStr(gCurrentPlayer.active_cards[3]));
+  //ShowMessage(IntToStr(gCurrentPlayer.active_cards[1]) + ' '+ IntToStr(gCurrentPlayer.active_cards[2]) + ' ' + IntToStr(gCurrentPlayer.active_cards[3]));
 
 end;
 
