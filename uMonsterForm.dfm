@@ -1,6 +1,6 @@
 object frmMonster: TfrmMonster
-  Left = 609
-  Top = 339
+  Left = 443
+  Top = 176
   Width = 702
   Height = 475
   Caption = 'frmMonster'

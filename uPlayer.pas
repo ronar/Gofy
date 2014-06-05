@@ -12,13 +12,14 @@ type
     fNeighborhood: integer; // Neighbourhood of the player's location (for easy ref. instead of hon(..) func.)
     fCards: array [1..MAX_PLAYER_ITEMS] of integer; // Player's items
     fCardsCount: integer; // Amt. of player's items
+    fMonsterTrophiesCount: Integer;
     fSpellsCount: integer; // Amt. of player's Spells
     fSanity: integer;
     fStamina: integer;
     fFocus: integer;
     fMoney: integer;
     fClues: integer;
-    fMonsterTrophies: integer;
+    fMonsterTrophies: array [1..10] of integer; // Monster trophies of player
     fGateTrophies:Integer;
     fStats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
     fBonusStats: array [1..6] of integer; // Прибавка от карт навыков, мифа.
@@ -31,6 +32,7 @@ type
     Roll_results: array [1..12] of integer;
     function GetPlayerCard(indx: integer): integer;
     function GetPlayerStat(indx: integer): integer;
+    function GetMonsterTrophies(indx: integer): integer;
     //function SetPlayerStat(indx: integer; value: integer);
     procedure SetSpeed(value: integer);
     procedure SetSneak(value: integer);
@@ -51,13 +53,13 @@ type
     property Location: integer read fLocation write fLocation; // id локации в виде xxy, где (хх - номер улицы, y - номер локации)
     property Neighborhood: integer read fNeighborhood write fNeighborhood; // id прилегающей улицы
     property Cards[indx: integer]: integer read GetPlayerCard; // write AddItem;
+    property MonsterTrophies[indx: integer]: integer read GetMonsterTrophies; // write AddItem;
     property ItemsCount: integer read fCardsCount;
     property Sanity: integer read fSanity write fSanity;
     property Stamina: integer read fStamina write fStamina;
     property Focus: integer read fFocus write fFocus;
     property Money: integer read fMoney write fMoney;
     property Clues: integer read fClues write fClues;
-    property MonsterTrophies: integer read fMonsterTrophies write fMonsterTrophies;
     property Stats[indx: integer]: integer read GetPlayerStat; // write AddItem;
     property Speed: integer write SetSpeed;
     property Sneak: integer write SetSneak;
@@ -72,6 +74,7 @@ type
     //property Hands: integer read fHands;
     procedure DrawCard(card_id: integer);
     procedure AddItem(var cards: TCommonItemCardDeck; id: integer);
+    procedure AddMonsterTrophies(mon_id: integer);
     procedure AssignInvestigator(inv: TInvestigator);
     //function Get_Item(indx: integer): integer;
     function RollADice(stat: integer): integer;
@@ -102,6 +105,7 @@ var
   i: integer;
 begin
   fCardsCount := 0;
+  fMonsterTrophiesCount := 0;
   fStamina := 0;
   fSanity := 0;
   fFocus := 0;
@@ -145,6 +149,13 @@ end;
 function TPlayer.GetPlayerCard(indx: integer): integer;
 begin
   GetPlayerCard := fCards[indx];
+
+end;
+
+function TPlayer.GetMonsterTrophies(indx: integer): integer;
+begin
+  GetMonsterTrophies := fMonsterTrophies[indx];
+
 end;
 
 function TPlayer.GetPlayerStat(indx: integer): integer;
@@ -219,6 +230,12 @@ begin
   fCardsCount := fCardsCount + 1;
   fCards[fCardsCount] := id;
   cards.DecCounter(cards.IndexOfCard(id));
+end;
+
+procedure TPlayer.AddMonsterTrophies(mon_id: integer);
+begin
+  fMonsterTrophies[fMonsterTrophiesCount] := mon_id;
+  fMonsterTrophiesCount := fMonsterTrophiesCount + 1;
 end;
 
 procedure TPlayer.AssignInvestigator(inv: TInvestigator);
@@ -370,7 +387,8 @@ begin
   if (grade = 2) and (clues >= param) then
     result := true;
 
-  if (grade = 3) and (fMonsterTrophies >= param) then
+  // TODO: correct check monstertrophies
+  if (grade = 3) and (fMonsterTrophies[1] >= param) then
     result := true;
 
   if (grade = 4) and (fSpellsCount >= param) then

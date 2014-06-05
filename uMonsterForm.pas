@@ -65,7 +65,7 @@ end;
 
 procedure TfrmMonster.btnEvadeClick(Sender: TObject);
 begin
-  if gPlayer.RollADice(ST_SNEAK + gMonster.fAwareness) > 0 then
+  if gPlayer.RollADice(gPlayer.Stats[ST_SNEAK] + gMonster.fAwareness) > 0 then
   begin
     gPlayer.evadedmosnters[1] := gMonster.fId;
     lst1.Items.Add('Ушел от моба!!');
@@ -77,10 +77,22 @@ end;
 
 procedure TfrmMonster.btnBattleClick(Sender: TObject);
 begin
-  if gPlayer.RollADice(ST_FIGHT + gMonster.fCmbtRate) >= gMonster.fToughness then
+  // Horror! check
+  if gPlayer.RollADice(gPlayer.Stats[ST_WILL] + gMonster.fHorrorRate) >= 1 then
   begin
-    gPlayer.evadedmosnters[1] := gMonster.fId;
+    lst1.Items.Add('Horror checked!!');
+  end
+  else
+  begin
+    gPlayer.Sanity := gPlayer.Sanity - gMonster.fHorrorDmg;
+    lst1.Items.Add('Игрок потерял разум: ' + IntToStr(gMonster.fHorrorDmg) + '!!');
+  end;
+
+  if gPlayer.RollADice(gPlayer.Stats[ST_FIGHT] + gMonster.fCmbtRate) >= gMonster.fToughness then
+  begin
+    gPlayer.AddMonsterTrophies(gMonster.fId);
     lst1.Items.Add('Убил моба!!');
+    lst1.Items.Add('Гирок получил монстр-трофеюшек!!');
   end
   else
     lst1.Items.Add('Игроку нанесено урона: ' + IntToStr(gMonster.fCmbtDmg) + '!!');
