@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, uMonster, uPlayer;
+  Dialogs, StdCtrls, ExtCtrls, uMonster, uPlayer, jpeg;
 
 type
   TfrmMonster = class(TForm)
@@ -18,6 +18,7 @@ type
     imgPlaCard1: TImage;
     imgPlaCard2: TImage;
     imgPlaCard3: TImage;
+    img1: TImage;
     procedure btnEvadeClick(Sender: TObject);
     procedure btnBattleClick(Sender: TObject);
     procedure imgMonsterClick(Sender: TObject);

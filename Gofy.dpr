@@ -15,7 +15,8 @@ uses
   uUseForm in 'uUseForm.pas' {frmUse},
   uMonster in 'uMonster.pas',
   uCardXML in 'uCardXML.pas',
-  uMonsterForm in 'uMonsterForm.pas' {frmMonster};
+  uMonsterForm in 'uMonsterForm.pas' {frmMonster},
+  uMythos in 'uMythos.pas';
 
 {$R *.res}
 

@@ -20,9 +20,9 @@ const
   CT_WEAPON = 1; // Оружие
   CT_TOME = 2; // Книга
   CT_SPELL = 3; // Заклинание
+  CT_SKILL = 4; // Навык
   CT_ALLY = 7; // Союзник
   CT_MYTHOS = 8; // Миф
-  CT_SKILL = 4; // Навык
   CT_COMMON_ITEM = 1; // Простые предметы (первая цифра в ID)
   CT_UNIQUE_ITEM = 2; // Уникальные предметы (первая цифра в ID)
   CT_ENCOUNTER = 6; // Контакт (первая цифра в ID)
@@ -37,6 +37,7 @@ const
   LOCATION_CARD_NUMBER = 20; // Число карт на каждую локацию
   COMMON_ITEMS_CARD_NUMBER = 30;
   NUMBER_OF_INVESTIGATORS = 49;
+  MYTHOS_CARDS_NUMBER = 30;
   MAX_PLAYER_ITEMS = 20;
   MONSTER_MAX = 50;
   ALLIES_MAX = 50;

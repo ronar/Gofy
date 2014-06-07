@@ -253,6 +253,7 @@ var
   //Unique_Items_Deck: TItemCardDeck;
   //Spells_Deck: TItemCardDeck;
   //Skills_Deck: TItemCardDeck;
+  Mythos_Deck: TMythosDeck;
   gInvestigators: TInvDeck;
   Monsters: TMonsterArray;//array [1..MONSTER_MAX] of TMonster;
   Arkham_Streets: array [1..NUMBER_OF_STREETS] of TStreet;
@@ -260,6 +261,7 @@ var
   Unique_Items_Count: integer = 0;
   Spells_Count: integer = 0;
   Skills_Count: integer = 0;
+  Mythos_Cards_Count: integer = 0;
   Investigators_Count: integer = 0;
   //Downtown_Count: integer = 0;
   Locations_Count: integer = 0;
@@ -331,7 +333,7 @@ begin
   case card_type of
     CT_COMMON_ITEM: begin
       // Загружаем все карты, находящиеся в каталоге
-      Common_Items_Count :=  Common_Items_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\CommonItems\\');
+      Common_Items_Count :=  Common_Items_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\');
     end; // CT_COMMON_ITEM
 
     CT_UNIQUE_ITEM: begin
@@ -367,9 +369,15 @@ begin
 
     end; // CT_ENCOUNTER
 
+    CT_MYTHOS: begin
+       Mythos_Cards_Count := Mythos_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\CardsData\Mythos\');
+    end; // CT_MYTHOS
+
+
     CT_INVESTIGATOR: begin
-      Investigators_Count := gInvestigators.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Investigators\\');
+      Investigators_Count := gInvestigators.FindCards(ExtractFilePath(Application.ExeName)+'\CardsData\Investigators\');
     end; // CT_INVESTIGATOR
+
 
   end;
 
@@ -442,6 +450,9 @@ begin
 
   // Загрузка карт контактов
   Load_Cards(CT_ENCOUNTER);
+
+  // Загрузка карт mythos
+  Load_Cards(CT_MYTHOS);
 
   // Загрузка карт investigators
   Load_Cards(CT_INVESTIGATOR);
@@ -541,6 +552,7 @@ begin
   //Unique_Items_Deck.Free;
   //Spells_Deck.Free;
   //Skills_Deck.Free;
+  Mythos_Deck.Free;
   gInvestigators.Free;
 
   for i := 1 to NUMBER_OF_STREETS do
@@ -566,6 +578,7 @@ begin
   //Unique_Items_Deck:= TItemCardDeck.Create(CT_UNIQUE_ITEM);
   //Spells_Deck:= TItemCardDeck.Create(CT_SPELL);
   //Skills_Deck:= TItemCardDeck.Create(CT_SKILL);
+  Mythos_Deck := TMythosDeck.Create(CT_MYTHOS);
   gInvestigators := TInvDeck.Create(CT_INVESTIGATOR);
 
   for i := 1 to NUMBER_OF_STREETS do
