@@ -222,11 +222,17 @@ type
   end;
 
 type
+  TGate = record
+    other_world: Integer;
+    modif: integer;
+    dimension: Integer;
+  end;
+
   TLocation = record
     lok_id: integer; // id of location (2100, 2200, 2300, etc..)
     lok_name: string;
     clues: integer; // Улики на локации
-    gate: integer; // Врата открытые на локации
+    gate: TGate; // Врата открытые на локации
     monsters: array [1..5] of integer;
     lok_mon_count: integer;
   end;
@@ -244,6 +250,7 @@ type
     function GetLokByID(id: integer): TLocation;
     procedure AddMonster(lok_id: integer; mob_id: integer);
     procedure AddClue(lok_id: integer; n: integer);
+    procedure AddGate(lok_id: integer; gate: TGate);
   end;
 
 var
@@ -269,6 +276,8 @@ var
   players: array [1..8] of TPlayer;
   gPlayer, gCurrentPlayer: TPlayer;
   current_player: integer;
+  gates: array [1..8] of TGate; 
+  gStatsMod: array [1..6] of integer;
   player_count: integer;
   path_to_exe: string;
   //monCount: integer;
@@ -293,6 +302,7 @@ var
   procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
   procedure ProcessNode(Node : PLLData; add_data: integer = 0);
   function LokIdToName(lok_id: integer): string;
+  function GetLokNameByID(id: integer): string;
   procedure ShowPlayerCards(pl: TPlayer; cur_cards: integer);
 
 implementation
@@ -312,7 +322,9 @@ begin
       begin
         fLok[n].lok_id := fId + 100 * n;
         fLok[n].clues := 0;
-        fLok[n].gate := 0;
+        fLok[n].gate.other_world := 0;
+        fLok[n].gate.modif := 0;
+        fLok[n].gate.dimension := 0;
         fLok[n].monsters[1] := 0;
         fLok[n].monsters[2] := 0;
         fLok[n].monsters[3] := 0;
@@ -430,6 +442,38 @@ begin
   gCurrentPlayer.Clues := 10; // Give 10 clues
   gCurrentPlayer.Money := 10; // Give 10$
   lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
+
+  gates[1].other_world := 141;
+  gates[1].modif := -1;
+  gates[1].dimension := GT_STAR;
+
+  gates[2].other_world := 161;
+  gates[2].modif := 0;
+  gates[2].dimension := GT_TRIANGLE;
+
+  gates[3].other_world := 111;
+  gates[3].modif := -3;
+  gates[3].dimension := GT_PLUS;
+
+  gates[4].other_world := 121;
+  gates[4].modif := -1;
+  gates[4].dimension := GT_DIAMOND;
+
+  gates[5].other_world := 151;
+  gates[5].modif := -2;
+  gates[5].dimension := GT_CIRCLE;
+
+  gates[6].other_world := 181;
+  gates[6].modif := 0;
+  gates[6].dimension := GT_SQUARE;
+
+  gates[7].other_world := 131;
+  gates[7].modif := 1;
+  gates[7].dimension := GT_SLASH;
+
+  gates[8].other_world := 171;
+  gates[8].modif := -2;
+  gates[8].dimension := GT_HEXAGON;
 
   for i := 1 to 8 do
     player_current_card[i] := 1;
@@ -689,7 +733,7 @@ begin
     //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
     if Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).monsters[1] > 0 then
       if MessageDlg('Care for battle with an awful monster?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-        ShowMessage('Let''s battle!')
+        btn2Click(Sender)
       else
         ShowMessage('Aah. Forget it.')
 
@@ -1253,6 +1297,16 @@ begin
   fLok[hon(lok_id)].clues := fLok[hon(lok_id)].clues + n;
 end;
 
+procedure TStreet.AddGate(lok_id: integer; gate: TGate);
+var
+  lokk: TLocation;
+begin
+  lokk := GetLokByID(lok_id);
+  lokk.gate.other_world := gate.other_world;
+  lokk.gate.modif := gate.modif;
+  lokk.gate.dimension := gate.dimension;
+end;
+
 procedure TfrmMain.btnChsInvClick(Sender: TObject);
 var
   i: integer;
@@ -1292,6 +1346,15 @@ begin
   for i := 1 to NUMBER_OF_STREETS do
     if StrToInt(aNeighborhoodsNames[i, 1]) = id then
       GetStreetNameByID := aNeighborhoodsNames[i, 2];
+end;
+
+function GetLokNameByID(id: integer): string;
+var
+  i: integer;
+begin
+  for i := 1 to NUMBER_OF_LOCATIONS do
+    if StrToInt(aLocationsNames[i, 1]) = id then
+      GetLokNameByID := aLocationsNames[i, 2];
 end;
 
 
@@ -1761,6 +1824,15 @@ begin
     PH_OTHER_WORLDS_ENCOUNTER: begin
     end;
     PH_MYTHOS: begin
+      // Open gate and spawn monster
+      Arkham_Streets[ton(Mythos_Deck.card[2].fGateSpawn)].AddGate(Mythos_Deck.card[2].fGateSpawn, gates[2]);
+      frmMain.lstLog.Items.Add('Появились ворота: ' + LokIdToName(Mythos_Deck.card[2].fGateSpawn));
+      Arkham_Streets[ton(Mythos_Deck.card[2].fGateSpawn)].AddMonster(Mythos_Deck.card[2].fGateSpawn, DrawMonsterCard(Monsters));
+      frmMain.lstLog.Items.Add('Появился монстр: ' + LokIdToName(Mythos_Deck.card[2].fGateSpawn));
+      // Spawn clue
+      Arkham_Streets[ton(Mythos_Deck.card[2].fClueSpawn)].AddClue(Mythos_Deck.card[2].fClueSpawn, 1);
+      frmMain.lstLog.Items.Add('Улика появилась: ' + LokIdToName(Mythos_Deck.card[2].fClueSpawn));
+
     end;
   end;
 {  case cbLocation.ItemIndex of

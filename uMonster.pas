@@ -108,10 +108,11 @@ begin
     Exit;
   end;
   DrawMonsterCard := monsters[monCount].fId;
-  ShuffleMonsterDeck(monsters);
+  //ShuffleMonsterDeck(monsters);
   monCount := monCount - 1;
 end;
 
+// TODO: Access violation
 procedure ShuffleMonsterDeck(var monsters: TMonsterArray);
 var
   i, r: integer;
@@ -121,9 +122,9 @@ begin
   for i := 1 to monCount do
   begin
     temp := monsters[i];
-    r := random(monCount);
-    monsters[i] := monsters[r+1];
-    monsters[r+1] := temp;
+    r := random(monCount)+1;
+    monsters[i] := monsters[r];
+    monsters[r] := temp;
   end;
 end;
 

@@ -89,7 +89,7 @@ begin
     lst1.Items.Add('Игрок потерял разум: ' + IntToStr(gMonster.fHorrorDmg) + '!!');
   end;
 
-  if gPlayer.RollADice(gPlayer.Stats[ST_FIGHT] + gMonster.fCmbtRate) >= gMonster.fToughness then
+  if gPlayer.RollADice(gPlayer.Stats[ST_FIGHT] + gMonster.fCmbtRate + gPlayer.BonusWeapon) >= gMonster.fToughness then
   begin
     gPlayer.AddMonsterTrophies(gMonster.fId);
     lst1.Items.Add('Убил моба!!');

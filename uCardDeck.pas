@@ -614,7 +614,7 @@ end;
 
 function TMythosDeck.DrawCard: Integer;
 begin
-  //DrawCard := fCards[fCount].fId;
+  DrawCard := fCards[2].fId;
   //Shuffle;
 end;
 

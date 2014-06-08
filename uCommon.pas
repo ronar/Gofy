@@ -27,6 +27,16 @@ const
   CT_UNIQUE_ITEM = 2; // Уникальные предметы (первая цифра в ID)
   CT_ENCOUNTER = 6; // Контакт (первая цифра в ID)
   CT_INVESTIGATOR = 9;
+  GT_CIRCLE = 1;
+  GT_CRESCENT = 2;
+  GT_DIAMOND = 3;
+  GT_HEXAGON = 4;
+  GT_PLUS = 5;
+  GT_SLASH = 6;
+  GT_SQUARE = 7;
+  GT_STAR = 8;
+  GT_TRIANGLE = 9;
+
   // Константы Действий
   AT_SPEC = 2;
   AT_WATCH_BUY = 3;

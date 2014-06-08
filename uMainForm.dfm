@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
-  Left = 521
-  Top = 203
+  Left = 490
+  Top = 146
   Width = 1356
-  Height = 728
+  Height = 831
   Caption = 'frmMain'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -2099,8 +2099,8 @@ object frmMain: TfrmMain
   end
   object pgc1: TPageControl
     Left = 0
-    Top = 497
-    Width = 1323
+    Top = 505
+    Width = 1340
     Height = 87
     ActivePage = ts1
     Align = alBottom
@@ -2151,7 +2151,7 @@ object frmMain: TfrmMain
       object pnl1: TPanel
         Left = 0
         Top = 31
-        Width = 1315
+        Width = 1332
         Height = 28
         Align = alBottom
         TabOrder = 0
@@ -2208,7 +2208,7 @@ object frmMain: TfrmMain
           ParentFont = False
         end
         object img1: TImage
-          Left = 1276
+          Left = 1293
           Top = 1
           Width = 38
           Height = 26
@@ -2747,8 +2747,8 @@ object frmMain: TfrmMain
   end
   object pnl2: TPanel
     Left = 0
-    Top = 584
-    Width = 1323
+    Top = 592
+    Width = 1340
     Height = 200
     Align = alBottom
     TabOrder = 20
@@ -5008,7 +5008,7 @@ object frmMain: TfrmMain
       TabOrder = 1
     end
     object grp4: TGroupBox
-      Left = 822
+      Left = 839
       Top = 1
       Width = 500
       Height = 198

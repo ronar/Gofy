@@ -45,7 +45,7 @@ type
     function IsCursed: boolean;
     procedure Curse(b: boolean);
   public
-    active_cards: array [1..4] of integer; // i.e. on hands
+    active_cards: array [1..4] of integer; // i.e. on hands (store id's)
     hands_taken: integer;
     evadedmosnters: array [1..5] of integer; // id of mobs which player succesfully evaded
     constructor Create(var init_stats: array of integer; first_player: boolean);
@@ -89,8 +89,9 @@ type
     procedure GetItems; // Copy investigator's items to player
     procedure TakeWeapon(item1: integer); // Take choosen card to hands
     procedure DropWeapon; // Take choosen card to hands
-    procedure activate_item(item_id: Integer);
-    function CardBonus(stat: integer): Integer;
+    procedure activate_item(item_id: Integer); // Activate weapon
+    function CardBonus(stat: integer): Integer; // Bonuses from cards?
+    function BonusWeapon: Integer; // Bonuses from weapon
     //procedure
     //property Speed: integer read Stats[1] write Stats[1];
   end;
@@ -520,6 +521,19 @@ begin
     ST_LORE:;
     ST_LUCK:;
   end;
+end;
+
+function TPlayer.BonusWeapon: Integer; // Bonuses from weapon
+var
+  i, bonus: Integer;
+begin
+  bonus := 0;
+  for i := 1 to 4 do
+    if active_cards[i] <> 0 then
+      bonus := bonus + Common_Items_Deck.GetCardByID(fCards[i]).prm_value
+    else
+      Break;
+  Result := bonus;
 end;
 
 end.
