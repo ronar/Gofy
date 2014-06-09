@@ -69,10 +69,15 @@ begin
   if gPlayer.RollADice(gPlayer.Stats[ST_SNEAK] + gMonster.fAwareness) > 0 then
   begin
     gPlayer.evadedmosnters[1] := gMonster.fId;
-    lst1.Items.Add('Ушел от моба!!');
+    frmMain.lstLog.Items.Add('Ушел от моба!!');
+    close;
   end
   else
+  begin
     lst1.Items.Add('Не ушел от моба!!');
+    lst1.Items.Add('Fight!! *играет музыка из MK*');
+    btnBattleClick(sender);
+  end;
 
 end;
 
@@ -96,7 +101,11 @@ begin
     lst1.Items.Add('Гирок получил монстр-трофеюшек!!');
   end
   else
+  begin
+    gPlayer.Stamina := gPlayer.Stamina - gMonster.fCmbtDmg;
     lst1.Items.Add('Игроку нанесено урона: ' + IntToStr(gMonster.fCmbtDmg) + '!!');
+
+  end;
 
 end;
 

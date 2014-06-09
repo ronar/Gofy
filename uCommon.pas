@@ -403,7 +403,29 @@ const
 
 type
   StrDataArray = array [1..10] of string;
+  TGate = record
+    other_world: Integer;
+    modif: integer;
+    dimension: Integer;
+  end;
+
+  function hon(num: integer): integer; // hundredth of number
+  function ton(num: integer): integer; // thousandth of number
 
 implementation
+
+function hon(num: integer): integer; // hundredth of number
+var
+  tmp: integer;
+begin
+  result := (num mod 1000) div 100;
+end;
+
+function ton(num: integer): integer; // thousandth of number
+var
+  tmp: integer;
+begin
+  result := num div 1000;
+end;
 
 end.

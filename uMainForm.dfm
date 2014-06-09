@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 490
-  Top = 146
+  Left = 408
+  Top = 133
   Width = 1356
   Height = 831
   Caption = 'frmMain'
@@ -5486,6 +5486,15 @@ object frmMain: TfrmMain
     Caption = #1042#1079#1103#1090#1100' '#1086#1088#1091#1078#1080#1077' '#1074' '#1088#1091#1082#1091
     TabOrder = 25
     OnClick = btnTakeWeaponClick
+  end
+  object btn16: TButton
+    Left = 312
+    Top = 216
+    Width = 75
+    Height = 25
+    Caption = 'Continue'
+    TabOrder = 26
+    OnClick = btn16Click
   end
   object xmldoc1: TXMLDocument
     Left = 320

@@ -16,7 +16,8 @@ uses
   uMonster in 'uMonster.pas',
   uCardXML in 'uCardXML.pas',
   uMonsterForm in 'uMonsterForm.pas' {frmMonster},
-  uMythos in 'uMythos.pas';
+  uMythos in 'uMythos.pas',
+  uStreet in 'uStreet.pas';
 
 {$R *.res}
 

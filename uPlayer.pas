@@ -3,7 +3,7 @@ unit uPlayer;
 interface
 uses
   SysUtils, Dialogs, uCardDeck, uChsLok, uInvestigator, uCommon, ExtCtrls,
-  Controls;
+  Controls, uStreet;
 
 type
   TPlayer = class
@@ -85,7 +85,7 @@ type
     function CheckAvailability(grade: integer; param: integer): boolean;
     function HasItem(ID: integer): boolean;
     procedure ChangeSkills(x1: integer; x2: integer; x3: integer);
-    procedure MoveToLocation(id_lok: integer);
+    procedure MoveToLocation(from_lok: TLocation; id_lok: integer);
     procedure GetItems; // Copy investigator's items to player
     procedure TakeWeapon(item1: integer); // Take choosen card to hands
     procedure DropWeapon; // Take choosen card to hands
@@ -433,10 +433,23 @@ begin
 
 end;
 
-procedure TPlayer.MoveToLocation(id_lok: integer);
+procedure TPlayer.MoveToLocation(from_lok: TLocation; id_lok: integer);
+var
+  i, j: integer;
+  num_of_evaded_mobs: integer;
 begin
-  fLocation := id_lok;
-  fNeighborhood := (id_lok div 1000) * 1000; // ?
+  num_of_evaded_mobs := 0;
+  for i := 1 to 5 do
+    if evadedmosnters[i] <> 0 then
+      num_of_evaded_mobs := num_of_evaded_mobs + 1;
+
+  if num_of_evaded_mobs <> from_lok.lok_mon_count then
+    ShowMessage('Нельзя сменить локацию! Монстры есть от которых нужно уйти или победить.')
+  else
+  begin
+    fLocation := id_lok;
+    fNeighborhood := (id_lok div 1000) * 1000; // ?
+  end;
 end;
 
 procedure TPlayer.GetItems;

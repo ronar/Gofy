@@ -612,6 +612,7 @@ begin
 end;
 
 
+// TODO: Correct number of drawn card
 function TMythosDeck.DrawCard: Integer;
 begin
   DrawCard := fCards[2].fId;

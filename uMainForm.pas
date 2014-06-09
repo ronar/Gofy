@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, uPlayer, uCardDeck, Choise,
-  uCommon, uMonster, xmldom, XMLIntf, msxmldom, XMLDoc, uCardXML, Spin;
+  uCommon, uMonster, xmldom, XMLIntf, msxmldom, XMLDoc, uCardXML, Spin, uStreet;
 
 type
   TfrmMain = class(TForm)
@@ -173,6 +173,7 @@ type
     btn1: TButton;
     btn2: TButton;
     btnTakeWeapon: TButton;
+    btn16: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -215,42 +216,11 @@ type
     procedure btn1Click(Sender: TObject);
     procedure btn2Click(Sender: TObject);
     procedure btnTakeWeaponClick(Sender: TObject);
+    procedure btn16Click(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
-  end;
-
-type
-  TGate = record
-    other_world: Integer;
-    modif: integer;
-    dimension: Integer;
-  end;
-
-  TLocation = record
-    lok_id: integer; // id of location (2100, 2200, 2300, etc..)
-    lok_name: string;
-    clues: integer; // Улики на локации
-    gate: TGate; // Врата открытые на локации
-    monsters: array [1..5] of integer;
-    lok_mon_count: integer;
-  end;
-
-  TStreet = class
-  private
-    fId: integer; // id of streets (1000, 2000, 3000, etc..)
-    fLok: array [1..3] of TLocation;
-    fDeck: TLocationCardsDeck;
-    function GetDeck: TLocationCardsDeck;
-  public
-    constructor Create(street_id: integer);
-    property StreetId: integer read fId write fId;
-    property Deck: TLocationCardsDeck read GetDeck;
-    function GetLokByID(id: integer): TLocation;
-    procedure AddMonster(lok_id: integer; mob_id: integer);
-    procedure AddClue(lok_id: integer; n: integer);
-    procedure AddGate(lok_id: integer; gate: TGate);
   end;
 
 var
@@ -276,7 +246,7 @@ var
   players: array [1..8] of TPlayer;
   gPlayer, gCurrentPlayer: TPlayer;
   current_player: integer;
-  gates: array [1..8] of TGate; 
+  gates: array [1..8] of TGate;
   gStatsMod: array [1..6] of integer;
   player_count: integer;
   path_to_exe: string;
@@ -287,12 +257,7 @@ var
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; card: TLocationCard);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
-  function GetLokIDByName(lok_name: string): integer; // Получение ID локации по названию
-  function GetStreetIDByName(street_name: string): integer;
-  function GetStreetIndxByLokID(id: integer): integer; // Searches the array for location that matches the id param
-  function GetStreetNameByID(id: integer): string;
-  function hon(num: integer): integer; // hundredth of number
-  function ton(num: integer): integer; // thousandth of number
+
   //function AdditionalChecks(player: TPlayer; stat: integer): boolean;
   //procedure XML2Tree(head: PMyNode;{tree   : TTreeView;} XMLDoc : TXMLDocument; file_name: string);
   function ProcessCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): boolean;
@@ -311,31 +276,7 @@ uses uChsLok, Math,  uTradeForm, uUseForm, uInvChsForm, uMonsterForm;
 
 {$R *.dfm}
 
-constructor TStreet.Create(street_id: integer);
-var
-  n: integer;
-begin
-  //for i := 1 to NUMBER_OF_STREETS do
-  begin
-      fId := street_id;
-      for n := 1 to 3 do
-      begin
-        fLok[n].lok_id := fId + 100 * n;
-        fLok[n].clues := 0;
-        fLok[n].gate.other_world := 0;
-        fLok[n].gate.modif := 0;
-        fLok[n].gate.dimension := 0;
-        fLok[n].monsters[1] := 0;
-        fLok[n].monsters[2] := 0;
-        fLok[n].monsters[3] := 0;
-        fLok[n].monsters[4] := 0;
-        fLok[n].monsters[5] := 0;
-        fLok[n].lok_mon_count := 0;
-    end;
-    fDeck := TLocationCardsDeck.Create;
 
-  end;
-end;
 
 // Загрузка данных в карты из файла
 procedure Load_Cards(card_type: integer);
@@ -368,15 +309,15 @@ begin
     CT_ENCOUNTER: begin
       // Loading cards for diff. neighborhoods
       { TODO :  Implement auto load streets, not by explicit index }
-      Arkham_Streets[1].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Northside\');
-      Arkham_Streets[2].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Downtown\');
-      Arkham_Streets[3].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Easttown\');
-      Arkham_Streets[4].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Rivertown\');
-      Arkham_Streets[5].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Merchant District\');
-      Arkham_Streets[6].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\French Hill\');
-      Arkham_Streets[7].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Miskatonic University\');
-      Arkham_Streets[8].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Southside\');
-      Arkham_Streets[9].fDeck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Uptown\');
+      Arkham_Streets[1].Deck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Northside\');
+      Arkham_Streets[2].Deck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Downtown\');
+      Arkham_Streets[3].Deck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Easttown\');
+      Arkham_Streets[4].Deck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Rivertown\');
+      Arkham_Streets[5].Deck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Merchant District\');
+      Arkham_Streets[6].Deck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\French Hill\');
+      Arkham_Streets[7].Deck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Miskatonic University\');
+      Arkham_Streets[8].Deck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Southside\');
+      Arkham_Streets[9].Deck.FindCards(ExtractFilePath(Application.ExeName)+'CardsData\Locations\Uptown\');
       //Arkham_Streets[5].mDeck.Shuffle;
 
     end; // CT_ENCOUNTER
@@ -578,7 +519,7 @@ var
 begin
   mob_id := DrawMonsterCard(monsters);
   ShowMessage(IntToStr(mob_id));
-  Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, mob_id);
+  Arkham_Streets[ton(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, mob_id);
  //Arkham_Streets[GetLokNumByID(gCurrentPlayer.Location)].monsters[1] := monsters[1].id;
 end;
 
@@ -721,21 +662,26 @@ begin
 end;
 
 procedure TfrmMain.btnMoveToLokClick(Sender: TObject);
+var
+  i: integer;
+  pl_lok: TLocation;
 begin
+  pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
   if 1=1{gCurrentPhase = PH_MOVE} then
   begin
-    gCurrentPlayer.MoveToLocation(GetLokIDByName(cbLocation.Text));
-    if Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).clues > 0 then
+    gCurrentPlayer.MoveToLocation(pl_lok, GetLokIDByName(cbLocation.Text));
+    if Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).clues > 0 then
     begin
       gCurrentPlayer.Clues := gCurrentPlayer.Clues + 1; // Сбор улик :)
       ShowMessage('Игрок нашел улики! Аааа-а-аа-аа-ааа супер круто. *Игрок бегает по-кругу в порывах радости.*');
     end;
     //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
-    if Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).monsters[1] > 0 then
-      if MessageDlg('Care for battle with an awful monster?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-        btn2Click(Sender)
-      else
-        ShowMessage('Aah. Forget it.')
+    for i := 1 to Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).lok_mon_count do
+      if Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).monsters[1] > 0 then
+      //if MessageDlg('Care for battle with an awful monster?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+        btn2Click(Sender);
+      //else
+        //ShowMessage('Aah. Forget it.')
 
       //gCurrentPlayer.Clues := gCurrentPlayer.Clues + 1; // Сбор улик :)
 
@@ -749,7 +695,7 @@ end;
 
 procedure TfrmMain.btnShuffleClick(Sender: TObject);
 begin
-  Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.Shuffle;
+  Arkham_Streets[ton(gCurrentPlayer.Location)].deck.Shuffle;
 end;
 
 // Проверка выполнилось ли условие на карте
@@ -1036,7 +982,7 @@ begin
       frmMain.lstLog.Items.Add('Игрок вышел на улицу (overlapping).');
     end; // case 20
     21: begin // Busted
-      gCurrentPlayer.MoveToLocation(3200);
+      //gCurrentPlayer.MoveToLocation(3200);
       frmMain.lstLog.Items.Add('Игрок взят в полицайку.');
     end; // case 21
     22: begin // Blessed
@@ -1078,7 +1024,7 @@ begin
     32: begin // Encounter
       //TODO: top card in deck, not 7
       frmMain.lstLog.Items.Add('Игрок вступает в контакт');
-      Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.cards[7, hon(gCurrentPlayer.Location)]);
+      Encounter(gCurrentPlayer, Arkham_Streets[ton(gCurrentPlayer.Location)].deck.cards[7, hon(gCurrentPlayer.Location)]);
     end; // case 32
     34: begin //
     
@@ -1221,10 +1167,10 @@ begin
             gCurrentPlayer.AddItem(Common_Items_Deck, drawn_items[3]);
         end
         else
-          Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.cards[seCrdNum.Value, hon(gCurrentPlayer.Location)]);
+          Encounter(gCurrentPlayer, Arkham_Streets[ton(gCurrentPlayer.Location)].deck.cards[seCrdNum.Value, hon(gCurrentPlayer.Location)]);
       end; // 4300
       //else Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.DrawCard(hon(gCurrentPlayer.Location)));
-      else Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.cards[seCrdNum.Value, hon(gCurrentPlayer.Location)]); {DrawCard(hon(gCurrentPlayer.Location)));}
+      else Encounter(gCurrentPlayer, Arkham_Streets[ton(gCurrentPlayer.Location)].deck.cards[seCrdNum.Value, hon(gCurrentPlayer.Location)]); {DrawCard(hon(gCurrentPlayer.Location)));}
     end;
 
     //Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.Shuffle;
@@ -1244,68 +1190,10 @@ begin
   end;
 end;
 
-// Берет назв. локи из массива LocationsNames
-function GetLokIDByName(lok_name: string): integer;
-var
-  i: integer;
-begin
-  for i := 1 to NUMBER_OF_LOCATIONS do
-    if ((aLocationsNames[i, 2] = lok_name) AND (StrToInt(aLocationsNames[i, 1]) > 1000)) then
-    begin
-      result := StrToInt(aLocationsNames[i, 1]);
-      break;
-    end
-    else
-      result := 1100;
-end;
 
-function GetStreetIDByName(street_name: string): integer;
-var
-  i: integer;
-begin
-  for i := 1 to NUMBER_OF_LOCATIONS do
-    if ((aLocationsNames[i, 2] = street_name) AND (StrToInt(aLocationsNames[i, 1]) > 1000)) then
-    begin
-      result := StrToInt(aLocationsNames[i, 1]);
-      break;
-    end
-    else
-      result := 1100;
-end;
 
-function TStreet.GetDeck: TLocationCardsDeck;
-begin
-  result := fDeck;
-end;
 
-function TStreet.GetLokByID(id: integer): TLocation;
-var
-  i: integer;
-  ln: integer;
-begin
-  ln := GetStreetIndxByLokID( ton(id) * 1000 );
-  result := Arkham_Streets[ln].fLok[hon(id)];
-end;
 
-procedure TStreet.AddMonster(lok_id: integer; mob_id: integer);
-begin
-  fLok[hon(lok_id)].monsters[1] := mob_id;
-end;
-
-procedure TStreet.AddClue(lok_id: integer; n: integer);
-begin
-  fLok[hon(lok_id)].clues := fLok[hon(lok_id)].clues + n;
-end;
-
-procedure TStreet.AddGate(lok_id: integer; gate: TGate);
-var
-  lokk: TLocation;
-begin
-  lokk := GetLokByID(lok_id);
-  lokk.gate.other_world := gate.other_world;
-  lokk.gate.modif := gate.modif;
-  lokk.gate.dimension := gate.dimension;
-end;
 
 procedure TfrmMain.btnChsInvClick(Sender: TObject);
 var
@@ -1324,29 +1212,7 @@ begin
 
 end;
 
-// Searches the array for location that matches the id param
-function GetStreetIndxByLokID(id: integer): integer;
-var
-  i: integer;
-  st: integer;
-begin
-  st := ton(id) * 1000;
-  for i := 1 to NUMBER_OF_STREETS do
-    if Arkham_Streets[i].fId = st then
-    begin
-      result := i;
-      break;
-    end;
-end;
 
-function GetStreetNameByID(id: integer): string;
-var
-  i: integer;
-begin
-  for i := 1 to NUMBER_OF_STREETS do
-    if StrToInt(aNeighborhoodsNames[i, 1]) = id then
-      GetStreetNameByID := aNeighborhoodsNames[i, 2];
-end;
 
 function GetLokNameByID(id: integer): string;
 var
@@ -1358,23 +1224,11 @@ begin
 end;
 
 
-function hon(num: integer): integer; // hundredth of number
-var
-  tmp: integer;
-begin
-  result := (num mod 1000) div 100;
-end;
 
-function ton(num: integer): integer; // thousandth of number
-var
-  tmp: integer;
-begin
-  result := num div 1000;
-end;
 
 procedure TfrmMain.btnAddClueClick(Sender: TObject);
 begin
-  Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].AddClue(gCurrentPlayer.Location, 1);
+  Arkham_Streets[ton(gCurrentPlayer.Location)].AddClue(gCurrentPlayer.Location, 1);
 end;
 
 procedure TfrmMain.edStatSpeedChange(Sender: TObject);
@@ -1824,8 +1678,9 @@ begin
     PH_OTHER_WORLDS_ENCOUNTER: begin
     end;
     PH_MYTHOS: begin
+      randomize;
       // Open gate and spawn monster
-      Arkham_Streets[ton(Mythos_Deck.card[2].fGateSpawn)].AddGate(Mythos_Deck.card[2].fGateSpawn, gates[2]);
+      Arkham_Streets[ton(Mythos_Deck.card[2].fGateSpawn)].AddGate(Mythos_Deck.card[2].fGateSpawn, gates[random(8)+1]);
       frmMain.lstLog.Items.Add('Появились ворота: ' + LokIdToName(Mythos_Deck.card[2].fGateSpawn));
       Arkham_Streets[ton(Mythos_Deck.card[2].fGateSpawn)].AddMonster(Mythos_Deck.card[2].fGateSpawn, DrawMonsterCard(Monsters));
       frmMain.lstLog.Items.Add('Появился монстр: ' + LokIdToName(Mythos_Deck.card[2].fGateSpawn));
@@ -1916,6 +1771,13 @@ begin
 
   //ShowMessage(IntToStr(gCurrentPlayer.active_cards[1]) + ' '+ IntToStr(gCurrentPlayer.active_cards[2]) + ' ' + IntToStr(gCurrentPlayer.active_cards[3]));
 
+end;
+
+procedure TfrmMain.btn16Click(Sender: TObject);
+begin
+  gCurrentPhase := gCurrentPhase + 1;
+  if gCurrentPhase > 5 then
+    gCurrentPhase := 1;
 end;
 
 end.
