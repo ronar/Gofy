@@ -710,7 +710,7 @@ begin
     end;
     2: begin // Проверка скила
       frmMain.lstLog.Items.Add('Проверяется навык ' + IntToStr(prm) + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(n) + ')..');
-      skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n); // Choise - номер скилла
+      skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n, 1); // Choise - номер скилла
       { TODO -oRonar : Choise is in dependence with structure of construction
         of program. In another words if indices have been changed, program
         will be broken }
@@ -773,7 +773,7 @@ begin
   ProcessMultiCondition := 0;
   // Проверка скила
   frmMain.lstLog.Items.Add('Проверяется навык ' + IntToStr(prm) + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(n) + ')..');
-  skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n); // prm - order num of skill (1 - speed, ...)
+  skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n, 1); // prm - order num of skill (1 - speed, ...)
   frmMain.lstLog.Items.Add('Проверка навыка ' + IntToStr(prm) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
   ProcessMultiCondition := skill_test;
 end;
@@ -1662,6 +1662,8 @@ begin
 end;
 
 procedure TfrmMain.btnProcessClick(Sender: TObject);
+var
+  mythos_card_num: integer;
 begin
  case gCurrentPhase of
     PH_UPKEEP: begin
@@ -1679,14 +1681,15 @@ begin
     end;
     PH_MYTHOS: begin
       randomize;
+      mythos_card_num := random(Mythos_Cards_Count) + 2;
       // Open gate and spawn monster
-      Arkham_Streets[ton(Mythos_Deck.card[2].fGateSpawn)].AddGate(Mythos_Deck.card[2].fGateSpawn, gates[random(8)+1]);
-      frmMain.lstLog.Items.Add('Появились ворота: ' + LokIdToName(Mythos_Deck.card[2].fGateSpawn));
-      Arkham_Streets[ton(Mythos_Deck.card[2].fGateSpawn)].AddMonster(Mythos_Deck.card[2].fGateSpawn, DrawMonsterCard(Monsters));
-      frmMain.lstLog.Items.Add('Появился монстр: ' + LokIdToName(Mythos_Deck.card[2].fGateSpawn));
+      Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fGateSpawn)].AddGate(Mythos_Deck.card[mythos_card_num].fGateSpawn, gates[random(8)+1]);
+      frmMain.lstLog.Items.Add('Появились ворота: ' + LokIdToName(Mythos_Deck.card[mythos_card_num].fGateSpawn));
+      Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fGateSpawn)].AddMonster(Mythos_Deck.card[mythos_card_num].fGateSpawn, DrawMonsterCard(Monsters));
+      frmMain.lstLog.Items.Add('Появился монстр: ' + LokIdToName(Mythos_Deck.card[mythos_card_num].fGateSpawn));
       // Spawn clue
-      Arkham_Streets[ton(Mythos_Deck.card[2].fClueSpawn)].AddClue(Mythos_Deck.card[2].fClueSpawn, 1);
-      frmMain.lstLog.Items.Add('Улика появилась: ' + LokIdToName(Mythos_Deck.card[2].fClueSpawn));
+      Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fClueSpawn)].AddClue(Mythos_Deck.card[mythos_card_num].fClueSpawn, 1);
+      frmMain.lstLog.Items.Add('Улика появилась: ' + LokIdToName(Mythos_Deck.card[mythos_card_num].fClueSpawn));
 
     end;
   end;

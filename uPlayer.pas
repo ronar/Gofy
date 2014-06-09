@@ -77,7 +77,7 @@ type
     procedure AddMonsterTrophies(mon_id: integer);
     procedure AssignInvestigator(inv: TInvestigator);
     //function Get_Item(indx: integer): integer;
-    function RollADice(stat: integer): integer;
+    function RollADice(stat: integer; difficulty: integer): integer;
     function Act_Condition(Cond: integer; Choise: integer; N:integer; min: integer; max: integer): boolean;
     procedure EvtMoveToLocation(c_N: integer; c_data: string);
     procedure Encounter(var Locations_Deck: TCardDeck);
@@ -252,7 +252,7 @@ end;
 
 // Бросок кубика (Возвращает число успехов, 0 - провал)
 // Rename this func to SkillCheck
-function TPlayer.RollADice(stat: integer): integer; // stat - exactly value of stat
+function TPlayer.RollADice(stat: integer; difficulty: integer): integer; // stat - exactly value of stat
 var
   r, i, s: integer;
   Successes: integer;
@@ -260,71 +260,78 @@ begin
   randomize;
   Successes := 0;
   s := stat;
-  while (Successes < 1) do
+  i := 0;
+  while (Successes < difficulty) do
   begin
-  // Deprecated
-  frmMain.imgDR1.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  frmMain.imgDR2.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  frmMain.imgDR3.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  frmMain.imgDR4.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  frmMain.imgDR5.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  frmMain.imgDR6.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  frmMain.imgDR7.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  frmMain.imgDR8.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  frmMain.imgDR9.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  frmMain.imgDR10.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  frmMain.imgDR11.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  frmMain.imgDR12.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-  // !Deprecated
-  //RollADice := random(6)+1;
-    //pl := TPlayer.Create(False);
-  if s > 0 then
-  begin
-    for i:=1 to s do
-    begin
-      Roll_results[i]:=random(6)+1;
-      // Deprecated
-      case Roll_results[i] of
-      1: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\1.jpg');
-      2: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\2.jpg');
-      3: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\3.jpg');
-      4: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\4.jpg');
-      5: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\5.jpg');
-      6: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\6.jpg');
-      end;
-      // !Deprecated
+    // Deprecated
+    frmMain.imgDR1.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    frmMain.imgDR2.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    frmMain.imgDR3.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    frmMain.imgDR4.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    frmMain.imgDR5.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    frmMain.imgDR6.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    frmMain.imgDR7.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    frmMain.imgDR8.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    frmMain.imgDR9.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    frmMain.imgDR10.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    frmMain.imgDR11.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    frmMain.imgDR12.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    // !Deprecated
+    //RollADice := random(6)+1;
+      //pl := TPlayer.Create(False);
 
-      if Roll_results[i]>=5 then
+    if s > 0 then
+    begin
+      while i < s do
       begin
-        Successes := Successes + 1;
-        //broskub.usp:=true;
-        //broskub.kolusp:=broskub.kolusp+1;
-        //if broskub.resbroskub[i]=6 then broskub.kolusp6:=broskub.kolusp6+1;
+        i := i + 1;
+        Roll_results[i]:=random(6)+1;
+        // Deprecated
+        case Roll_results[i] of
+        1: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\1.jpg');
+        2: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\2.jpg');
+        3: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\3.jpg');
+        4: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\4.jpg');
+        5: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\5.jpg');
+        6: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\6.jpg');
+        end;
+        // !Deprecated
+
+        if Roll_results[i]>=5 then
+        begin
+          Successes := Successes + 1;
+          //broskub.usp:=true;
+          //broskub.kolusp:=broskub.kolusp+1;
+          //if broskub.resbroskub[i]=6 then broskub.kolusp6:=broskub.kolusp6+1;
+        end;
+
       end;
     end;
-  end;
 
-  RollADice := Successes; { TODO : Добавить сложность броска }
-  if Successes < 1 then
-  begin
-    if MessageDlg('Reroll (using one clue)?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+
+    RollADice := Successes; { TODO : Добавить сложность броска }
+    if Successes < difficulty then
     begin
-      break;
-    end
-    else
-    begin
-      if fClues > 0 then
-        fClues := fClues - 1
+      if MessageDlg('Reroll (using one clue)?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+      begin
+        break;
+      end
       else
       begin
-        ShowMessage('No clues!');
-        break;
+        if fClues > 0 then
+          fClues := fClues - 1
+        else
+        begin
+          ShowMessage('No clues!');
+          break;
+        end;
+        s := s + 1;
+        if s < 1 then
+          s := 1;
       end;
-      s := 1;
-    end;
-  end
-  else
-    break;
+    end
+    else
+      break;
   end; // While
 end;
 
