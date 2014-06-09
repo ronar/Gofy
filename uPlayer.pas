@@ -29,7 +29,7 @@ type
     fInvestigator: TInvestigator;
     fPlNumber: integer;
     fHands: Integer; // Number of hands :)
-    Roll_results: array [1..12] of integer;
+    fRollResults: array [1..20] of integer;
     function GetPlayerCard(indx: integer): integer;
     function GetPlayerStat(indx: integer): integer;
     function GetMonsterTrophies(indx: integer): integer;
@@ -285,19 +285,22 @@ begin
       while i < s do
       begin
         i := i + 1;
-        Roll_results[i]:=random(6)+1;
+        fRollResults[i]:=random(6)+1;
         // Deprecated
-        case Roll_results[i] of
-        1: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\1.jpg');
-        2: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\2.jpg');
-        3: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\3.jpg');
-        4: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\4.jpg');
-        5: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\5.jpg');
-        6: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\6.jpg');
+        if i < 13 then
+        begin
+          case fRollResults[i] of
+          1: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\1.jpg');
+          2: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\2.jpg');
+          3: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\3.jpg');
+          4: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\4.jpg');
+          5: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\5.jpg');
+          6: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\6.jpg');
+          end;
         end;
         // !Deprecated
 
-        if Roll_results[i]>=5 then
+        if fRollResults[i]>=5 then
         begin
           Successes := Successes + 1;
           //broskub.usp:=true;
