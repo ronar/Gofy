@@ -193,8 +193,8 @@ end;
 
 function TCommonItemCardDeck.DrawCard: Integer;
 begin
-  DrawCard := fCards[fCount].id;
   Shuffle;
+  DrawCard := fCards[fCount].id;
 end;
 
 // Поиск файлов в картами
@@ -262,7 +262,7 @@ begin
   for i := 1 to fCount do
   begin
     temp := fCards[i];
-    r := random(Count);
+    r := random(fCount);
     fCards[i] := fCards[r+1];
     fCards[r+1] := temp;
   end;

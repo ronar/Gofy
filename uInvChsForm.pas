@@ -204,7 +204,7 @@ begin
   lbLore1.Caption := IntToStr(players[1].Investigator.stat[5]);
   lbLuck1.Caption := IntToStr(players[1].Investigator.stat[6]);
 
-  btnAdd2ndPlayer.Enabled := True;  
+  //btnAdd2ndPlayer.Enabled := True;  
 end;
 
 procedure Draw_Skills(skill: string);
@@ -281,44 +281,45 @@ end;
 procedure TfrmInv.btnAdd2ndPlayerClick(Sender: TObject);
 begin
   player_count := 2;
-  cbInvPlayer2.Enabled := True;
-  edtPlayer2.Enabled := True;
+  lblPlNum.Caption := IntToStr(player_count);
+  //cbInvPlayer2.Enabled := True;
+  //edtPlayer2.Enabled := True;
 end;
 
 procedure TfrmInv.btnAdd3rdPlayerClick(Sender: TObject);
 begin
-  cbInvPlayer3.Enabled := False;
-  edtPlayer3.Enabled := False;
+  //cbInvPlayer3.Enabled := False;
+  //edtPlayer3.Enabled := False;
 end;
 
 procedure TfrmInv.btnAdd4thPlayerClick(Sender: TObject);
 begin
-  cbInvPlayer4.Enabled := False;
-  edtPlayer4.Enabled := False;
+  //cbInvPlayer4.Enabled := False;
+  //edtPlayer4.Enabled := False;
 end;
 
 procedure TfrmInv.btnAdd5thPlayerClick(Sender: TObject);
 begin
-  cbInvPlayer5.Enabled := False;
-  edtPlayer5.Enabled := False;
+  //cbInvPlayer5.Enabled := False;
+  //edtPlayer5.Enabled := False;
 end;
 
 procedure TfrmInv.btnAdd6thPlayerClick(Sender: TObject);
 begin
-  cbInvPlayer6.Enabled := False;
-  edtPlayer6.Enabled := False;
+  //cbInvPlayer6.Enabled := False;
+  //edtPlayer6.Enabled := False;
 end;
 
 procedure TfrmInv.btnAdd7thPlayerClick(Sender: TObject);
 begin
-  cbInvPlayer7.Enabled := False;
-  edtPlayer7.Enabled := False;
+  //cbInvPlayer7.Enabled := False;
+  //edtPlayer7.Enabled := False;
 end;
 
 procedure TfrmInv.btnAdd8thPlayerClick(Sender: TObject);
 begin
-  cbInvPlayer8.Enabled := False;
-  edtPlayer8.Enabled := False;
+  //cbInvPlayer8.Enabled := False;
+  //edtPlayer8.Enabled := False;
 end;
 
 procedure TfrmInv.cbInvPlayer2Change(Sender: TObject);
@@ -333,8 +334,8 @@ begin
   lbLore1.Caption := IntToStr(players[2].Investigator.stat[5]);
   lbLuck1.Caption := IntToStr(players[2].Investigator.stat[6]);
 
-  cbInvPlayer3.Enabled := True;
-  edtPlayer3.Enabled := True;
+  //cbInvPlayer3.Enabled := True;
+  //edtPlayer3.Enabled := True;
 end;
 
 procedure TfrmInv.cbInvPlayer3Change(Sender: TObject);
@@ -351,8 +352,8 @@ begin
   lbLore1.Caption := IntToStr(players[3].Investigator.stat[5]);
   lbLuck1.Caption := IntToStr(players[3].Investigator.stat[6]);
 
-  cbInvPlayer4.Enabled := True;
-  edtPlayer4.Enabled := True;
+  //cbInvPlayer4.Enabled := True;
+  //edtPlayer4.Enabled := True;
 end;
 
 procedure TfrmInv.cbInvPlayer4Change(Sender: TObject);
@@ -369,8 +370,8 @@ begin
   lbLore1.Caption := IntToStr(players[4].Investigator.stat[5]);
   lbLuck1.Caption := IntToStr(players[4].Investigator.stat[6]);
 
-  cbInvPlayer5.Enabled := True;
-  edtPlayer5.Enabled := True;
+  //cbInvPlayer5.Enabled := True;
+  //edtPlayer5.Enabled := True;
 end;
 
 procedure TfrmInv.cbInvPlayer5Change(Sender: TObject);
@@ -387,8 +388,8 @@ begin
   lbLore1.Caption := IntToStr(players[5].Investigator.stat[5]);
   lbLuck1.Caption := IntToStr(players[5].Investigator.stat[6]);
 
-  cbInvPlayer6.Enabled := True;
-  edtPlayer6.Enabled := True;
+  //cbInvPlayer6.Enabled := True;
+  //edtPlayer6.Enabled := True;
 end;
 
 procedure TfrmInv.cbInvPlayer6Change(Sender: TObject);
@@ -405,8 +406,8 @@ begin
   lbLore1.Caption := IntToStr(players[6].Investigator.stat[5]);
   lbLuck1.Caption := IntToStr(players[6].Investigator.stat[6]);
 
-  cbInvPlayer7.Enabled := True;
-  edtPlayer7.Enabled := True;
+  //cbInvPlayer7.Enabled := True;
+  //edtPlayer7.Enabled := True;
 end;
 
 procedure TfrmInv.cbInvPlayer7Change(Sender: TObject);
@@ -423,8 +424,8 @@ begin
   lbLore1.Caption := IntToStr(players[7].Investigator.stat[5]);
   lbLuck1.Caption := IntToStr(players[7].Investigator.stat[6]);
 
-  cbInvPlayer8.Enabled := True;
-  edtPlayer8.Enabled := True;
+  //cbInvPlayer8.Enabled := True;
+  //edtPlayer8.Enabled := True;
 end;
 
 procedure TfrmInv.cbInvPlayer8Change(Sender: TObject);

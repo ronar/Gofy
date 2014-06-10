@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 408
-  Top = 133
+  Left = 554
+  Top = 156
   Width = 1356
   Height = 831
   Caption = 'frmMain'
@@ -5095,10 +5095,10 @@ object frmMain: TfrmMain
       Top = 83
       Width = 90
       Height = 66
-      Caption = #1060#1072#1079#1086#1074#1086#1077' '#1076'-'#1077
+      Caption = #1060#1072#1079#1086#1074#1086#1077' '#1076'ejstvi'#1077
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -13
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
@@ -5348,7 +5348,7 @@ object frmMain: TfrmMain
       Top = 148
       Width = 90
       Height = 28
-      Caption = #1055#1088#1086#1087#1091#1089#1090#1080#1090#1100
+      Caption = 'Continue'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -5357,6 +5357,7 @@ object frmMain: TfrmMain
       ParentFont = False
       TabOrder = 5
       WordWrap = True
+      OnClick = btn19Click
     end
     object pb3: TProgressBar
       Left = 562
@@ -5486,15 +5487,6 @@ object frmMain: TfrmMain
     Caption = #1042#1079#1103#1090#1100' '#1086#1088#1091#1078#1080#1077' '#1074' '#1088#1091#1082#1091
     TabOrder = 25
     OnClick = btnTakeWeaponClick
-  end
-  object btn16: TButton
-    Left = 312
-    Top = 216
-    Width = 75
-    Height = 25
-    Caption = 'Continue'
-    TabOrder = 26
-    OnClick = btn16Click
   end
   object xmldoc1: TXMLDocument
     Left = 320

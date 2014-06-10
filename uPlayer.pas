@@ -553,7 +553,7 @@ begin
   bonus := 0;
   for i := 1 to 4 do
     if active_cards[i] <> 0 then
-      bonus := bonus + Common_Items_Deck.GetCardByID(fCards[i]).prm_value
+      bonus := bonus + Common_Items_Deck.GetCardByID(active_cards[i]).prm_value
     else
       Break;
   Result := bonus;

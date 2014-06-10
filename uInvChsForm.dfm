@@ -1346,7 +1346,6 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 2'
-    Enabled = False
   end
   object lbl3: TLabel
     Left = 16
@@ -1354,7 +1353,6 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 3'
-    Enabled = False
   end
   object lbl4: TLabel
     Left = 16
@@ -1362,7 +1360,6 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 4'
-    Enabled = False
   end
   object lbl5: TLabel
     Left = 16
@@ -1370,7 +1367,6 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 5'
-    Enabled = False
   end
   object lbl6: TLabel
     Left = 16
@@ -1378,7 +1374,6 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 6'
-    Enabled = False
   end
   object lbl7: TLabel
     Left = 16
@@ -1386,7 +1381,6 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 7'
-    Enabled = False
   end
   object lbl8: TLabel
     Left = 16
@@ -1394,7 +1388,6 @@ object frmInv: TfrmInv
     Width = 40
     Height = 13
     Caption = #1048#1075#1088#1086#1082' 8'
-    Enabled = False
   end
   object lbl9: TLabel
     Left = 16
@@ -1509,7 +1502,6 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
-    Enabled = False
     ItemHeight = 13
     TabOrder = 2
     OnChange = cbInvPlayer2Change
@@ -1570,7 +1562,6 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
-    Enabled = False
     ItemHeight = 13
     TabOrder = 3
     OnChange = cbInvPlayer3Change
@@ -1631,7 +1622,6 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
-    Enabled = False
     ItemHeight = 13
     TabOrder = 4
     OnChange = cbInvPlayer4Change
@@ -1692,7 +1682,6 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
-    Enabled = False
     ItemHeight = 13
     TabOrder = 5
     OnChange = cbInvPlayer5Change
@@ -1753,7 +1742,6 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
-    Enabled = False
     ItemHeight = 13
     TabOrder = 6
     OnChange = cbInvPlayer6Change
@@ -1814,7 +1802,6 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
-    Enabled = False
     ItemHeight = 13
     TabOrder = 7
     OnChange = cbInvPlayer7Change
@@ -1875,7 +1862,6 @@ object frmInv: TfrmInv
     Width = 177
     Height = 19
     Style = csOwnerDrawFixed
-    Enabled = False
     ItemHeight = 13
     TabOrder = 8
     OnChange = cbInvPlayer8Change
@@ -1954,7 +1940,6 @@ object frmInv: TfrmInv
     Width = 21
     Height = 21
     Caption = '+'
-    Enabled = False
     TabOrder = 10
   end
   object btnAdd2ndPlayer: TButton
@@ -1963,7 +1948,6 @@ object frmInv: TfrmInv
     Width = 21
     Height = 25
     Caption = '+'
-    Enabled = False
     TabOrder = 11
     OnClick = btnAdd2ndPlayerClick
   end
@@ -1973,7 +1957,6 @@ object frmInv: TfrmInv
     Width = 21
     Height = 21
     Caption = '+'
-    Enabled = False
     TabOrder = 12
     OnClick = btnAdd3rdPlayerClick
   end
@@ -1983,7 +1966,6 @@ object frmInv: TfrmInv
     Width = 21
     Height = 21
     Caption = '+'
-    Enabled = False
     TabOrder = 13
     OnClick = btnAdd4thPlayerClick
   end
@@ -1993,7 +1975,6 @@ object frmInv: TfrmInv
     Width = 21
     Height = 17
     Caption = '+'
-    Enabled = False
     TabOrder = 14
     OnClick = btnAdd5thPlayerClick
   end
@@ -2003,7 +1984,6 @@ object frmInv: TfrmInv
     Width = 21
     Height = 21
     Caption = '+'
-    Enabled = False
     TabOrder = 15
     OnClick = btnAdd6thPlayerClick
   end
@@ -2013,7 +1993,6 @@ object frmInv: TfrmInv
     Width = 21
     Height = 21
     Caption = '+'
-    Enabled = False
     TabOrder = 16
     OnClick = btnAdd7thPlayerClick
   end
@@ -2023,7 +2002,6 @@ object frmInv: TfrmInv
     Width = 21
     Height = 21
     Caption = '+'
-    Enabled = False
     TabOrder = 17
     OnClick = btnAdd8thPlayerClick
   end
@@ -2082,7 +2060,6 @@ object frmInv: TfrmInv
     Top = 93
     Width = 80
     Height = 21
-    Enabled = False
     TabOrder = 22
     Text = #1048#1075#1088#1086#1082' 2'
   end
@@ -2091,7 +2068,6 @@ object frmInv: TfrmInv
     Top = 133
     Width = 80
     Height = 21
-    Enabled = False
     TabOrder = 23
     Text = #1048#1075#1088#1086#1082' 3'
   end
@@ -2100,7 +2076,6 @@ object frmInv: TfrmInv
     Top = 173
     Width = 80
     Height = 21
-    Enabled = False
     TabOrder = 24
     Text = #1048#1075#1088#1086#1082' 4'
   end
@@ -2109,7 +2084,6 @@ object frmInv: TfrmInv
     Top = 213
     Width = 80
     Height = 21
-    Enabled = False
     TabOrder = 25
     Text = #1048#1075#1088#1086#1082' 5'
   end
@@ -2118,7 +2092,6 @@ object frmInv: TfrmInv
     Top = 253
     Width = 80
     Height = 21
-    Enabled = False
     TabOrder = 26
     Text = #1048#1075#1088#1086#1082' 6'
   end
@@ -2127,7 +2100,6 @@ object frmInv: TfrmInv
     Top = 293
     Width = 80
     Height = 21
-    Enabled = False
     TabOrder = 27
     Text = #1048#1075#1088#1086#1082' 7'
   end
@@ -2136,7 +2108,6 @@ object frmInv: TfrmInv
     Top = 333
     Width = 80
     Height = 21
-    Enabled = False
     TabOrder = 28
     Text = #1048#1075#1088#1086#1082' 8'
   end

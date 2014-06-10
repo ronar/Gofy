@@ -173,7 +173,6 @@ type
     btn1: TButton;
     btn2: TButton;
     btnTakeWeapon: TButton;
-    btn16: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -216,7 +215,7 @@ type
     procedure btn1Click(Sender: TObject);
     procedure btn2Click(Sender: TObject);
     procedure btnTakeWeaponClick(Sender: TObject);
-    procedure btn16Click(Sender: TObject);
+    procedure btn19Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -253,7 +252,7 @@ var
   //monCount: integer;
   head_of_list: PLLData;
   player_current_card: array [1..8] of integer; // For displaying cards on form
-  selected_cards: array [1..3] of boolean;
+  selected_cards: array [1..MAX_PLAYER_ITEMS] of boolean;
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; card: TLocationCard);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
@@ -268,7 +267,8 @@ var
   procedure ProcessNode(Node : PLLData; add_data: integer = 0);
   function LokIdToName(lok_id: integer): string;
   function GetLokNameByID(id: integer): string;
-  procedure ShowPlayerCards(pl: TPlayer; cur_cards: integer);
+  procedure ShowPlayerCards(pl: TPlayer; cur_cards: integer); // Show current player's card in low right corner
+  procedure SelectCards(sel_cards: array of boolean; count: integer); // Draw edges on cards
 
 implementation
 
@@ -1646,19 +1646,36 @@ begin
   end;
 
 
+
+end;
+
+procedure SelectCards(sel_cards: array of boolean; count: integer);
+var
+  i: integer;
+begin
+  for i := 1 to 3 do
+  begin
+    if selected_cards[i + (3 * count)] then
+      (frmMain.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clRed
+    else
+      (frmMain.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clLime;
+  end;
 end;
 
 procedure TfrmMain.btn14Click(Sender: TObject);
 begin
   if player_current_card[current_player] > 1 then
     player_current_card[current_player] := player_current_card[current_player] - 1;
-  ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);    
+
+  ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
+  SelectCards(selected_cards, player_current_card[current_player] - 1);
 end;
 
 procedure TfrmMain.btn15Click(Sender: TObject);
 begin
   player_current_card[current_player] := player_current_card[current_player] + 1;
-  ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);  
+  ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
+  SelectCards(selected_cards, player_current_card[current_player] - 1);
 end;
 
 procedure TfrmMain.btnProcessClick(Sender: TObject);
@@ -1722,8 +1739,8 @@ end;
 
 procedure TfrmMain.imgPlaCard1Click(Sender: TObject);
 begin
-  selected_cards[1] := not selected_cards[1];
-  if selected_cards[1] then
+  selected_cards[1 + (3 * (player_current_card[current_player] - 1))] := not selected_cards[1 + (3 * (player_current_card[current_player] - 1))];
+  if selected_cards[1 + (3 * (player_current_card[current_player] - 1))] then
     pnlCard1.Color := clRed
   else
     pnlCard1.Color := clLime;
@@ -1731,8 +1748,8 @@ end;
 
 procedure TfrmMain.imgPlaCard2Click(Sender: TObject);
 begin
-  selected_cards[2] := not selected_cards[2];
-  if selected_cards[2] then
+  selected_cards[2 + (3 * (player_current_card[current_player] - 1))] := not selected_cards[2 + (3 * (player_current_card[current_player] - 1))];
+  if selected_cards[2 + (3 * (player_current_card[current_player] - 1))] then
     pnlCard2.Color := clRed
   else
     pnlCard2.Color := clLime;
@@ -1740,8 +1757,8 @@ end;
 
 procedure TfrmMain.imgPlaCard3Click(Sender: TObject);
 begin
-  selected_cards[3] := not selected_cards[3];
-  if selected_cards[3] then
+  selected_cards[3 + (3 * (player_current_card[current_player] - 1))] := not selected_cards[3 + (3 * (player_current_card[current_player] - 1))];
+  if selected_cards[3 + (3 * (player_current_card[current_player] - 1))] then
     pnlCard3.Color := clRed
   else
     pnlCard3.Color := clLime;
@@ -1763,20 +1780,23 @@ begin
 end;
 
 procedure TfrmMain.btnTakeWeaponClick(Sender: TObject);
+var
+  i: integer;
 begin
   gCurrentPlayer.DropWeapon;
-  if selected_cards[1] then
-    gCurrentPlayer.TakeWeapon(gCurrentPlayer.Cards[1 + ((player_current_card[current_player] - 1) * 3)]);
-  if selected_cards[2] then
-    gCurrentPlayer.TakeWeapon(gCurrentPlayer.Cards[2 + ((player_current_card[current_player] - 1) * 3)]);
-  if selected_cards[3] then
-    gCurrentPlayer.TakeWeapon(gCurrentPlayer.Cards[3 + ((player_current_card[current_player] - 1) * 3)]);
+  for i := 1 to MAX_PLAYER_ITEMS do
+  begin
+    if selected_cards[i] then
+    begin
+      gCurrentPlayer.TakeWeapon(gCurrentPlayer.Cards[i]);
+    end;
+  end;
+  ShowMessage('Бонус от оружия: ' + IntToStr(gCurrentPlayer.BonusWeapon));
 
-  //ShowMessage(IntToStr(gCurrentPlayer.active_cards[1]) + ' '+ IntToStr(gCurrentPlayer.active_cards[2]) + ' ' + IntToStr(gCurrentPlayer.active_cards[3]));
 
 end;
 
-procedure TfrmMain.btn16Click(Sender: TObject);
+procedure TfrmMain.btn19Click(Sender: TObject);
 begin
   gCurrentPhase := gCurrentPhase + 1;
   if gCurrentPhase > 5 then
