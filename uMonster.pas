@@ -20,6 +20,7 @@ type
     fCmbtRate: integer;
     fCmbtDmg: integer;
     fSpec: string[6];
+    fLocation: integer;
   //public
 
   end;
@@ -29,6 +30,7 @@ type
   function LoadMonsterCards(var monsters: TMonsterArray; file_path: string): integer;
   function DrawMonsterCard(var monsters: TMonsterArray): integer;
   procedure ShuffleMonsterDeck(var monsters: TMonsterArray);
+  //procedure MoveMonster(); // TODO: moving of the monsters
   function GetMonsterNameByID(id: integer): string;
   function GetMonsterByID(var monsters: TMonsterArray; id: integer): TMonster; // Get mob from pool
   function GetMonsterCount(var monsters: TMonsterArray): integer;
@@ -99,15 +101,21 @@ end;
 function DrawMonsterCard(var monsters: TMonsterArray): integer;
 var
   i: integer;
+  dmonster: integer;
 begin
   //Assert(monCount > 1);
+  dmonster := 0;
   if monCount < 1 then
   begin
     ShowMessage('Нету монстров.');
     DrawMonsterCard := 0;
     Exit;
   end;
-  DrawMonsterCard := monsters[monCount].fId;
+  randomize;
+  dmonster := monsters[random(monCount)].fId;
+  if dmonster = 22 then
+    ShowMessage('Alert!');
+  Result := dmonster;
   //ShuffleMonsterDeck(monsters);
   monCount := monCount - 1;
 end;
@@ -119,10 +127,10 @@ var
   temp: TMonster;
 begin
   randomize;
-  for i := 1 to monCount do
+  for i := 0 to monCount-1 do
   begin
     temp := monsters[i];
-    r := random(monCount)+1;
+    r := random(monCount);
     monsters[i] := monsters[r];
     monsters[r] := temp;
   end;
@@ -135,18 +143,24 @@ var
 begin
   for i := 1 to MONSTER_MAX do
     if StrToInt(MonsterNames[i, 1]) = id then
+    begin
       GetMonsterNameByID := MonsterNames[i, 2];
+      break;
+    end;
 end;
 
 function GetMonsterByID(var monsters: TMonsterArray; id: integer): TMonster;
 var
   i: integer;
 begin
-  for i := 1 to monCount do
+  for i := 0 to MONSTER_MAX-1 do
   begin
     if Monsters[i].fId = id then
+    begin
       GetMonsterByID := Monsters[i];
       //Monsters[i] := nil;
+      break;
+    end;
   end;
 
 end;
@@ -156,7 +170,7 @@ var
   i, c: integer;
 begin
   c := 0;
-  i := 1;
+  i := 0;
   while monsters[i].fId <> 0 do
   begin
     c := c + 1;

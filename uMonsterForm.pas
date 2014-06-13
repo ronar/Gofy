@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, uMonster, uPlayer, jpeg;
+  Dialogs, StdCtrls, ExtCtrls, uMonster, uPlayer, jpeg, uStreet;
 
 type
   TfrmMonster = class(TForm)
@@ -26,13 +26,13 @@ type
     { Private declarations }
   public
     { Public declarations }
-    procedure PrepareMonster(monster: TMonster; var player: TPlayer);
+    procedure PrepareMonster(monster: TMonster; player: TPlayer);
   end;
 
 var
   frmMonster: TfrmMonster;
   gMonster: TMonster;
-  gPlayer: TPlayer;
+  //gPlayer: TPlayer;
   mon_pic: boolean = false;
 
 
@@ -42,23 +42,31 @@ uses uMainForm, uCommon;
 
 {$R *.dfm}
 
-procedure TfrmMonster.PrepareMonster(monster: TMonster; var player: TPlayer);
+procedure TfrmMonster.PrepareMonster(monster: TMonster; player: TPlayer);
 var
   p_addr: ^Integer;
 begin
+  if monster.fId = 0 then
+  begin
+    imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(monster.fId)+'-1.jpg');
+    ShowMessage('Чето нету монстра!');
+    exit;
+  end;
   gMonster := monster;
-  gPlayer := player;
-  imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(monster.fId)+'-1.jpg');
-  if player.active_cards[1] <> 0 then
-    imgPlaCard1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\'+IntToStr(player.active_cards[1])+'.jpg')
+  if monster.fId < 100 then
+    imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\0'+IntToStr(monster.fId)+'-1.jpg')
+  else
+    imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(monster.fId)+'-1.jpg');
+  if gCurrentPlayer.active_cards[1] <> 0 then
+    imgPlaCard1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\'+IntToStr(gCurrentPlayer.active_cards[1])+'.jpg')
   else
     imgPlaCard1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Spells\30.jpg');
-  if player.active_cards[2] <> 0 then
-    imgPlaCard2.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\'+IntToStr(player.active_cards[2])+'.jpg')
+  if gCurrentPlayer.active_cards[2] <> 0 then
+    imgPlaCard2.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\'+IntToStr(gCurrentPlayer.active_cards[2])+'.jpg')
   else
     imgPlaCard2.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Spells\30.jpg');
-  if player.active_cards[3] <> 0 then
-    imgPlaCard3.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\'+IntToStr(player.active_cards[3])+'.jpg')
+  if gCurrentPlayer.active_cards[3] <> 0 then
+    imgPlaCard3.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\'+IntToStr(gCurrentPlayer.active_cards[3])+'.jpg')
   else
     imgPlaCard3.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Spells\30.jpg');
   mon_pic := not mon_pic;
@@ -66,9 +74,9 @@ end;
 
 procedure TfrmMonster.btnEvadeClick(Sender: TObject);
 begin
-  if gPlayer.RollADice(gPlayer.Stats[ST_SNEAK] + gMonster.fAwareness, 1) > 0 then
+  if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_SNEAK] + gMonster.fAwareness, 1) > 0 then
   begin
-    gPlayer.evadedmosnters[1] := gMonster.fId;
+    gCurrentPlayer.evadedmosnters[1] := gMonster.fId;
     frmMain.lstLog.Items.Add('Ушел от моба!!');
     close;
   end
@@ -82,31 +90,45 @@ begin
 end;
 
 procedure TfrmMonster.btnBattleClick(Sender: TObject);
+var
+  empty_lok: TLocation;
 begin
+  if gCurrentPlayer.Stamina < 1 then
+  begin
+    ShowMessage('Игрок не может драться!!');
+    exit;
+  end;
   // Horror! check
-  if gPlayer.RollADice(gPlayer.Stats[ST_WILL] + gMonster.fHorrorRate, 1) >= 1 then
+  if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_WILL] + gMonster.fHorrorRate, 1) >= 1 then
   begin
     lst1.Items.Add('Horror checked!!');
   end
   else
   begin
-    gPlayer.Sanity := gPlayer.Sanity - gMonster.fHorrorDmg;
+    gCurrentPlayer.Sanity := gCurrentPlayer.Sanity - gMonster.fHorrorDmg;
     lst1.Items.Add('Игрок потерял разум: ' + IntToStr(gMonster.fHorrorDmg) + '!!');
   end;
 
   // Monster fight!
-  if gPlayer.RollADice(gPlayer.Stats[ST_FIGHT] + gMonster.fCmbtRate + gPlayer.BonusWeapon, gMonster.fToughness) >= gMonster.fToughness then
+  if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_FIGHT] + gMonster.fCmbtRate + gCurrentPlayer.BonusWeapon, gMonster.fToughness) >= gMonster.fToughness then
   begin
-    gPlayer.AddMonsterTrophies(gMonster.fId);
+    gCurrentPlayer.AddMonsterTrophies(gMonster.fId);
     lst1.Items.Add('Убил моба!!');
     lst1.Items.Add('Гирок получил монстр-трофеюшек!!');
   end
   else
   begin
-    gPlayer.Stamina := gPlayer.Stamina - gMonster.fCmbtDmg;
+    gCurrentPlayer.Stamina := gCurrentPlayer.Stamina - gMonster.fCmbtDmg;
     lst1.Items.Add('Игроку нанесено урона: ' + IntToStr(gMonster.fCmbtDmg) + '!!');
+    if gCurrentPlayer.Stamina < 1 then
+    begin
+      lst1.Items.Add('Гирок без сознания, и перемещен в больницу Св. Марии');
+      gCurrentPlayer.MoveToLocation(empty_lok, 5200);
+      gCurrentPlayer.Moves := 0;
+    end;
 
   end;
+
 
 end;
 
@@ -114,9 +136,19 @@ procedure TfrmMonster.imgMonsterClick(Sender: TObject);
 begin
   mon_pic := not mon_pic;
   if mon_pic then
-    imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(gMonster.fId)+'-1.jpg')
+  begin
+    if gMonster.fId < 100 then
+      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\0'+IntToStr(gmonster.fId)+'-1.jpg')
+    else
+      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(gmonster.fId)+'-1.jpg');
+  end
   else
-    imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(gMonster.fId)+'-2.jpg');
+  begin
+    if gMonster.fId < 100 then
+      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\0'+IntToStr(gmonster.fId)+'-2.jpg')
+    else
+      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(gmonster.fId)+'-2.jpg');
+  end;
 end;
 
 end.

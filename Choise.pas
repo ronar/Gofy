@@ -44,6 +44,11 @@ end;
 procedure TChoiseForm.FormShow(Sender: TObject);
 begin
   //ChoiseForm.Tag := 0;
+  RadioButton1.Checked := False;
+  RadioButton2.Checked := False;
+  RadioButton3.Checked := False;
+  RadioButton4.Checked := False;
+
 end;
 
 procedure TChoiseForm.RadioButton1Click(Sender: TObject);

@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <actions>
-	<or data="|2|2|'Купить вещь у бедного человека чтобы помочь прокормить его семью.'|'Не покупть вещь у бедного человека чтобы не помочь прокормить его семью (и быть скотиной :-D).'|">
+	<or data="|2|2|'Купить вещь у бедного человека, чтобы помочь прокормить его семью.'|'Не покупать вещь у бедного человека, чтобы не помочь прокормить его семью (и быть скотиной :-D).'|">
 		<or1>
-			<action data="|3|2|6|-1|1|">
+			<condition data="|3|3|1|2|0|">
 				<true>
-					<action data="|4|10|1|"></action>
+					<action data="|4|2|2|"></action>
+					<condition data="|3|2|6|-1|1|">
+						<true>
+							<action data="|4|10|1|"></action>
+						</true>
+						<false>
+							<action data="|4|9|1|"></action>
+						</false>
+					</condition>
 				</true>
 				<false>
-					<action data="|4|9|1|"></action>
+					<action data="|0|0|0|"></action>
 				</false>
-			</action>
+			</condition>
+			
 		</or1>
 		<or2>
 			<action data="|0|0|0|"></action>

@@ -27,6 +27,7 @@ type
     fCursed: boolean;
     fFirstPlayer: boolean; // Флаг первого игрока
     fInvestigator: TInvestigator;
+    fmoves: integer; // кол-во оставшихся ходов
     fPlNumber: integer;
     fHands: Integer; // Number of hands :)
     fRollResults: array [1..20] of integer;
@@ -69,6 +70,7 @@ type
     property Luck: integer write SetLuck;
     property Blessed: boolean read IsBlessed write Bless;
     property Cursed: boolean read IsCursed write Curse;
+    property Moves: integer read fMoves write fMoves;
     property bFirstPlayer: boolean read fFirstPlayer write fFirstPlayer;
     property Investigator: TInvestigator read fInvestigator;
     //property Hands: integer read fHands;
@@ -313,7 +315,7 @@ begin
 
 
     RollADice := Successes; { TODO : Добавить сложность броска }
-    if Successes < difficulty then
+    if ((Successes < difficulty) and (fClues > 0)) then
     begin
       if MessageDlg('Reroll (using one clue)?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
       begin

@@ -120,6 +120,7 @@ type
     procedure cbInvPlayer7Change(Sender: TObject);
     procedure cbInvPlayer8Change(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   public
@@ -138,7 +139,7 @@ var
 
 implementation
 
-uses uCardForm, uCommon;
+uses uCardForm, uCommon, uPlayer;
 
 {$R *.dfm}
 
@@ -161,6 +162,13 @@ begin
 
   for k := 1 to player_count do
   begin
+    players[k].Speed := players[k].Investigator.stat[1];
+    players[k].Sneak := players[k].Investigator.stat[2];
+    players[k].Fight := players[k].Investigator.stat[3];
+    players[k].Will := players[k].Investigator.stat[4];
+    players[k].Lore := players[k].Investigator.stat[5];
+    players[k].Luck := players[k].Investigator.stat[6];
+
     players[k].GetItems();
     if players[k].Investigator.can_take[1] > 0 then
       for i := 1 to players[k].Investigator.can_take[1] do
@@ -182,8 +190,13 @@ begin
         players[k].AddItem(Common_Items_Deck, Common_Items_Deck.DrawCard);
   end;
 
+
+
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
-  frmMain.btn17Click(Sender);
+  UpdStatus;
+  frmMain.Show;
+
+  //frmMain.btn17Click(Sender);
 
   Close;
 end;
@@ -446,6 +459,11 @@ end;
 procedure TfrmInv.FormShow(Sender: TObject);
 begin
   player_count := 1;
+end;
+
+procedure TfrmInv.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  //Application.Terminate;
 end;
 
 end.

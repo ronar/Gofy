@@ -17,8 +17,8 @@ const
   PH_OTHER_WORLDS_ENCOUNTER = 4;
   PH_MYTHOS = 5;
   // Константы Типов Карт
-  CT_WEAPON = 1; // Оружие
-  CT_TOME = 2; // Книга
+  CT_WEAPON = 9; // Оружие
+  CT_TOME = 10; // Книга
   CT_SPELL = 3; // Заклинание
   CT_SKILL = 4; // Навык
   CT_ALLY = 7; // Союзник
@@ -27,6 +27,8 @@ const
   CT_UNIQUE_ITEM = 2; // Уникальные предметы (первая цифра в ID)
   CT_ENCOUNTER = 6; // Контакт (первая цифра в ID)
   CT_INVESTIGATOR = 9;
+  COMMON_ITEM_WEAPON = 1; // Оружие
+  COMMON_ITEM_TOME = 2; // Книга
   GT_CIRCLE = 1;
   GT_CRESCENT = 2;
   GT_DIAMOND = 3;
@@ -40,18 +42,35 @@ const
   // Константы Действий
   AT_SPEC = 2;
   AT_WATCH_BUY = 3;
+
+  // Константы для формы торговли
+  TR_TAKE_ITEMS = 1;
+  TR_TAKE_REST_DISCARD = 2;
+  TR_BUY_NOM_PRICE = 3;
+  TR_BUY_ONE_ABOVE = 4;
+  TR_BUY_ONE_BELOW = 5;
+  TR_TAKE_FIRST = 6;
+  TR_TAKE_COMMON_TOME = 7;
+  TR_TAKE_UNIQUE_OTEM = 8;
+  TR_BUY_ANY_ONE_ABOVE = 9;
+  TR_BUY_ANY_ONE_BELOW = 10;
+
+  // Основные константы
   NUMBER_OF_STREETS = 19;
   NUMBER_OF_LOCATIONS = 57;
-  NUMBER_OF_COMMON_ITEMS = 59;
-  NUMBER_OF_UNIQUE_ITEMS = 83;
-  LOCATION_CARD_NUMBER = 20; // Число карт на каждую локацию
-  COMMON_ITEMS_CARD_NUMBER = 30;
+  NUMBER_OF_COMMON_CARDS = 59;
+  NUMBER_OF_UNIQUE_CARDS = 83;
+  NUMBER_OF_ENCOUNTER_CARDS = 20;
+  NUMBER_OF_MYTHOS_CARDS = 30;
   NUMBER_OF_INVESTIGATORS = 49;
-  MYTHOS_CARDS_NUMBER = 30;
+  //LOCATION_CARD_NUMBER = 20; // Число карт на каждую локацию
+  //COMMON_ITEMS_CARD_NUMBER = 30;
+  //
+  //MYTHOS_CARDS_NUMBER = 30;
   MAX_PLAYER_ITEMS = 20;
   MONSTER_MAX = 50;
   ALLIES_MAX = 50;
-  COMMON_ITEMS_MAX = 100;
+  //COMMON_ITEMS_MAX = 100;
   aPhasesNames: array [1..5] of string = ('UPKEEP', 'MOVE', 'ENCOUNTER', 'OTHER WORLDS ENCOUNTER', 'MYTHOS');
   aNeighborhoodsNames: array [1..NUMBER_OF_STREETS, 1..2] of string = (
         ('1000', 'Northside'),
@@ -132,151 +151,151 @@ const
         ('011', 'Y''ha-nthlei'),
         ('9300', 'Ye Olde Magick Shoppe'));
 
-    aCommon_Items: array [1..NUMBER_OF_COMMON_ITEMS, 1..2] of string = (
+    aCommon_Items: array [1..NUMBER_OF_COMMON_CARDS, 1..2] of string = (
         ('1012', '.18 Derringer'),
-('1022', '.38 Revolver'),
-('1032', '.45 Automatic'),
-('1042', '.357 Magnum'),
-('', 'Ancient Tome'),
-('1062', 'Athame'),
-('1072', 'Axe'),
-('1082', 'Brass Knuckles'),
-('1092', 'Bullwhip'),
-('1102', 'Carbine Rifle'),
-('1112', 'Cavalry Saber'),
-('', 'Courier Run'),
-('', 'Cross'),
-('1142', 'Crowbar'),
-('', 'Dark Cloak'),
-('', 'Director''s Diary'),
-('', 'Dusty Manuscripts'),
-('1182', 'Динамит'),
-('1192', 'Elephant Gun'),
-('', 'Fine Clothing'),
-('1212', 'z'),
-('1222', 'Flare Gun'),
-('1232', 'Еда'),
-('1241', 'Еда'),
-('1251', 'Genealogy Research'),
-('1261', 'Gray''s Anatomy'),
-('1271', 'Hand Camera'),
-('1282', 'Handcuffs'),
-('1292', 'Kerosene'),
-('1301', 'King James Bible'),
-('1312', 'Knife'),
-('', 'Lantern'),
-('', 'Ley Line Map'),
-('1342', 'Lucky Cigarette Case'),
-('', 'Lucky Rabbit''s Foot'),
-('', 'Magnifying Glass'),
-('', 'Makeup Kit'),
-('', 'Map of Arkham'),
-('', 'Military Motorcycle'),
-('', 'Mineralogy Report'),
-('1412', 'Molotov Cocktail'),
-('', 'Motorcycle'),
-('', 'Newspaper Assignment'),
-('', 'Old Journal'),
-('', 'Patrolling the Streets'),
-('', 'Press Pass'),
-('1472', 'Материалы следствия'),
-('1482', 'Rifle'),
-('1493', 'Safety Deposit Key'),
-('1502', 'Sedanette'),
-('1512', 'Дробовик'),
-('1522', 'Sledgehammer'),
-('1532', 'Student Newspaper'),
-('1542', 'Telescope'),
-('1553', 'Time Bomb'),
-('1562', 'Tommy Gun'),
-('1573', 'Understudy''s Script'),
-('1582', 'Виски'),
-('1591', 'Виски'));
+        ('1022', '.38 Revolver'),
+        ('1032', '.45 Automatic'),
+        ('1042', '.357 Magnum'),
+        ('1052', 'Ancient Tome'),
+        ('1062', 'Athame'),
+        ('1072', 'Axe'),
+        ('1082', 'Brass Knuckles'),
+        ('1092', 'Bullwhip'),
+        ('1102', 'Carbine Rifle'),
+        ('1112', 'Cavalry Saber'),
+        ('1121', 'Courier Run'),
+        ('1132', 'Cross'),
+        ('1142', 'Crowbar'),
+        ('1152', 'Dark Cloak'),
+        ('1162', 'Director''s Diary'),
+        ('1172', 'Dusty Manuscripts'),
+        ('1182', 'Динамит'),
+        ('1192', 'Elephant Gun'),
+        ('1201', 'Fine Clothing'),
+        ('1212', 'z'),
+        ('1222', 'Flare Gun'),
+        ('1232', 'Еда'),
+        ('1241', 'Еда'),
+        ('1251', 'Genealogy Research'),
+        ('1261', 'Gray''s Anatomy'),
+        ('1271', 'Hand Camera'),
+        ('1282', 'Handcuffs'),
+        ('1292', 'Kerosene'),
+        ('1301', 'King James Bible'),
+        ('1312', 'Knife'),
+        ('1322', 'Lantern'),
+        ('1332', 'Ley Line Map'),
+        ('1342', 'Lucky Cigarette Case'),
+        ('1351', 'Lucky Rabbit''s Foot'),
+        ('1362', 'Magnifying Glass'),
+        ('1372', 'Makeup Kit'),
+        ('1382', 'Map of Arkham'),
+        ('1391', 'Military Motorcycle'),
+        ('1401', 'Mineralogy Report'),
+        ('1412', 'Molotov Cocktail'),
+        ('1422', 'Motorcycle'),
+        ('1432', 'Newspaper Assignment'),
+        ('1442', 'Old Journal'),
+        ('1451', 'Patrolling the Streets'),
+        ('1462', 'Press Pass'),
+        ('1472', 'Материалы следствия'),
+        ('1482', 'Rifle'),
+        ('1493', 'Safety Deposit Key'),
+        ('1502', 'Sedanette'),
+        ('1512', 'Дробовик'),
+        ('1522', 'Sledgehammer'),
+        ('1532', 'Student Newspaper'),
+        ('1542', 'Telescope'),
+        ('1553', 'Time Bomb'),
+        ('1562', 'Tommy Gun'),
+        ('1573', 'Understudy''s Script'),
+        ('1582', 'Виски'),
+        ('1591', 'Виски'));
 
-    aUnique_Items: array [1..NUMBER_OF_UNIQUE_ITEMS, 1..2] of string = (
-('2011', 'Alien Device'),
-('2021', 'Alien Statue'),
-('2032', 'Ancient Spear'),
-('2041', 'Ancient Tablet'),
-('2051', 'Astral Mirror'),
-('2061', 'Blue Watcher of the Pyramid'),
-('2071', 'Book of Dzyan'),
-('2082', 'Book of the Believer'),
-('2091', 'Brazier of Souls'),
-('2102', 'Cabala of Saboth'),
-('2111', 'Camilla''s Ruby'),
-('2121', 'Carcosan Page'),
-('2131', 'Cryptozoology Collection'),
-('2144', 'Crystal of the Elder Things'),
-('2152', 'Cultes des Goules'),
-('2161', 'Cursed Sphere'),
-('2171', 'De Vermiis Mysteriis'),
-('2181', 'Dhol Chants'),
-('2191', 'Dragon''s Eye'),
-('2201', 'Elder Sign'),
-('2211', 'Elder Sign'),
-('2221', 'Elder Sign Pendant'),
-('2231', 'Elixir of Life'),
-('2241', 'Eltdown Shards'),
-('2251', 'Enchanted Blade'),
-('2261', 'Enchanted Cane'),
-('2271', 'Enchanted Jewelry'),
-('2281', 'Enchanted Knife'),
-('2291', 'Fetch Stick'),
-('2301', 'Fire of Asshurbanipal'),
-('2311', 'Flute of the Outer Gods'),
-('2321', 'For the Greater Good'),
-('2331', 'Gate Box'),
-('2341', 'Gladius of Carcosa'),
-('2351', 'Glass of Mortlan'),
-('2361', 'Golden Sword of Y''ha-Talla'),
-('2371', 'Golden Trumpet'),
-('2381', 'Gruesome Talisman'),
-('2391', 'Healing Stone'),
-('2401', 'Illuminated Manuscript'),
-('2411', 'Святая вода (Holy Water)'),
-('2421', 'Joining the Winning Team'),
-('2431', 'Key of Tawil At''Umr'),
-('2441', 'Lamp of Alhazred'),
-('2451', 'Lightning Gun'),
-('2461', 'Livre d''Ivon'),
-('2471', 'Map of the Mind'),
-('2481', 'Masquerade of Night'),
-('2491', 'Massa di Requiem per Shuggay'),
-('2501', 'Mi-Go Brain Case'),
-('2511', 'Milk of Shub-Niggurath'),
-('2521', 'Naacal Key'),
-('2531', 'Nameless Cults'),
-('2541', 'Necronomicon'),
-('2551', 'Obsidian Statue'),
-('2561', 'Pallid Mask'),
-('2571', 'Petrifying Solution'),
-('2581', 'Powder of Ibn-Ghazi'),
-('2591', 'Purifying The Town'),
-('2601', 'Puzzle Box'),
-('2611', 'Ritual Blade'),
-('2621', 'Ritual Candles'),
-('2631', 'Ruby of R''lyeh'),
-('2641', 'Sacrifices to Make'),
-('2651', 'Sealing The Beast''s Power'),
-('2661', 'Seeker of the Yellow Sign'),
-('2671', 'Seven Cryptical Books of Hsan'),
-('2681', 'Shrine to an Elder God'),
-('2691', 'Silver Key'),
-('2701', 'Soul Gem'),
-('2711', 'Staff of the Pharaoh'),
-('2721', 'Sword of Glory'),
-('2731', 'The King in Yellow'),
-('2741', 'The Light of Reason'),
-('2751', 'Throne of Carcosa'),
-('2761', 'True Magick'),
-('2771', 'Walking the Ley Lines'),
-('2781', 'Warding of the Yellow Sign'),
-('2791', 'Warding Statue'),
-('2801', 'Warning Mirror'),
-('2811', 'Wave of Destruction'),
-('2821', 'Yithian Rifle'),
-('2831', 'Zanthu Tablets'));
+    aUnique_Items: array [1..NUMBER_OF_UNIQUE_CARDS, 1..2] of string = (
+        ('2011', 'Alien Device'),
+        ('2021', 'Alien Statue'),
+        ('2032', 'Ancient Spear'),
+        ('2041', 'Ancient Tablet'),
+        ('2051', 'Astral Mirror'),
+        ('2061', 'Blue Watcher of the Pyramid'),
+        ('2071', 'Book of Dzyan'),
+        ('2082', 'Book of the Believer'),
+        ('2091', 'Brazier of Souls'),
+        ('2102', 'Cabala of Saboth'),
+        ('2111', 'Camilla''s Ruby'),
+        ('2121', 'Carcosan Page'),
+        ('2131', 'Cryptozoology Collection'),
+        ('2144', 'Crystal of the Elder Things'),
+        ('2152', 'Cultes des Goules'),
+        ('2161', 'Cursed Sphere'),
+        ('2171', 'De Vermiis Mysteriis'),
+        ('2181', 'Dhol Chants'),
+        ('2191', 'Dragon''s Eye'),
+        ('2201', 'Elder Sign'),
+        ('2211', 'Elder Sign'),
+        ('2221', 'Elder Sign Pendant'),
+        ('2231', 'Elixir of Life'),
+        ('2241', 'Eltdown Shards'),
+        ('2251', 'Enchanted Blade'),
+        ('2261', 'Enchanted Cane'),
+        ('2271', 'Enchanted Jewelry'),
+        ('2281', 'Enchanted Knife'),
+        ('2291', 'Fetch Stick'),
+        ('2301', 'Fire of Asshurbanipal'),
+        ('2311', 'Flute of the Outer Gods'),
+        ('2321', 'For the Greater Good'),
+        ('2331', 'Gate Box'),
+        ('2341', 'Gladius of Carcosa'),
+        ('2351', 'Glass of Mortlan'),
+        ('2361', 'Golden Sword of Y''ha-Talla'),
+        ('2371', 'Golden Trumpet'),
+        ('2381', 'Gruesome Talisman'),
+        ('2391', 'Healing Stone'),
+        ('2401', 'Illuminated Manuscript'),
+        ('2411', 'Святая вода (Holy Water)'),
+        ('2421', 'Joining the Winning Team'),
+        ('2431', 'Key of Tawil At''Umr'),
+        ('2441', 'Lamp of Alhazred'),
+        ('2451', 'Lightning Gun'),
+        ('2461', 'Livre d''Ivon'),
+        ('2471', 'Map of the Mind'),
+        ('2481', 'Masquerade of Night'),
+        ('2491', 'Massa di Requiem per Shuggay'),
+        ('2501', 'Mi-Go Brain Case'),
+        ('2511', 'Milk of Shub-Niggurath'),
+        ('2521', 'Naacal Key'),
+        ('2531', 'Nameless Cults'),
+        ('2541', 'Necronomicon'),
+        ('2551', 'Obsidian Statue'),
+        ('2561', 'Pallid Mask'),
+        ('2571', 'Petrifying Solution'),
+        ('2581', 'Powder of Ibn-Ghazi'),
+        ('2591', 'Purifying The Town'),
+        ('2601', 'Puzzle Box'),
+        ('2611', 'Ritual Blade'),
+        ('2621', 'Ritual Candles'),
+        ('2631', 'Ruby of R''lyeh'),
+        ('2641', 'Sacrifices to Make'),
+        ('2651', 'Sealing The Beast''s Power'),
+        ('2661', 'Seeker of the Yellow Sign'),
+        ('2671', 'Seven Cryptical Books of Hsan'),
+        ('2681', 'Shrine to an Elder God'),
+        ('2691', 'Silver Key'),
+        ('2701', 'Soul Gem'),
+        ('2711', 'Staff of the Pharaoh'),
+        ('2721', 'Sword of Glory'),
+        ('2731', 'The King in Yellow'),
+        ('2741', 'The Light of Reason'),
+        ('2751', 'Throne of Carcosa'),
+        ('2761', 'True Magick'),
+        ('2771', 'Walking the Ley Lines'),
+        ('2781', 'Warding of the Yellow Sign'),
+        ('2791', 'Warding Statue'),
+        ('2801', 'Warning Mirror'),
+        ('2811', 'Wave of Destruction'),
+        ('2821', 'Yithian Rifle'),
+        ('2831', 'Zanthu Tablets'));
 
   crd_ally: array [1..1] of string = ('Anna Kaslow');
   aInvestigators: array [1..NUMBER_OF_INVESTIGATORS] of string = ('Agnes Baker', 'Akachi Onyele',

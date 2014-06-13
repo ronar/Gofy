@@ -14,12 +14,9 @@ type
     btnInit: TButton;
     btnPlaData: TButton;
     GroupBox2: TGroupBox;
-    lblPlrStamina: TLabel;
     Label1: TLabel;
-    lblPlrSanity: TLabel;
     Label4: TLabel;
     Label5: TLabel;
-    lblPlrFocus: TLabel;
     lbItems: TListBox;
     Label2: TLabel;
     cbLocation: TComboBox;
@@ -27,18 +24,12 @@ type
     bntEncounter: TButton;
     lblLocIDCaption: TLabel;
     lblLocID: TLabel;
-    lblStatSpeed: TLabel;
     Label16: TLabel;
-    lblStatSneak: TLabel;
     Label18: TLabel;
-    lblStatFight: TLabel;
     Label23: TLabel;
-    lblStatWill: TLabel;
     Label25: TLabel;
     Label26: TLabel;
-    lblStatLore: TLabel;
     Label28: TLabel;
-    lblStatLuck: TLabel;
     edPlaSanity: TEdit;
     edPlaStamina: TEdit;
     edPlaFocus: TEdit;
@@ -49,19 +40,15 @@ type
     edStatLore: TEdit;
     edStatLuck: TEdit;
     Label14: TLabel;
-    lblPlaLoc: TLabel;
     edtPlaLoc: TEdit;
     btnMoveToLok: TButton;
     btnShuffle: TButton;
     Label20: TLabel;
-    lblPlaClue: TLabel;
     edtPlaClue: TEdit;
     Label27: TLabel;
-    lblPlaMoney: TLabel;
     edtPlaMoney: TEdit;
     btnNextPers: TButton;
     btnChsInv: TButton;
-    lblPlaInv: TLabel;
     edtPlaInv: TEdit;
     Label6: TLabel;
     btnUseCard: TButton;
@@ -79,8 +66,6 @@ type
     imgDR11: TImage;
     imgDR12: TImage;
     btnGiveItem: TButton;
-    edtLokID: TEdit;
-    btnMoveToExactLok: TButton;
     xmldoc1: TXMLDocument;
     seCrdNum: TSpinEdit;
     Label7: TLabel;
@@ -124,8 +109,8 @@ type
     pbStamina: TProgressBar;
     pbSanity: TProgressBar;
     grp4: TGroupBox;
-    btn14: TButton;
-    btn15: TButton;
+    btnPrevCards: TButton;
+    btnNextCards: TButton;
     btnProcess: TButton;
     pnl3: TPanel;
     lblSpeed: TLabel;
@@ -171,7 +156,11 @@ type
     pnlCard3: TPanel;
     imgPlaCard3: TImage;
     btn1: TButton;
-    btn2: TButton;
+    lblPlaLoc: TLabel;
+    lblPlaClue: TLabel;
+    lblPlaMoney: TLabel;
+    lblPlaInv: TLabel;
+    lbl2: TLabel;
     btnTakeWeapon: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
@@ -205,8 +194,8 @@ type
     procedure btnLogClearClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure btn17Click(Sender: TObject);
-    procedure btn14Click(Sender: TObject);
-    procedure btn15Click(Sender: TObject);
+    procedure btnPrevCardsClick(Sender: TObject);
+    procedure btnNextCardsClick(Sender: TObject);
     procedure btnProcessClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure imgPlaCard1Click(Sender: TObject);
@@ -216,6 +205,7 @@ type
     procedure btn2Click(Sender: TObject);
     procedure btnTakeWeaponClick(Sender: TObject);
     procedure btn19Click(Sender: TObject);
+    procedure FormPaint(Sender: TObject);
   private
     { Private declarations }
   public
@@ -267,12 +257,15 @@ var
   procedure ProcessNode(Node : PLLData; add_data: integer = 0);
   function LokIdToName(lok_id: integer): string;
   function GetLokNameByID(id: integer): string;
+  function GetCommonItemNameByID(id: integer): string;
   procedure ShowPlayerCards(pl: TPlayer; cur_cards: integer); // Show current player's card in low right corner
   procedure SelectCards(sel_cards: array of boolean; count: integer); // Draw edges on cards
+  procedure UpdStatus;
 
 implementation
 
-uses uChsLok, Math,  uTradeForm, uUseForm, uInvChsForm, uMonsterForm;
+uses uChsLok, Math,  uTradeForm, uUseForm, uInvChsForm, uMonsterForm,
+  uCardForm;
 
 {$R *.dfm}
 
@@ -378,10 +371,10 @@ begin
   lblCurPlayer.Caption := IntToStr(current_player);
   gCurrentPhase := PH_UPKEEP;
   lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
-  gCurrentPlayer.Stamina := 5; // Give 5 stamina
+ { gCurrentPlayer.Stamina := 5; // Give 5 stamina
   gCurrentPlayer.Sanity := 5; // Give 5 sanity
   gCurrentPlayer.Clues := 10; // Give 10 clues
-  gCurrentPlayer.Money := 10; // Give 10$
+  gCurrentPlayer.Money := 10; // Give 10$    }
   lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
 
   gates[1].other_world := 141;
@@ -448,30 +441,16 @@ begin
   // Загрузка monsters
   LoadMonsterCards(Monsters, ExtractFilePath(Application.ExeName));
 
-  
-  // И т.д.
 end;
 
 procedure TfrmMain.btnPlaDataClick(Sender: TObject);
 var
   i: integer;
 begin
-  lblPlrStamina.Caption := IntToStr(gCurrentPlayer.Stamina);
-  lblPlrSanity.Caption := IntToStr(gCurrentPlayer.Sanity);
-  lblPlrFocus.Caption := IntToStr(gCurrentPlayer.Focus);
-  lblStatSpeed.Caption := IntToStr(gCurrentPlayer.Stats[1]);
-  lblStatSneak.Caption := IntToStr(gCurrentPlayer.Stats[2]);
-  lblStatFight.Caption := IntToStr(gCurrentPlayer.Stats[3]);
-  lblStatWill.Caption := IntToStr(gCurrentPlayer.Stats[4]);
-  lblStatLore.Caption := IntToStr(gCurrentPlayer.Stats[5]);
-  lblStatLuck.Caption := IntToStr(gCurrentPlayer.Stats[6]);
-  lblPlaLoc.Caption := IntToStr(gCurrentPlayer.Location);
-  lblPlaClue.Caption := IntToStr(gCurrentPlayer.Clues);
-  lblPlaMoney.Caption := IntToStr(gCurrentPlayer.Money);
-  lblPlaInv.Caption := gCurrentPlayer.investigator.name;
-  lbItems.Clear;
+  UpdStatus;
+ { lbItems.Clear;
   for i := 1 to gPlayer.ItemsCount do
-    lbItems.Items.Add(IntToStr(gCurrentPlayer.cards[i]));
+    lbItems.Items.Add(IntToStr(gCurrentPlayer.cards[i]));      }
 end;
 
 procedure TfrmMain.ComboBox1Change(Sender: TObject);
@@ -503,7 +482,8 @@ begin
   current_player := GetFirstPlayer;
 
   frmMain.btn17Click(Sender);
-  ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
+  UpdStatus;
+  //ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
   
 
 //  cards0[StrToInt(ComboBox1.Text)].Dejstvie_karti;
@@ -544,6 +524,7 @@ begin
   begin
     Arkham_Streets[i].Free;
   end;
+  //Application.Terminate;
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -574,6 +555,8 @@ begin
     cbLocation.Items.Add(aLocationsNames[i, 2]);
   end;
 
+  
+
   gCurrentPhase := 2;
 
   player_count := 8;
@@ -585,12 +568,10 @@ begin
     //
   end;
 
-  selected_cards[1] := false;
-  selected_cards[2] := false;
-  selected_cards[3] := false;
+  for i := 1 to 20 do
+    selected_cards[i] := false;
 
   btnInitClick(Sender);
-
 end;
 
 
@@ -670,32 +651,37 @@ begin
   if 1=1{gCurrentPhase = PH_MOVE} then
   begin
     gCurrentPlayer.MoveToLocation(pl_lok, GetLokIDByName(cbLocation.Text));
-    if Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).clues > 0 then
+    pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
+    //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
+    for i := 1 to pl_lok.lok_mon_count do
+      if pl_lok.monsters[1] > 0 then
+      begin
+        frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[1]), gCurrentPlayer);
+        frmMonster.ShowModal;
+      end;
+
+    if pl_lok.clues > 0 then
     begin
       gCurrentPlayer.Clues := gCurrentPlayer.Clues + 1; // Сбор улик :)
       ShowMessage('Игрок нашел улики! Аааа-а-аа-аа-ааа супер круто. *Игрок бегает по-кругу в порывах радости.*');
     end;
-    //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
-    for i := 1 to Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).lok_mon_count do
-      if Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).monsters[1] > 0 then
-      //if MessageDlg('Care for battle with an awful monster?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-        btn2Click(Sender);
-      //else
-        //ShowMessage('Aah. Forget it.')
-
-      //gCurrentPlayer.Clues := gCurrentPlayer.Clues + 1; // Сбор улик :)
 
     //gCurrent_phase := PH_ENCOUNTER;
   end
   else
     ShowMessage('Wrong phase.');
 
+  UpdStatus;
+
   //gPlayer.Encounter(Locations_Deck);
 end;
 
 procedure TfrmMain.btnShuffleClick(Sender: TObject);
+var
+  i: integer;
 begin
-  Arkham_Streets[ton(gCurrentPlayer.Location)].deck.Shuffle;
+  //Arkham_Streets[ton(gCurrentPlayer.Location)].deck.Shuffle;
+
 end;
 
 // Проверка выполнилось ли условие на карте
@@ -764,6 +750,8 @@ begin
     end;
   end;}
   end;
+
+  UpdStatus;
 end;
 
 function ProcessMultiCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): integer;
@@ -849,8 +837,17 @@ begin
         Randomize;
         action_value := random(6)+1 + random(6)+1;
       end;
-      gPlayer.Money := gPlayer.Money - action_value;
-      frmMain.lstLog.Items.Add('Игрок потерял деньги: ' + IntToStr(action_value) + '.');
+      if action_value > 99 then
+      begin
+        gPlayer.Money := 0;
+        frmMain.lstLog.Items.Add('Игрок потерял все деньги.');
+
+      end
+      else
+      begin
+        gPlayer.Money := gPlayer.Money - action_value;
+        frmMain.lstLog.Items.Add('Игрок потерял деньги: ' + IntToStr(action_value) + '.');
+      end;
     end;
     3: begin // Take stamina
     if action_value = 88 then
@@ -931,7 +928,7 @@ begin
         gCurrentPlayer.AddItem(Common_Items_Deck, action_value)
       else
       begin
-        for i := 1 to action_value do // Draw 'action_value' number of cards
+        for i := 1 to action_value do
           gCurrentPlayer.AddItem(Common_Items_Deck, Common_Items_Deck.DrawCard);
       end;
       frmMain.lstLog.Items.Add('Игрок вытянул карту простого предмета: ' + IntToStr(action_value));
@@ -981,22 +978,19 @@ begin
       //gCurrentPlayer.Blessed := True;
       frmMain.lstLog.Items.Add('Игрок вышел на улицу (overlapping).');
     end; // case 20
-    21: begin // Busted
-      //gCurrentPlayer.MoveToLocation(3200);
-      frmMain.lstLog.Items.Add('Игрок взят в полицайку.');
-    end; // case 21
-    22: begin // Blessed
-      gCurrentPlayer.Blessed := True;
-      frmMain.lstLog.Items.Add('Игрок благословен.');
+
+    22: begin //
+
     end; // case 22
-    23: begin // Cursed
-      gCurrentPlayer.Cursed := True;
-      frmMain.lstLog.Items.Add('Игрок проклят.');
-    end; // case 23
-    25: begin // Draw another card for encounter
+    25: begin // Busted
+      //gCurrentPlayer.MoveToLocation(3200);
+      gCurrentPlayer.Location := 3200;
+      frmMain.lstLog.Items.Add('Игрок арестован.');
+    end; // case 25
+{    21: begin // Draw another card for encounter
       frmMain.lstLog.Items.Add('Игрок тянет другую карту контакта для локации');
     end; // case 25
-    26: begin // Draw common items, buy for 1 above of it's price, any or all
+}    26: begin // Draw common items, buy for 1 above of it's price, any or all
       frmMain.lstLog.Items.Add('Encounter');
     end; // case 26
     30: begin // Move to lok/street (ID or 0 - to street, -1 - to any lok/street)
@@ -1026,8 +1020,12 @@ begin
       frmMain.lstLog.Items.Add('Игрок вступает в контакт');
       Encounter(gCurrentPlayer, Arkham_Streets[ton(gCurrentPlayer.Location)].deck.cards[7, hon(gCurrentPlayer.Location)]);
     end; // case 32
+    33: begin // Blessed
+      gCurrentPlayer.Blessed := True;
+      frmMain.lstLog.Items.Add('Игрок благословен.');
+    end; // case 33
     34: begin //
-    
+
     end; // case 34
     35: begin // Sucked into gate
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
@@ -1041,14 +1039,16 @@ begin
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
       frmMain.lstLog.Items.Add('Появились врата.');
     end; // case 37
-  38: begin // Pass turn
-    //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
-    frmMain.lstLog.Items.Add('Игрок пропускает ход.');
-  end; // case 38
+    38: begin // Pass turn
+      //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
+      frmMain.lstLog.Items.Add('Игрок пропускает ход.');
+      gCurrentPlayer.Moves := 0;
+    end; // case 38
     39: begin // Lost in time and space
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
       frmMain.lstLog.Items.Add('Игрок потерян во сремени и пространстве.');
     end; // case 39
+
  { 41: begin // Check skill
     frmMain.lstLog.Items.Add('Проверяется навык ' + IntToStr(Choise - 1) + '(=' + IntToStr(gCurrentPlayer.Stats[Choise - 1]) + ' -' + IntToStr(N) + ')..');
     skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[Choise - 1] - N); // Choise - номер скилла
@@ -1060,6 +1060,11 @@ begin
      Take_Action();
     end;
   end; }// case 41
+    40: // Игрок тянет 1 простую вещь бесплатно из n
+      begin
+        Trade(TR_TAKE_ITEMS, CT_COMMON_ITEM, action_value);
+        frmMain.lstLog.Items.Add('Игрок тянет 1 простую вещь бесплатно из ' + IntToStr(action_value));
+      end; // case 42
     42: // Игрок тянет 1 простую вещь бесплатно из n
       begin
         frmMain.lstLog.Items.Add('Игрок тянет 1 простую вещь бесплатно из ' + IntToStr(action_value));
@@ -1069,12 +1074,22 @@ begin
     end; // case 43
     51: // Take common weapon
       begin
-        frmMain.lstLog.Items.Add('Игрок берет простое оружие бесплатно:' + IntToStr(action_value));
+        frmMain.lstLog.Items.Add('Игрок берет простое оружие бесплатно: ' + IntToStr(action_value));
       end; // case 51
     53: // Take common tome
       begin
-        frmMain.lstLog.Items.Add('Игрок берет первую попавшеюся простую книгу:' + IntToStr(action_value));
+        frmMain.lstLog.Items.Add('Игрок берет первую попавшеюся простую книгу: ' + IntToStr(action_value));
       end; // case 51
+      55: // Sell an item for 2x price
+      begin
+        card_to_load := CT_COMMON_ITEM;
+        frmCard.ShowModal;
+        frmMain.lstLog.Items.Add('Игрок может продать любую вещь в 2 раза дороже: ' + IntToStr(action_value));
+      end; // case 51
+      66: begin // Cursed
+        gCurrentPlayer.Cursed := True;
+        frmMain.lstLog.Items.Add('Игрок проклят.');
+      end; // case 66
 
     28: // Move to location, enc
       if action_value = 0 then
@@ -1083,8 +1098,10 @@ begin
 
       end
       else
-        frmMain.lstLog.Items.Add('Насин хеппенд :).'); //gPlayer.Location := StrToInt(IntToStr(Round(action_value / 3 + 0.4)) + IntToStr(action_value - (Round(action_value / 3 + 0.4) - 1) * 3));
+        frmMain.lstLog.Items.Add('Ничего не произошло.'); //gPlayer.Location := StrToInt(IntToStr(Round(action_value / 3 + 0.4)) + IntToStr(action_value - (Round(action_value / 3 + 0.4) - 1) * 3));
   end; // case
+
+  UpdStatus;
 end;
 
 
@@ -1149,22 +1166,7 @@ begin
       4200: begin
         if MessageDlg('Trade?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         begin
-          drawn_items[1] := Common_Items_Deck.DrawCard;
-          drawn_items[2] := Common_Items_Deck.DrawCard;
-          drawn_items[3] := Common_Items_Deck.DrawCard;
-          frmTrade.Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\' + IntToStr(drawn_items[1]) + '.jpg');
-          frmTrade.Image2.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\' + IntToStr(drawn_items[2]) + '.jpg');
-          frmTrade.Image3.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\' + IntToStr(drawn_items[3]) + '.jpg');
-          frmTrade.RadioButton1.Caption := IntToStr(drawn_items[1]);
-          frmTrade.RadioButton2.Caption := IntToStr(drawn_items[2]);
-          frmTrade.RadioButton3.Caption := IntToStr(drawn_items[3]);
-          frmTrade.ShowModal;
-          If frmTrade.RadioButton1.Checked then
-            gCurrentPlayer.AddItem(Common_Items_Deck, drawn_items[1]);
-          If frmTrade.RadioButton2.Checked then
-            gCurrentPlayer.AddItem(Common_Items_Deck, drawn_items[2]);
-          If frmTrade.RadioButton3.Checked then
-            gCurrentPlayer.AddItem(Common_Items_Deck, drawn_items[3]);
+          Trade(TR_BUY_NOM_PRICE, CT_COMMON_ITEM, 3);
         end
         else
           Encounter(gCurrentPlayer, Arkham_Streets[ton(gCurrentPlayer.Location)].deck.cards[seCrdNum.Value, hon(gCurrentPlayer.Location)]);
@@ -1177,6 +1179,7 @@ begin
   end
   else
     ShowMessage('Wrong phase!');
+  UpdStatus;
 end;
 
 function GetFirstPlayer;
@@ -1220,9 +1223,25 @@ var
 begin
   for i := 1 to NUMBER_OF_LOCATIONS do
     if StrToInt(aLocationsNames[i, 1]) = id then
+    begin
       GetLokNameByID := aLocationsNames[i, 2];
+      break;
+    end;
 end;
 
+// Get name of the item by id
+function GetCommonItemNameByID(id: integer): string;
+var
+  i: integer;
+begin
+  result := 'Not defined';
+  for i := 1 to NUMBER_OF_COMMON_CARDS do
+    if StrToInt(aCommon_Items[i, 1]) = id then
+    begin
+      Result := aCommon_Items[i, 2];
+      break;
+    end;
+end;
 
 
 
@@ -1301,7 +1320,7 @@ begin
 
   if output_data[1] = '0' then // Action
   begin
-    frmMain.lstLog.Items.Add('Насин хеппенд :).');
+    frmMain.lstLog.Items.Add('Ничего не произошло.');
   end;
 
   if output_data[1] = '3' then // Условие
@@ -1578,10 +1597,11 @@ end;
 
 procedure TfrmMain.Button2Click(Sender: TObject);
 begin
-  OpenTrdFrm(Common_Items_Deck.card[Common_Items_Deck.DrawCard],
+  Trade(TR_BUY_NOM_PRICE, CT_COMMON_ITEM, 3);
+  {OpenTrdFrm(Common_Items_Deck.card[Common_Items_Deck.DrawCard],
     Common_Items_Deck.card[Common_Items_Deck.DrawCard],
-    Common_Items_Deck.card[Common_Items_Deck.DrawCard], 1, 3);
-    frmTrade.Show;
+    Common_Items_Deck.card[Common_Items_Deck.DrawCard], 1, 3);}
+//    frmTrade.Show;
 end;
 
 function LokIdToName(lok_id: integer): string;
@@ -1598,17 +1618,13 @@ end;
 
 procedure TfrmMain.btn17Click(Sender: TObject);
 begin
+  if gCurrentPhase <> PH_UPKEEP then
+  begin
+    ShowMessage('Wrong phase!');
+    exit;
+  end;
   gCurrentPlayer.ChangeSkills(TrackBar1.Position, TrackBar2.Position, TrackBar3.Position);
-  lblSpeedValue.Caption := IntToStr(gCurrentPlayer.Stats[1]);
-  lblSneakValue.Caption := IntToStr(gCurrentPlayer.Stats[2]);
-  lblFightValue.Caption := IntToStr(gCurrentPlayer.Stats[3]);
-  lblWillValue.Caption := IntToStr(gCurrentPlayer.Stats[4]);
-  lblLoreValue.Caption := IntToStr(gCurrentPlayer.Stats[5]);
-  lblLuckValue.Caption := IntToStr(gCurrentPlayer.Stats[6]);
-  lblSanityValue.Caption := IntToStr(gCurrentPlayer.Sanity);
-  lblStaminaValue.Caption := IntToStr(gCurrentPlayer.Stamina);
-  pbSanity.Position := gCurrentPlayer.Sanity;
-  pbStamina.Position := gCurrentPlayer.Stamina;
+  UpdStatus;
 end;
 
 procedure ShowPlayerCards(pl: TPlayer; cur_cards: integer);
@@ -1662,16 +1678,46 @@ begin
   end;
 end;
 
-procedure TfrmMain.btn14Click(Sender: TObject);
+// Update labels on the form
+procedure UpdStatus;
+begin
+  with frmMain do
+  begin
+    lblStaminaValue.Caption := IntToStr(gCurrentPlayer.Stamina);
+    lblSanityValue.Caption := IntToStr(gCurrentPlayer.Sanity);
+    lblFocusValue.Caption := IntToStr(gCurrentPlayer.Focus);
+    lblSpeedValue.Caption := IntToStr(gCurrentPlayer.Stats[1]);
+    lblSneakValue.Caption := IntToStr(gCurrentPlayer.Stats[2]);
+    lblFightValue.Caption := IntToStr(gCurrentPlayer.Stats[3]);
+    lblWillValue.Caption := IntToStr(gCurrentPlayer.Stats[4]);
+    lblLoreValue.Caption := IntToStr(gCurrentPlayer.Stats[5]);
+    lblLuckValue.Caption := IntToStr(gCurrentPlayer.Stats[6]);
+    lblPlaLoc.Caption := GetLokNameByID(gCurrentPlayer.Location);
+    lblPlaClue.Caption := IntToStr(gCurrentPlayer.Clues);
+    lblPlaMoney.Caption := IntToStr(gCurrentPlayer.Money);
+    if gCurrentPlayer.investigator <> nil then
+      lblPlaInv.Caption := gCurrentPlayer.investigator.name
+    else
+      lblPlaInv.Caption := 'Undefined';
+
+    pbSanity.Position := gCurrentPlayer.Sanity;
+    pbStamina.Position := gCurrentPlayer.Stamina;
+  end;
+  // Отрисовка карт в наличии у игрока
+  ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
+end;
+
+procedure TfrmMain.btnPrevCardsClick(Sender: TObject);
 begin
   if player_current_card[current_player] > 1 then
     player_current_card[current_player] := player_current_card[current_player] - 1;
 
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
   SelectCards(selected_cards, player_current_card[current_player] - 1);
+
 end;
 
-procedure TfrmMain.btn15Click(Sender: TObject);
+procedure TfrmMain.btnNextCardsClick(Sender: TObject);
 begin
   player_current_card[current_player] := player_current_card[current_player] + 1;
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
@@ -1681,6 +1727,7 @@ end;
 procedure TfrmMain.btnProcessClick(Sender: TObject);
 var
   mythos_card_num: integer;
+  drawn_monster: integer;
 begin
  case gCurrentPhase of
     PH_UPKEEP: begin
@@ -1702,12 +1749,13 @@ begin
       // Open gate and spawn monster
       Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fGateSpawn)].AddGate(Mythos_Deck.card[mythos_card_num].fGateSpawn, gates[random(8)+1]);
       frmMain.lstLog.Items.Add('Появились ворота: ' + LokIdToName(Mythos_Deck.card[mythos_card_num].fGateSpawn));
-      Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fGateSpawn)].AddMonster(Mythos_Deck.card[mythos_card_num].fGateSpawn, DrawMonsterCard(Monsters));
-      frmMain.lstLog.Items.Add('Появился монстр: ' + LokIdToName(Mythos_Deck.card[mythos_card_num].fGateSpawn));
+      drawn_monster := DrawMonsterCard(Monsters);
+      Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fGateSpawn)].AddMonster(Mythos_Deck.card[mythos_card_num].fGateSpawn, drawn_monster);
+      frmMain.lstLog.Items.Add('Появился монстр: ' + IntToStr(drawn_monster));
       // Spawn clue
       Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fClueSpawn)].AddClue(Mythos_Deck.card[mythos_card_num].fClueSpawn, 1);
       frmMain.lstLog.Items.Add('Улика появилась: ' + LokIdToName(Mythos_Deck.card[mythos_card_num].fClueSpawn));
-
+      UpdStatus;
     end;
   end;
 {  case cbLocation.ItemIndex of
@@ -1734,7 +1782,8 @@ end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
 begin
-  frmInv.ShowModal;
+  frmInv.ShowModal;  
+  //UpdStatus;
 end;
 
 procedure TfrmMain.imgPlaCard1Click(Sender: TObject);
@@ -1766,15 +1815,14 @@ end;
 
 procedure TfrmMain.btn1Click(Sender: TObject);
 begin
+
   Common_Items_Deck.AddCardToDeck(1);
   ShowMessage(IntToStr(gCurrentPlayer.CardBonus(ST_FIGHT)));
 end;
 
 procedure TfrmMain.btn2Click(Sender: TObject);
-var
-  p_addr: ^Integer;
 begin
-  frmMonster.PrepareMonster(monsters[1], gCurrentPlayer);
+  frmMonster.PrepareMonster(GetMonsterByID(Monsters, Arkham_STreets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).Monsters[1]), gCurrentPlayer);
   frmMonster.ShowModal;
   //ShowMessage(IntToStr(p_addr));
 end;
@@ -1801,6 +1849,13 @@ begin
   gCurrentPhase := gCurrentPhase + 1;
   if gCurrentPhase > 5 then
     gCurrentPhase := 1;
+end;
+
+procedure TfrmMain.FormPaint(Sender: TObject);
+var
+  i: integer;
+begin
+
 end;
 
 end.

@@ -1,6 +1,6 @@
 object frmInv: TfrmInv
-  Left = 449
-  Top = 144
+  Left = 293
+  Top = 281
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'frmInv'
@@ -13,6 +13,8 @@ object frmInv: TfrmInv
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

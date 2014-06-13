@@ -45,7 +45,7 @@ type
 
   TCommonItemCardDeck = class(TCardDeck)
   private
-    fCards: array [1..COMMON_ITEMS_CARD_NUMBER] of TCommonItemCard; // Данные о каждой карте
+    fCards: array [1..NUMBER_OF_COMMON_CARDS] of TCommonItemCard; // Данные о каждой карте
     function GetCardID(i: integer): Integer;
     function GetCardData(i: integer): string;
   public
@@ -55,6 +55,7 @@ type
     function GetCardByID(id: integer): TCommonItemCard;
     function IndexOfCard(id: integer): integer;
     function DrawCard: Integer; //overload;
+    function DrawWeaponCard: Integer;
     procedure Shuffle(); override;
     function CheckAvailability(N: integer): boolean;
     procedure IncCounter(indx: integer); // Увеличивает счетчик карты
@@ -66,7 +67,7 @@ type
 
   TLocationCardsDeck = class(TCardDeck) // Карты
   private
-    fCards: array [1..LOCATION_CARD_NUMBER, 1..3] of TLocationCard; // Данные о каждой карте
+    fCards: array [1..NUMBER_OF_ENCOUNTER_CARDS, 1..3] of TLocationCard; // Данные о каждой карте
     function GetCard(id: integer; n: integer): TLocationCard; // Получает карту из колоды (для трех локаций улицы). Для св-ва.
     //function GetLokation: integer;
     //function GetNom: integer;
@@ -102,7 +103,7 @@ type
 
   TMythosDeck = class(TCardDeck)
   private
-    fCards: array [1..MYTHOS_CARDS_NUMBER] of TMythosCard; // Данные о каждой карте
+    fCards: array [1..NUMBER_OF_MYTHOS_CARDS] of TMythosCard; // Данные о каждой карте
     function GetCardByID(id: integer): TMythosCard;
     function GetCardID(i: integer): Integer;
     //function GetCardData(i: integer): string;
@@ -136,7 +137,7 @@ var
   i: Integer;
 begin
   fCardType := crd_type;
-  for i := 1 to COMMON_ITEMS_CARD_NUMBER do
+  for i := 1 to NUMBER_OF_COMMON_CARDS do
   begin
     fCards[i].id := 0;
     fCards[i].amt := 0;
@@ -175,7 +176,10 @@ begin
   for i:= 1 to fCount do
   begin
     if fCards[i].id = id then
+    begin
       IndexOfCard := i;
+      break;
+    end;
   end;
 end;
 
@@ -195,6 +199,23 @@ function TCommonItemCardDeck.DrawCard: Integer;
 begin
   Shuffle;
   DrawCard := fCards[fCount].id;
+end;
+
+function TCommonItemCardDeck.DrawWeaponCard: Integer;
+var
+  i: integer;
+begin
+  Result := 0;
+  Shuffle;
+  for i := 1 to fCount do
+  begin
+    if fCards[i].crd_type = COMMON_ITEM_WEAPON then
+    begin
+      Result := fCards[i].id;
+      Break;
+    end;
+  end;
+
 end;
 
 // Поиск файлов в картами
@@ -312,7 +333,7 @@ var
   i, j: Integer;
 begin
   fCardType := CT_ENCOUNTER;
-  for i := 1 to LOCATION_CARD_NUMBER do
+  for i := 1 to NUMBER_OF_ENCOUNTER_CARDS do
     for j := 1 to 3 do
     begin
       fCards[i, j].id := 0;
@@ -578,7 +599,7 @@ var
   i, j, k: Integer;
 begin
   fCardType := crd_type;
-  for i := 1 to MYTHOS_CARDS_NUMBER do
+  for i := 1 to NUMBER_OF_MYTHOS_CARDS do
   begin
     ;//fCards[i] := ;
   end;
@@ -589,7 +610,7 @@ destructor TMythosDeck.Destroy;
 var
   i: Integer;
 begin
-  for i := 1 to MYTHOS_CARDS_NUMBER do
+  for i := 1 to NUMBER_OF_MYTHOS_CARDS do
     ;//fCards[i].Free;
 end;
 
@@ -597,12 +618,14 @@ function TMythosDeck.GetCardByID(id: integer): TMythosCard;
 var
   i: integer;
 begin
-  for i := 1 to MYTHOS_CARDS_NUMBER do
+  for i := 1 to NUMBER_OF_MYTHOS_CARDS do
+  begin
     if fCards[i].fId = id then
     begin
       GetCardByID := fCards[i];
-      break;
+      Break;
     end;
+  end;
 end;
 
 // Получение ID карты

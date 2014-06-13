@@ -25,9 +25,9 @@ begin
   Application.Initialize;
   Application.Title := 'Gofy';
   Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TfrmInv, frmInv);
   Application.CreateForm(TfrmChsLok, frmChsLok);
   Application.CreateForm(TChoiseForm, ChoiseForm);
-  Application.CreateForm(TfrmInv, frmInv);
   Application.CreateForm(TfrmCard, frmCard);
   Application.CreateForm(TfrmTrade, frmTrade);
   Application.CreateForm(TfrmUse, frmUse);

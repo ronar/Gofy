@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <actions>
-	<or data="|2|2|'Подкуп за 20% выигрыша (1$).'|'Не платить.'|">
+	<or data="|2|2|'Попытаться (1$).'|'Не платить.'|">
 		<or1>
-			<condition data="|3|2|5|-2|1|">
+			<condition data="|3|3|1|1|0|">
 				<true>
-					<action data="|4|1|5|"></action>
+					<action data="|4|2|1|"></action>
+					<condition data="|3|2|5|-2|1|">
+						<true>
+							<action data="|4|1|5|"></action>
+						</true>
+						<false>
+							<action data="|0|0|0|"></action>
+						</false>
+					</condition>
 				</true>
 				<false>
-					<action data="|0|0|0|"></action>
+					<action data="|0|1|5|"></action>		
 				</false>
 			</condition>
-
 		</or1>
 		<or2>
 			<action data="|0|1|5|"></action>
