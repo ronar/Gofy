@@ -14,3 +14,12 @@ UPD 03/05/2014:
 Encounter cards ready (xml files)! Only left to code actions.
 
 Now implementing investigators and start of the game.
+
+UPD 14/06/2014:
+What works:
+Investigators
+Most of the encounters
+Partly mythos cards
+Drop of the cards
+Trading
+Gate closing
