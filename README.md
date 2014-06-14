@@ -17,9 +17,9 @@ Now implementing investigators and start of the game.
 
 UPD 14/06/2014:
 What works:
-Investigators
-Most of the encounters
-Partly mythos cards
-Drop of the cards
-Trading
-Gate closing
+Investigators;
+Most of the encounters;
+Partly mythos cards;
+Drop of the cards;
+Trading;
+Gate closing;
