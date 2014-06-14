@@ -20,6 +20,8 @@ What works:
 Investigators;
 Most of the encounters;
 Partly mythos cards;
+Fight with monsters;
+Player can have common items;
 Drop of the cards;
 Trading;
 Gate closing;
