@@ -17,7 +17,8 @@ uses
   uCardXML in 'uCardXML.pas',
   uMonsterForm in 'uMonsterForm.pas' {frmMonster},
   uMythos in 'uMythos.pas',
-  uStreet in 'uStreet.pas';
+  uStreet in 'uStreet.pas',
+  uDrop in 'uDrop.pas' {frmDrop};
 
 {$R *.res}
 
@@ -32,5 +33,6 @@ begin
   Application.CreateForm(TfrmTrade, frmTrade);
   Application.CreateForm(TfrmUse, frmUse);
   Application.CreateForm(TfrmMonster, frmMonster);
+  Application.CreateForm(TfrmDrop, frmDrop);
   Application.Run;
 end.

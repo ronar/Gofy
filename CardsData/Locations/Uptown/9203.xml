@@ -6,7 +6,7 @@
  		</true>
  		<false>
  			<action data="|4|5|2|"></action> 
- 	 		<action data="|4|34|2|"></action>
+ 	 		<action data="|4|30|0|"></action>
  		</false>
  	</condition>	
 </actions>

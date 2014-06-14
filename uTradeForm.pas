@@ -307,7 +307,6 @@ procedure TfrmTrade.btnTradeClick(Sender: TObject);
 begin
   if BuyItems then
     Close;
-
 end;
 
 end.

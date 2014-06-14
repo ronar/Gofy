@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 377
-  Top = 77
+  Left = 512
+  Top = 144
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'frmMain'
@@ -5276,7 +5276,7 @@ object frmMain: TfrmMain
         Top = 10
         Width = 153
         Height = 182
-        Color = clLime
+        Color = clGray
         TabOrder = 2
         object imgPlaCard1: TImage
           Left = 4
@@ -5312,7 +5312,7 @@ object frmMain: TfrmMain
         Top = 10
         Width = 153
         Height = 182
-        Color = clLime
+        Color = clGray
         TabOrder = 3
         object imgPlaCard2: TImage
           Left = 3
@@ -5328,7 +5328,7 @@ object frmMain: TfrmMain
         Top = 10
         Width = 153
         Height = 182
-        Color = clLime
+        Color = clGray
         TabOrder = 4
         object imgPlaCard3: TImage
           Left = 3
@@ -5719,6 +5719,15 @@ object frmMain: TfrmMain
     Caption = 'btn1'
     TabOrder = 21
     OnClick = btn1Click
+  end
+  object btn2: TButton
+    Left = 352
+    Top = 432
+    Width = 75
+    Height = 25
+    Caption = 'btn2'
+    TabOrder = 22
+    OnClick = btn2Click
   end
   object xmldoc1: TXMLDocument
     Left = 240

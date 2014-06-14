@@ -11,6 +11,7 @@ type
     fLocation: integer; // Player's location
     fNeighborhood: integer; // Neighbourhood of the player's location (for easy ref. instead of hon(..) func.)
     fCards: array [1..MAX_PLAYER_ITEMS] of integer; // Player's items
+    fExposedCards: array [1..MAX_PLAYER_ITEMS] of boolean; // Player's items
     fCardsCount: integer; // Amt. of player's items
     fMonsterTrophiesCount: Integer;
     fSpellsCount: integer; // Amt. of player's Spells
@@ -90,10 +91,12 @@ type
     procedure MoveToLocation(from_lok: TLocation; id_lok: integer);
     procedure GetItems; // Copy investigator's items to player
     procedure TakeWeapon(item1: integer); // Take choosen card to hands
+    procedure DropCard(indx: Integer);  // Drop card from player's possession
     procedure DropWeapon; // Take choosen card to hands
     procedure activate_item(item_id: Integer); // Activate weapon
     function CardBonus(stat: integer): Integer; // Bonuses from cards?
     function BonusWeapon: Integer; // Bonuses from weapon
+    procedure ExposedCards(var exposed_array: array of Boolean);
     //procedure
     //property Speed: integer read Stats[1] write Stats[1];
   end;
@@ -455,7 +458,7 @@ begin
     if evadedmosnters[i] <> 0 then
       num_of_evaded_mobs := num_of_evaded_mobs + 1;
 
-  if num_of_evaded_mobs <> from_lok.lok_mon_count then
+  if (num_of_evaded_mobs <> from_lok.lok_mon_count) and (from_lok.lok_id <> 0) then
     ShowMessage('Нельзя сменить локацию! Монстры есть от которых нужно уйти или победить.')
   else
   begin
@@ -511,6 +514,21 @@ begin
 
 end;
 
+procedure TPlayer.DropCard(indx: Integer); // Drop card from player's possession
+var
+  i: integer;
+begin
+  if indx <> 0 then
+  begin
+    fCards[indx] := 0;
+    for i := indx to fCardsCount do
+    begin
+      fCards[i] := fCards[i + 1]; 
+    end;
+    fCardsCount := fCardsCount - 1;
+  end;
+end;
+
 procedure TPlayer.DropWeapon;
 begin
   hands_taken := 0;
@@ -518,7 +536,6 @@ begin
   active_cards[2] := 0;
   active_cards[3] := 0;
   active_cards[4] := 0;
-
 end;
 
 function TPlayer.CardBonus(stat: integer): integer;
@@ -559,6 +576,17 @@ begin
     else
       Break;
   Result := bonus;
+end;
+
+procedure TPlayer.ExposedCards(var exposed_array: array of Boolean);
+var
+  i: integer;
+begin
+  for i := 1 to fCardsCount do
+  begin
+    exposed_array[i] := fExposedCards[i];
+  end;
+
 end;
 
 end.

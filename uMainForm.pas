@@ -162,6 +162,7 @@ type
     lblPlaInv: TLabel;
     lbl2: TLabel;
     btnTakeWeapon: TButton;
+    btn2: TButton;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -223,6 +224,7 @@ var
   gInvestigators: TInvDeck;
   Monsters: TMonsterArray;//array [1..MONSTER_MAX] of TMonster;
   Arkham_Streets: array [1..NUMBER_OF_STREETS] of TStreet;
+  exposed_cards: array [1..MAX_PLAYER_ITEMS] of boolean;
   Common_Items_Count: integer = 0;
   Unique_Items_Count: integer = 0;
   Spells_Count: integer = 0;
@@ -243,6 +245,7 @@ var
   head_of_list: PLLData;
   player_current_card: array [1..8] of integer; // For displaying cards on form
   selected_cards: array [1..MAX_PLAYER_ITEMS] of boolean;
+  procedure GameInit;
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(player: TPlayer; card: TLocationCard);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
@@ -265,7 +268,7 @@ var
 implementation
 
 uses uChsLok, Math,  uTradeForm, uUseForm, uInvChsForm, uMonsterForm,
-  uCardForm;
+  uCardForm, uDrop;
 
 {$R *.dfm}
 
@@ -359,8 +362,9 @@ end;
 
 // Инициализация
 // После инициализации, массив карт будет содержать
-// в себе все карты определенного типа
-procedure TfrmMain.btnInitClick(Sender: TObject);
+// в себе все карты определенного типа, начальные значения
+// переменных и т.д.
+procedure GameInit;
 var
   i: integer;
 begin
@@ -368,14 +372,14 @@ begin
   gPlayer := players[1];
   gCurrentPlayer := players[GetFirstPlayer];
   current_player := 1;
-  lblCurPlayer.Caption := IntToStr(current_player);
+  frmMain.lblCurPlayer.Caption := IntToStr(current_player);
   gCurrentPhase := PH_UPKEEP;
-  lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
+  frmMain.lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
  { gCurrentPlayer.Stamina := 5; // Give 5 stamina
   gCurrentPlayer.Sanity := 5; // Give 5 sanity
   gCurrentPlayer.Clues := 10; // Give 10 clues
   gCurrentPlayer.Money := 10; // Give 10$    }
-  lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
+  frmMain.lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
 
   gates[1].other_world := 141;
   gates[1].modif := -1;
@@ -412,6 +416,9 @@ begin
   for i := 1 to 8 do
     player_current_card[i] := 1;
 
+  for i := 1 to MAX_PLAYER_ITEMS do
+    exposed_cards[i] := false;
+
   // Загрузка карт n-го типа (Контакты)
 
   // Загрузка карт обычных предметов
@@ -440,7 +447,11 @@ begin
   //monCount := 0;
   // Загрузка monsters
   LoadMonsterCards(Monsters, ExtractFilePath(Application.ExeName));
+end;
 
+procedure TfrmMain.btnInitClick(Sender: TObject);
+begin
+  GameInit;
 end;
 
 procedure TfrmMain.btnPlaDataClick(Sender: TObject);
@@ -484,7 +495,7 @@ begin
   frmMain.btn17Click(Sender);
   UpdStatus;
   //ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
-  
+
 
 //  cards0[StrToInt(ComboBox1.Text)].Dejstvie_karti;
   //if ComboBox1.ItemIndex < 1 then
@@ -571,7 +582,7 @@ begin
   for i := 1 to 20 do
     selected_cards[i] := false;
 
-  btnInitClick(Sender);
+  GameInit;
 end;
 
 
@@ -647,7 +658,11 @@ var
   i: integer;
   pl_lok: TLocation;
 begin
-  pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
+  // TODO: point to null
+  if gCurrentPlayer.Location mod 1000 = 0 then // С улицы
+    pl_lok.lok_id := 0
+  else
+    pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
   if 1=1{gCurrentPhase = PH_MOVE} then
   begin
     gCurrentPlayer.MoveToLocation(pl_lok, GetLokIDByName(cbLocation.Text));
@@ -809,7 +824,7 @@ end;
 // Выполнение действия согласно карте
 procedure ProcessAction(action: integer; action_value: integer; suxxess: string = '0');
 var
-  i: integer;
+  i, drawn_monster: integer;
 begin
   case action of
     1: begin
@@ -959,6 +974,8 @@ begin
           frmMain.lstLog.Items.Add('Игрок вытянул карту союзника: ' + Allies[i, 2] + '.');
     end; // case 13
     15: begin // Drop item of player's choise
+      PrepareCardsToDrop(gCurrentPlayer, action_value);
+      frmDrop.ShowModal;
       //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
       frmMain.lstLog.Items.Add('Игрок потерял предмет (на выбор).');
     end; // case 15
@@ -1033,9 +1050,13 @@ begin
     end; // case 35
     36: begin // Monster apeeared
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
-      frmMain.lstLog.Items.Add('Появился монстр.');
+      drawn_monster := DrawMonsterCard(Monsters);
+      Arkham_Streets[ton(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, drawn_monster);
+
+      frmMain.lstLog.Items.Add('Появился монстр: ' + IntToStr(drawn_monster));
     end; // case 36
     37: begin // Gate appeared
+      Arkham_Streets[ton(gCurrentPlayer.Location)].AddGate(gCurrentPlayer.Location, gates[random(8)+1]);
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
       frmMain.lstLog.Items.Add('Появились врата.');
     end; // case 37
@@ -1112,7 +1133,7 @@ var
   c_node: PLLData;
   crd_name: string;
 
-  function GetLokNameByID(id: integer): string;
+ { function GetLokNameByID(id: integer): string;
   var
     k, card_id: Integer;
   begin
@@ -1125,7 +1146,7 @@ var
         break;
       end;
     end;
-  end;
+  end;     }
 begin
   // TODO: таблицу с картами | N | ID_Card |, чтобы находить карты для условия
   // и добавлять новые
@@ -1133,7 +1154,7 @@ begin
   // Получили данные карты
   if card.crd_head <> nil then
   begin
-    crd_name := path_to_exe+'\CardsData\Locations\' + GetLokNameByID(card.id) + '\' + IntToStr((ton(card.ID) * 1000) + StrToInt(IntToStr(card.ID)[4])) + '.jpg';
+    crd_name := path_to_exe+'CardsData\Locations\' + aNeighborhoodsNames[ton(card.id), 2] + '\' + IntToStr((ton(card.ID) * 1000) + StrToInt(IntToStr(card.ID)[4])) + '.jpg';
     frmMain.imgEncounter.Picture.LoadFromFile(crd_name);
     c_node := card.crd_head;
 
@@ -1162,6 +1183,11 @@ begin
   //lok := GetLokByID(gCurrentPlayer.Location);
   if 1=1{gCurrentPhase = PH_ENCOUNTER} then
   begin
+    if gCurrentPlayer.Location mod 1000 = 0 then
+    begin
+      ShowMessage('Для улицы нет контакта!');
+      Exit;
+    end;
     case gCurrentPlayer.Location of
       4200: begin
         if MessageDlg('Trade?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
@@ -1215,16 +1241,21 @@ begin
 
 end;
 
-
-
 function GetLokNameByID(id: integer): string;
 var
   i: integer;
 begin
+  Result := 'Undefined';
+  if id mod 1000 = 0 then // Streets.. right
+  begin
+    Result := aNeighborhoodsNames[ton(id), 2];
+    Exit;
+  end;
+  
   for i := 1 to NUMBER_OF_LOCATIONS do
     if StrToInt(aLocationsNames[i, 1]) = id then
     begin
-      GetLokNameByID := aLocationsNames[i, 2];
+      Result := aLocationsNames[i, 2];
       break;
     end;
 end;
@@ -1672,9 +1703,11 @@ begin
   for i := 1 to 3 do
   begin
     if selected_cards[i + (3 * count)] then
-      (frmMain.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clRed
+      (frmMain.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clLime
     else
-      (frmMain.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clLime;
+      (frmMain.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clGray;
+    if exposed_cards[i + (3 * count)] then
+      (frmMain.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clRed;
   end;
 end;
 
@@ -1705,6 +1738,7 @@ begin
   end;
   // Отрисовка карт в наличии у игрока
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
+  SelectCards(selected_cards, player_current_card[current_player] - 1);
 end;
 
 procedure TfrmMain.btnPrevCardsClick(Sender: TObject);
@@ -1789,28 +1823,20 @@ end;
 procedure TfrmMain.imgPlaCard1Click(Sender: TObject);
 begin
   selected_cards[1 + (3 * (player_current_card[current_player] - 1))] := not selected_cards[1 + (3 * (player_current_card[current_player] - 1))];
-  if selected_cards[1 + (3 * (player_current_card[current_player] - 1))] then
-    pnlCard1.Color := clRed
-  else
-    pnlCard1.Color := clLime;
+  SelectCards(selected_cards, player_current_card[current_player] - 1);
 end;
 
 procedure TfrmMain.imgPlaCard2Click(Sender: TObject);
 begin
   selected_cards[2 + (3 * (player_current_card[current_player] - 1))] := not selected_cards[2 + (3 * (player_current_card[current_player] - 1))];
-  if selected_cards[2 + (3 * (player_current_card[current_player] - 1))] then
-    pnlCard2.Color := clRed
-  else
-    pnlCard2.Color := clLime;
+  SelectCards(selected_cards, player_current_card[current_player] - 1);
 end;
 
 procedure TfrmMain.imgPlaCard3Click(Sender: TObject);
 begin
-  selected_cards[3 + (3 * (player_current_card[current_player] - 1))] := not selected_cards[3 + (3 * (player_current_card[current_player] - 1))];
-  if selected_cards[3 + (3 * (player_current_card[current_player] - 1))] then
-    pnlCard3.Color := clRed
-  else
-    pnlCard3.Color := clLime;
+  if not exposed_cards[3 + (3 * (player_current_card[current_player] - 1))] then
+    selected_cards[3 + (3 * (player_current_card[current_player] - 1))] := not selected_cards[3 + (3 * (player_current_card[current_player] - 1))];
+  SelectCards(selected_cards, player_current_card[current_player] - 1);
 end;
 
 procedure TfrmMain.btn1Click(Sender: TObject);
@@ -1822,9 +1848,11 @@ end;
 
 procedure TfrmMain.btn2Click(Sender: TObject);
 begin
-  frmMonster.PrepareMonster(GetMonsterByID(Monsters, Arkham_STreets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).Monsters[1]), gCurrentPlayer);
-  frmMonster.ShowModal;
+  //frmMonster.PrepareMonster(GetMonsterByID(Monsters, Arkham_STreets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).Monsters[1]), gCurrentPlayer);
+  //frmMonster.ShowModal;
   //ShowMessage(IntToStr(p_addr));
+  PrepareCardsToDrop(gCurrentPlayer, 2);
+  frmDrop.Show;
 end;
 
 procedure TfrmMain.btnTakeWeaponClick(Sender: TObject);
