@@ -9,6 +9,7 @@ type
     lok_name: string;
     clues: integer; // Улики на локации
     gate: TGate; // Врата открытые на локации
+    HasGate: Boolean;
     monsters: array [1..5] of integer;
     lok_mon_count: integer;
   end;
@@ -27,6 +28,8 @@ type
     procedure AddMonster(lok_id: integer; mob_id: integer);
     procedure AddClue(lok_id: integer; n: integer);
     procedure AddGate(lok_id: integer; gate: TGate);
+    procedure TakeAwayMonster(lok_id: integer; mob_id: integer);
+    procedure CloseGate(lok_id: integer);
   end;
 
   function GetLokIDByName(lok_name: string): integer; // Получение ID локации по названию
@@ -51,6 +54,7 @@ begin
         fLok[n].gate.other_world := 0;
         fLok[n].gate.modif := 0;
         fLok[n].gate.dimension := 0;
+        fLok[n].HasGate := false;
         fLok[n].monsters[1] := 0;
         fLok[n].monsters[2] := 0;
         fLok[n].monsters[3] := 0;
@@ -143,13 +147,35 @@ begin
 end;
 
 procedure TStreet.AddGate(lok_id: integer; gate: TGate);
+begin
+  fLok[hon(lok_id)] := GetLokByID(lok_id);
+  fLok[hon(lok_id)].gate.other_world := gate.other_world;
+  fLok[hon(lok_id)].gate.modif := gate.modif;
+  fLok[hon(lok_id)].gate.dimension := gate.dimension;
+  fLok[hon(lok_id)].HasGate := true;
+end;
+
+procedure TStreet.TakeAwayMonster(lok_id: integer; mob_id: integer);
+var
+  i: integer;
+begin
+  if fLok[hon(lok_id)].monsters[1] = mob_id then
+  begin
+    fLok[hon(lok_id)].monsters[1] := 0;
+    fLok[hon(lok_id)].lok_mon_count := fLok[hon(lok_id)].lok_mon_count - 1;
+  end;
+
+end;
+
+procedure TStreet.CloseGate(lok_id: integer);
 var
   lokk: TLocation;
 begin
-  lokk := GetLokByID(lok_id);
-  lokk.gate.other_world := gate.other_world;
-  lokk.gate.modif := gate.modif;
-  lokk.gate.dimension := gate.dimension;
+  fLok[hon(lok_id)] := GetLokByID(lok_id);
+  fLok[hon(lok_id)].gate.other_world := 0;
+  fLok[hon(lok_id)].gate.modif := 0;
+  fLok[hon(lok_id)].gate.dimension := 0;
+  fLok[hon(lok_id)].HasGate := false;
 end;
 
 end.

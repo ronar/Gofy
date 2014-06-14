@@ -32,6 +32,8 @@ type
     fPlNumber: integer;
     fHands: Integer; // Number of hands :)
     fRollResults: array [1..20] of integer;
+    fDelayed: Boolean; // if delayed then pass the turn
+    fExploredMarker: boolean;
     function GetPlayerCard(indx: integer): integer;
     function GetPlayerStat(indx: integer): integer;
     function GetMonsterTrophies(indx: integer): integer;
@@ -81,10 +83,7 @@ type
     procedure AssignInvestigator(inv: TInvestigator);
     //function Get_Item(indx: integer): integer;
     function RollADice(stat: integer; difficulty: integer): integer;
-    function Act_Condition(Cond: integer; Choise: integer; N:integer; min: integer; max: integer): boolean;
-    procedure EvtMoveToLocation(c_N: integer; c_data: string);
     procedure Encounter(var Locations_Deck: TCardDeck);
-    procedure Take_Action(action: integer; action_value: integer);
     function CheckAvailability(grade: integer; param: integer): boolean;
     function HasItem(ID: integer): boolean;
     procedure ChangeSkills(x1: integer; x2: integer; x3: integer);
@@ -97,6 +96,7 @@ type
     function CardBonus(stat: integer): Integer; // Bonuses from cards?
     function BonusWeapon: Integer; // Bonuses from weapon
     procedure ExposedCards(var exposed_array: array of Boolean);
+    function CloseGate: boolean;
     //procedure
     //property Speed: integer read Stats[1] write Stats[1];
   end;
@@ -115,6 +115,7 @@ begin
   fStamina := 0;
   fSanity := 0;
   fFocus := 0;
+  fExploredMarker := True;
   for i := 1 to 5 do
   begin
     active_cards[i] := 0;
@@ -343,45 +344,9 @@ begin
   end; // While
 end;
 
-procedure TPlayer.EvtMoveToLocation(c_N: integer; c_data: string);
-var
- c_Action1, c_Action1Value: integer;
-begin
-  // refer to xls file to locs table (n, id)
-  if c_N = 0 then
-  begin
-    frmChsLok.ShowModal; // Move to any location
-  end
-  else
-  begin
-    fLocation := 2103;
-  end;
-
-  c_Action1 := StrToInt(copy(c_data, 9, 2));
-  c_Action1Value := StrToInt(copy(c_data, 14, 2));
-
-  if c_Action1 = 35 then
-    ShowMessage('Encounter!');
-end;
 
 // Разрешить контакт
 procedure TPlayer.Encounter(var Locations_Deck: TCardDeck);
-begin
-
-end;
-
-// Проверка выполнилось ли условие на карте
-function TPlayer.Act_Condition(cond: integer; choise: integer; N:integer; min: integer; max: integer): boolean;
-var
-  skill_test: integer;
-begin
-
-end;
-
-// Выполнение действие согласно карте
-procedure TPlayer.Take_Action(action: integer; action_value: integer);
-var
-  i: integer;
 begin
 
 end;
@@ -587,6 +552,26 @@ begin
     exposed_array[i] := fExposedCards[i];
   end;
 
+end;
+
+function TPlayer.CloseGate: boolean;
+begin
+  if not fExploredMarker then
+  begin
+    ShowMessage('Нету маркера исследованности!');
+    Result := False;
+    Exit;
+  end;
+  //ShowMessage(IntToStr(Arkham_Streets[ton(fLocation)].GetLokByID(fLocation).gate.modif));
+  if RollADice(fStats[3] + Arkham_Streets[ton(fLocation)].GetLokByID(fLocation).gate.modif, 1) < 1 then
+    if RollADice(fStats[5] + Arkham_Streets[ton(fLocation)].GetLokByID(fLocation).gate.modif, 1) < 1 then
+    begin
+      Result := False;
+      Exit;
+    end;
+  // TODO: try except?
+  Arkham_Streets[ton(fLocation)].CloseGate(fLocation);
+  Result := true;
 end;
 
 end.

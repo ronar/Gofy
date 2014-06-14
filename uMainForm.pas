@@ -1052,7 +1052,6 @@ begin
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
       drawn_monster := DrawMonsterCard(Monsters);
       Arkham_Streets[ton(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, drawn_monster);
-
       frmMain.lstLog.Items.Add('Появился монстр: ' + IntToStr(drawn_monster));
     end; // case 36
     37: begin // Gate appeared
@@ -1186,6 +1185,19 @@ begin
     if gCurrentPlayer.Location mod 1000 = 0 then
     begin
       ShowMessage('Для улицы нет контакта!');
+      Exit;
+    end;
+    if Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).HasGate then
+    begin
+      if MessageDlg('Закрыть врата ведущие в иной мир?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      begin
+        if gCurrentPlayer.CloseGate then
+          frmMain.lstLog.Items.Add('Игрок подзакрыл врата!')
+        else
+          frmMain.lstLog.Items.Add('Игрок не смог подзакрыть врата!')
+
+      end;
+      UpdStatus;
       Exit;
     end;
     case gCurrentPlayer.Location of

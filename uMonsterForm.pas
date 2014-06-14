@@ -74,6 +74,12 @@ end;
 
 procedure TfrmMonster.btnEvadeClick(Sender: TObject);
 begin
+  if Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).lok_mon_count = 0 then
+  begin
+    ShowMessage('Уходить уже не от кого :('+#10+#13+'Все монстры вышли.');
+    exit;
+  end;
+
   if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_SNEAK] + gMonster.fAwareness, 1) > 0 then
   begin
     gCurrentPlayer.evadedmosnters[1] := gMonster.fId;
@@ -98,6 +104,14 @@ begin
     ShowMessage('Игрок не может драться!!');
     exit;
   end;
+
+  if Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).lok_mon_count = 0 then
+  begin
+    ShowMessage('Биться не с кем :('+#10+#13+'Все монстры вышли.');
+    exit;
+  end;
+
+
   // Horror! check
   if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_WILL] + gMonster.fHorrorRate, 1) >= 1 then
   begin
@@ -113,6 +127,7 @@ begin
   if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_FIGHT] + gMonster.fCmbtRate + gCurrentPlayer.BonusWeapon, gMonster.fToughness) >= gMonster.fToughness then
   begin
     gCurrentPlayer.AddMonsterTrophies(gMonster.fId);
+    Arkham_Streets[ton(gCurrentPlayer.Location)].TakeAwayMonster(gCurrentPlayer.Location, gMonster.fId);
     lst1.Items.Add('Убил моба!!');
     lst1.Items.Add('Гирок получил монстр-трофеюшек!!');
   end
@@ -123,6 +138,14 @@ begin
     if gCurrentPlayer.Stamina < 1 then
     begin
       lst1.Items.Add('Гирок без сознания, и перемещен в больницу Св. Марии');
+      with empty_lok do
+      begin
+        lok_id := 0;
+        lok_name := 'Void';
+        clues := 0;
+        HasGate := False;
+        lok_mon_count := 0;
+      end;
       gCurrentPlayer.MoveToLocation(empty_lok, 5200);
       gCurrentPlayer.Moves := 0;
     end;
