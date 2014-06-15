@@ -18,7 +18,7 @@ procedure XML2LL(head: PLLData; file_name: string);
 
 implementation
 
-uses SysUtils, Dialogs, xmldom, XMLIntf, msxmldom, XMLDoc;
+uses SysUtils, Dialogs, xmldom, XMLIntf, msxmldom, XMLDoc, uMainForm;
 
 
 procedure XML2LL(

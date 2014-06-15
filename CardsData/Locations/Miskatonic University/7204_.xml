@@ -2,10 +2,10 @@
 <actions>
 	<or data="|2|2|'Заплатить 4$'|'Выйти на улицу'||">
 		<or1>
-			<action data="|4|1|4|"></action>
+			<action data="|4|2|4|"></action>
 		</or1>
 		<or2>
-			<action data="|4|34|1|"></action>			
+			<action data="|4|30|0|"></action>			
 		</or2>
 	</or>
 </actions>

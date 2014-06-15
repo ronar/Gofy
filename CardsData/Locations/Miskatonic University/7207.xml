@@ -2,7 +2,7 @@
 <actions>
 	<action data="|5|2|4|0|3|">
 		<zero>
-			<action data="|4|34|1|"></action>
+			<action data="|4|30|0|"></action>
 		</zero>
 		<one>
 			<action data="|4|42|2|"></action>			

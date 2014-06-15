@@ -71,6 +71,7 @@ const
   MONSTER_MAX = 50;
   ALLIES_MAX = 50;
   //COMMON_ITEMS_MAX = 100;
+  aStats: array [1..6] of string = ('Скорость', 'Скрытность', 'Битва', 'Воля', 'Знание', 'Удача');
   aPhasesNames: array [1..5] of string = ('UPKEEP', 'MOVE', 'ENCOUNTER', 'OTHER WORLDS ENCOUNTER', 'MYTHOS');
   aNeighborhoodsNames: array [1..NUMBER_OF_STREETS, 1..2] of string = (
         ('1000', 'Northside'),
