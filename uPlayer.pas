@@ -28,7 +28,7 @@ type
     fCursed: boolean;
     fFirstPlayer: boolean; // Флаг первого игрока
     fInvestigator: TInvestigator;
-    fmoves: integer; // кол-во оставшихся ходов
+    fMoves: integer; // кол-во оставшихся ходов
     fPlNumber: integer;
     fHands: Integer; // Number of hands :)
     fRollResults: array [1..20] of integer;
@@ -418,6 +418,11 @@ var
   i, j: integer;
   num_of_evaded_mobs: integer;
 begin
+  if fMoves = 0 then
+  begin
+    ShowMessage('Нет ходов!');
+    exit;
+  end;
   num_of_evaded_mobs := 0;
   for i := 1 to 5 do
     if evadedmosnters[i] <> 0 then
@@ -429,6 +434,7 @@ begin
   begin
     fLocation := id_lok;
     fNeighborhood := (id_lok div 1000) * 1000; // ?
+    fMoves := fMoves - 1;
   end;
 end;
 

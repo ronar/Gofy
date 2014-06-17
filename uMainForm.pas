@@ -21,7 +21,7 @@ type
     Label2: TLabel;
     cbLocation: TComboBox;
     Label11: TLabel;
-    bntEncounter: TButton;
+    btnEncounter: TButton;
     lblLocIDCaption: TLabel;
     lblLocID: TLabel;
     Label16: TLabel;
@@ -177,7 +177,7 @@ type
     procedure DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edPlaStaminaChange(Sender: TObject);
-    procedure bntEncounterClick(Sender: TObject);
+    procedure btnEncounterClick(Sender: TObject);
     procedure btnMoveToLokClick(Sender: TObject);
     procedure btnShuffleClick(Sender: TObject);
     procedure btnChsInvClick(Sender: TObject);
@@ -477,13 +477,18 @@ begin
     players[1].bFirstPlayer := true;
     for i := 2 to player_count do
       players[i].bFirstPlayer := false;
+    ShowMessage('Все игроки походили. След. фаза.');
+    gCurrentPhase := gCurrentPhase + 1;
+    if gCurrentPhase > 5 then
+      gCurrentPhase := 1;
   end;
 
   lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
   gCurrentPlayer := players[GetFirstPlayer];
   current_player := GetFirstPlayer;
+  btnEncounter.Enabled := true;
 
-  frmMain.btn17Click(Sender);
+  //frmMain.btn17Click(Sender);
   UpdStatus;
 end;
 
@@ -621,7 +626,7 @@ begin
     pl_lok.lok_id := 0
   else
     pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
-  if 1=1{gCurrentPhase = PH_MOVE} then
+  if gCurrentPhase = PH_MOVE then
   begin
     gCurrentPlayer.MoveToLocation(pl_lok, GetLokIDByName(cbLocation.Text));
     pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
@@ -663,13 +668,13 @@ begin
 
 end;
 
-procedure TfrmMain.bntEncounterClick(Sender: TObject);
+procedure TfrmMain.btnEncounterClick(Sender: TObject);
 var
   lok: TLocation;
   drawn_items: array [1..3] of integer;
 begin
   //lok := GetLokByID(gCurrentPlayer.Location);
-  if 1=1{gCurrentPhase = PH_ENCOUNTER} then
+  if gCurrentPhase = PH_ENCOUNTER then
   begin
     if gCurrentPlayer.Location mod 1000 = 0 then
     begin
@@ -678,6 +683,7 @@ begin
     end;
 
     Arkham_Streets[ton(gCurrentPlayer.Location)].Encounter(gCurrentPlayer.Location, seCrdNum.Value);
+    btnEncounter.Enabled := False;
     //Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.Shuffle;
   end
   else
@@ -937,6 +943,7 @@ begin
 
     pbSanity.Position := gCurrentPlayer.Sanity;
     pbStamina.Position := gCurrentPlayer.Stamina;
+    lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
   end;
   // Отрисовка карт в наличии у игрока
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
@@ -967,7 +974,8 @@ var
 begin
  case gCurrentPhase of
     PH_UPKEEP: begin
-      gCurrentPhase := PH_MOVE;
+      //gCurrentPhase := PH_MOVE;
+      gCurrentPlayer.Moves := gCurrentPlayer.Stats[1];
       lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
     end;
     PH_MOVE: begin
@@ -1075,10 +1083,37 @@ begin
 end;
 
 procedure TfrmMain.btn19Click(Sender: TObject);
+var
+  fp, i: integer;
 begin
-  gCurrentPhase := gCurrentPhase + 1;
-  if gCurrentPhase > 5 then
-    gCurrentPhase := 1;
+  if GetFirstPlayer < player_count then
+  begin
+    fp := GetFirstPlayer;
+    players[fp].bFirstPlayer := False;
+    players[fp + 1].bFirstPlayer := true;
+    ShowMessage('След. игрок.');
+    //current_player := fp + 1;
+  end
+  else
+  begin
+    players[1].bFirstPlayer := true;
+    for i := 2 to player_count do
+      players[i].bFirstPlayer := false;
+    ShowMessage('Все игроки походили. След. фаза.');
+    gCurrentPhase := gCurrentPhase + 1;
+    if gCurrentPhase > 5 then
+      gCurrentPhase := 1;
+    if gCurrentPhase = 1 then
+      btnProcessClick(Sender);  
+  end;
+
+  lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
+  gCurrentPlayer := players[GetFirstPlayer];
+  current_player := GetFirstPlayer;
+  btnEncounter.Enabled := true;
+
+  //frmMain.btn17Click(Sender);
+  UpdStatus;
 end;
 
 procedure TfrmMain.FormPaint(Sender: TObject);

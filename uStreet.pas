@@ -19,6 +19,7 @@ type
     fId: integer; // id of streets (1000, 2000, 3000, etc..)
     fLok: array [1..3] of TLocation;
     fDeck: TLocationCardsDeck;
+    fAdjacent: array [1..6] of integer; // Прилегающие локации
     function GetDeck: TLocationCardsDeck;
   public
     constructor Create(street_id: integer);

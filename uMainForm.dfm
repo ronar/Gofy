@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 538
-  Top = 213
+  Left = 502
+  Top = 171
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'frmMain'
@@ -2190,14 +2190,14 @@ object frmMain: TfrmMain
     TabOrder = 3
     OnChange = cbLocationChange
   end
-  object bntEncounter: TButton
+  object btnEncounter: TButton
     Left = 232
     Top = 48
     Width = 65
     Height = 25
     Caption = 'Encounter'
     TabOrder = 7
-    OnClick = bntEncounterClick
+    OnClick = btnEncounterClick
   end
   object btnMoveToLok: TButton
     Left = 160
