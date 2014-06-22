@@ -76,6 +76,7 @@ type
     property Moves: integer read fMoves write fMoves;
     property bFirstPlayer: boolean read fFirstPlayer write fFirstPlayer;
     property Investigator: TInvestigator read fInvestigator;
+    property Delayed: Boolean read fDelayed write fDelayed; // if delayed then pass the turn
     //property Hands: integer read fHands;
     procedure DrawCard(card_id: integer);
     procedure AddItem(var cards: TCommonItemCardDeck; id: integer);

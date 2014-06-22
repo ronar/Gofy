@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 502
-  Top = 171
+  Left = 512
+  Top = 175
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'frmMain'
@@ -5240,8 +5240,8 @@ object frmMain: TfrmMain
       Caption = 'lblPlaInv'
     end
     object pbStamina: TProgressBar
-      Left = 272
-      Top = 161
+      Left = 256
+      Top = 137
       Width = 258
       Height = 17
       Max = 10
@@ -5593,7 +5593,7 @@ object frmMain: TfrmMain
         TabOrder = 4
       end
     end
-    object btn19: TButton
+    object btnContinue: TButton
       Left = 561
       Top = 148
       Width = 90
@@ -5607,7 +5607,7 @@ object frmMain: TfrmMain
       ParentFont = False
       TabOrder = 5
       WordWrap = True
-      OnClick = btn19Click
+      OnClick = btnContinueClick
     end
     object pb3: TProgressBar
       Left = 562
@@ -5725,7 +5725,7 @@ object frmMain: TfrmMain
     Top = 432
     Width = 75
     Height = 25
-    Caption = 'btn2'
+    Caption = 'delayed'
     TabOrder = 22
     OnClick = btn2Click
   end
