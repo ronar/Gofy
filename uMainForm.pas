@@ -177,7 +177,6 @@ type
     procedure DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edPlaStaminaChange(Sender: TObject);
-    procedure btnEncounterClick(Sender: TObject);
     procedure btnMoveToLokClick(Sender: TObject);
     procedure btnShuffleClick(Sender: TObject);
     procedure btnChsInvClick(Sender: TObject);
@@ -668,29 +667,6 @@ begin
 
 end;
 
-procedure TfrmMain.btnEncounterClick(Sender: TObject);
-var
-  lok: TLocation;
-  drawn_items: array [1..3] of integer;
-begin
-  //lok := GetLokByID(gCurrentPlayer.Location);
-  if gCurrentPhase = PH_ENCOUNTER then
-  begin
-    if gCurrentPlayer.Location mod 1000 = 0 then
-    begin
-      MessageDlg('Для улицы нет контакта!', mtInformation, [mbOK], 0);
-      Exit;
-    end;
-
-    Arkham_Streets[ton(gCurrentPlayer.Location)].Encounter(gCurrentPlayer.Location, seCrdNum.Value);
-    btnEncounter.Enabled := False;
-    //Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.Shuffle;
-  end
-  else
-    ShowMessage('Wrong phase!');
-  UpdStatus;
-end;
-
 function GetFirstPlayer;
 var
   i: integer;
@@ -971,6 +947,8 @@ procedure TfrmMain.btnProcessClick(Sender: TObject);
 var
   mythos_card_num: integer;
   drawn_monster: integer;
+  lok: TLocation;
+  drawn_items: array [1..3] of integer;
 begin
  case gCurrentPhase of
     PH_UPKEEP: begin
@@ -982,9 +960,17 @@ begin
 
     end;
     PH_ENCOUNTER: begin
+      if gCurrentPlayer.Location mod 1000 = 0 then
+      begin
+        MessageDlg('Для улицы нет контакта!', mtInformation, [mbOK], 0);
+        Exit;
+      end;
 
-      //Encounter(gCurrentPlayer, Downtown.Deck, Downtown.Deck.DrawCard);
+      Arkham_Streets[ton(gCurrentPlayer.Location)].Encounter(gCurrentPlayer.Location, seCrdNum.Value);
+      //Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.Shuffle;
+      UpdStatus;
     end;
+    //Encounter(gCurrentPlayer, Downtown.Deck, Downtown.Deck.DrawCard);
     PH_OTHER_WORLDS_ENCOUNTER: begin
     end;
     PH_MYTHOS: begin
