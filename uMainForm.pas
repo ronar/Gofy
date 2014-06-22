@@ -132,7 +132,7 @@ type
     TrackBar3: TTrackBar;
     btn17: TButton;
     btn18: TButton;
-    btnContinue: TButton;
+    btn19: TButton;
     pb3: TProgressBar;
     pb4: TProgressBar;
     pnl4: TPanel;
@@ -205,7 +205,7 @@ type
     procedure btn1Click(Sender: TObject);
     procedure btn2Click(Sender: TObject);
     procedure btnTakeWeaponClick(Sender: TObject);
-    procedure btnContinueClick(Sender: TObject);
+    procedure btn19Click(Sender: TObject);
     procedure FormPaint(Sender: TObject);
   private
     { Private declarations }
@@ -224,13 +224,11 @@ var
   gInvestigators: TInvDeck;
   Monsters: TMonsterArray;//array [1..MONSTER_MAX] of TMonster;
   Arkham_Streets: array [1..NUMBER_OF_STREETS] of TStreet;
-  Other_Worlds_Deck: TOtherWorldCardsDeck;
   exposed_cards: array [1..MAX_PLAYER_ITEMS] of boolean;
   Common_Items_Count: integer = 0;
   Unique_Items_Count: integer = 0;
   Spells_Count: integer = 0;
   Skills_Count: integer = 0;
-  OW_Cards_Count: integer = 0;
   Mythos_Cards_Count: integer = 0;
   Investigators_Count: integer = 0;
   //Downtown_Count: integer = 0;
@@ -309,10 +307,6 @@ begin
       //Arkham_Streets[5].mDeck.Shuffle;
 
     end; // CT_ENCOUNTER
-
-    CT_OW_ENCOUNTER: begin
-       OW_Cards_Count := Other_Worlds_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\CardsData\OtherWorlds\');
-    end; // CT_OW_ENCOUNTER
 
     CT_MYTHOS: begin
        Mythos_Cards_Count := Mythos_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\CardsData\Mythos\');
@@ -433,9 +427,6 @@ begin
   // Загрузка карт контактов
   Load_Cards(CT_ENCOUNTER);
 
-  // Загрузка карт контактов иных миров
-  Load_Cards(CT_OW_ENCOUNTER);
-
   // Загрузка карт mythos
   Load_Cards(CT_MYTHOS);
 
@@ -551,7 +542,6 @@ begin
   //Unique_Items_Deck:= TItemCardDeck.Create(CT_UNIQUE_ITEM);
   //Spells_Deck:= TItemCardDeck.Create(CT_SPELL);
   //Skills_Deck:= TItemCardDeck.Create(CT_SKILL);
-  Other_Worlds_Deck := TOtherWorldCardsDeck.Create();
   Mythos_Deck := TMythosDeck.Create(CT_MYTHOS);
   gInvestigators := TInvDeck.Create(CT_INVESTIGATOR);
 
@@ -985,10 +975,7 @@ begin
  case gCurrentPhase of
     PH_UPKEEP: begin
       //gCurrentPhase := PH_MOVE;
-      if not gCurrentPlayer.Delayed then
-        gCurrentPlayer.Moves := gCurrentPlayer.Stats[1]
-      else
-        gCurrentPlayer.Delayed := false;
+      gCurrentPlayer.Moves := gCurrentPlayer.Stats[1];
       lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
     end;
     PH_MOVE: begin
@@ -1074,8 +1061,8 @@ begin
   //frmMonster.PrepareMonster(GetMonsterByID(Monsters, Arkham_STreets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).Monsters[1]), gCurrentPlayer);
   //frmMonster.ShowModal;
   //ShowMessage(IntToStr(p_addr));
-  players[2].Delayed := True;
-  //frmDrop.Show;
+  PrepareCardsToDrop(gCurrentPlayer, 2);
+  frmDrop.Show;
 end;
 
 procedure TfrmMain.btnTakeWeaponClick(Sender: TObject);
@@ -1095,23 +1082,13 @@ begin
 
 end;
 
-procedure TfrmMain.btnContinueClick(Sender: TObject);
+procedure TfrmMain.btn19Click(Sender: TObject);
 var
   fp, i: integer;
 begin
-  fp := GetFirstPlayer;
-
-  if (fp < player_count) then
+  if GetFirstPlayer < player_count then
   begin
-    //fp := GetFirstPlayer;
-    if players[fp + 1].Delayed then
-    begin
-      ShowMessage('Игрок задержан. Пропуск хода.');
-      players[fp].bFirstPlayer := False;
-      players[fp + 1].bFirstPlayer := true;
-      btnContinueClick(Sender);
-      exit;
-    end;
+    fp := GetFirstPlayer;
     players[fp].bFirstPlayer := False;
     players[fp + 1].bFirstPlayer := true;
     ShowMessage('След. игрок.');
@@ -1127,7 +1104,7 @@ begin
     if gCurrentPhase > 5 then
       gCurrentPhase := 1;
     if gCurrentPhase = 1 then
-      btnProcessClick(Sender);
+      btnProcessClick(Sender);  
   end;
 
   lblCurPlayer.Caption := IntToStr(GetFirstPlayer);

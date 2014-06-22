@@ -26,7 +26,6 @@ const
   CT_COMMON_ITEM = 1; // Простые предметы (первая цифра в ID)
   CT_UNIQUE_ITEM = 2; // Уникальные предметы (первая цифра в ID)
   CT_ENCOUNTER = 6; // Контакт (первая цифра в ID)
-  CT_OW_ENCOUNTER = 7; // Контакт иного мира (первая цифра в ID)
   CT_INVESTIGATOR = 9;
   COMMON_ITEM_WEAPON = 1; // Оружие
   COMMON_ITEM_TOME = 2; // Книга
@@ -62,7 +61,6 @@ const
   NUMBER_OF_COMMON_CARDS = 59;
   NUMBER_OF_UNIQUE_CARDS = 83;
   NUMBER_OF_ENCOUNTER_CARDS = 20;
-  NUMBER_OF_OW_ENCOUNTER_CARDS = 50;
   NUMBER_OF_MYTHOS_CARDS = 30;
   NUMBER_OF_INVESTIGATORS = 49;
   //LOCATION_CARD_NUMBER = 20; // Число карт на каждую локацию
