@@ -132,7 +132,7 @@ type
     TrackBar3: TTrackBar;
     btn17: TButton;
     btn18: TButton;
-    btn19: TButton;
+    btnContinue: TButton;
     pb3: TProgressBar;
     pb4: TProgressBar;
     pnl4: TPanel;
@@ -163,6 +163,8 @@ type
     lbl2: TLabel;
     btnTakeWeapon: TButton;
     btn2: TButton;
+    edtMoves: TEdit;
+    lblMoves: TLabel;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -204,8 +206,9 @@ type
     procedure btn1Click(Sender: TObject);
     procedure btn2Click(Sender: TObject);
     procedure btnTakeWeaponClick(Sender: TObject);
-    procedure btn19Click(Sender: TObject);
+    procedure btnContinueClick(Sender: TObject);
     procedure FormPaint(Sender: TObject);
+    procedure edtMovesExit(Sender: TObject);
   private
     { Private declarations }
   public
@@ -223,12 +226,13 @@ var
   gInvestigators: TInvDeck;
   Monsters: TMonsterArray;//array [1..MONSTER_MAX] of TMonster;
   Arkham_Streets: array [1..NUMBER_OF_STREETS] of TStreet;
+  Other_Worlds_Deck: TOtherWorldCardsDeck;
   exposed_cards: array [1..MAX_PLAYER_ITEMS] of boolean;
   Common_Items_Count: integer = 0;
   Unique_Items_Count: integer = 0;
   Spells_Count: integer = 0;
   Skills_Count: integer = 0;
-  Mythos_Cards_Count: integer = 0;
+  OW_Cards_Count: integer = 0;  Mythos_Cards_Count: integer = 0;
   Investigators_Count: integer = 0;
   //Downtown_Count: integer = 0;
   Locations_Count: integer = 0;
@@ -247,6 +251,7 @@ var
   procedure GameInit;
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(card: TLocationCard);
+  procedure OWEncounter(lok_id: integer; crd_num: integer);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
 //  procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
   //procedure ProcessNode(Node : PLLData; add_data: integer = 0);
@@ -254,6 +259,7 @@ var
   function GetCommonItemNameByID(id: integer): string;
   procedure ShowPlayerCards(pl: TPlayer; cur_cards: integer); // Show current player's card in low right corner
   procedure SelectCards(sel_cards: array of boolean; count: integer); // Draw edges on cards
+  function MatchColors(lok_id: Integer; col: integer): boolean; // Player's location in other world, return color match
   procedure UpdStatus;
 
 implementation
@@ -306,6 +312,10 @@ begin
       //Arkham_Streets[5].mDeck.Shuffle;
 
     end; // CT_ENCOUNTER
+
+    CT_OW_ENCOUNTER: begin
+       OW_Cards_Count := Other_Worlds_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\CardsData\OtherWorlds\');
+    end; // CT_OW_ENCOUNTER
 
     CT_MYTHOS: begin
        Mythos_Cards_Count := Mythos_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\CardsData\Mythos\');
@@ -426,6 +436,9 @@ begin
   // Загрузка карт контактов
   Load_Cards(CT_ENCOUNTER);
 
+  // Загрузка карт контактов иных миров
+  Load_Cards(CT_OW_ENCOUNTER);  
+
   // Загрузка карт mythos
   Load_Cards(CT_MYTHOS);
 
@@ -538,6 +551,7 @@ begin
 
   path_to_exe := ExtractFilePath(Application.ExeName);
   Common_Items_Deck:= TCommonItemCardDeck.Create(CT_COMMON_ITEM);
+  Other_Worlds_Deck := TOtherWorldCardsDeck.Create();
   //Unique_Items_Deck:= TItemCardDeck.Create(CT_UNIQUE_ITEM);
   //Spells_Deck:= TItemCardDeck.Create(CT_SPELL);
   //Skills_Deck:= TItemCardDeck.Create(CT_SKILL);
@@ -625,17 +639,20 @@ begin
     pl_lok.lok_id := 0
   else
     pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
-  if gCurrentPhase = PH_MOVE then
+  if 1=1{gCurrentPhase = PH_MOVE} then
   begin
-    gCurrentPlayer.MoveToLocation(pl_lok, GetLokIDByName(cbLocation.Text));
-    pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
-    //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
-    for i := 1 to pl_lok.lok_mon_count do
-      if pl_lok.monsters[1] > 0 then
-      begin
-        frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[1]), gCurrentPlayer);
-        frmMonster.ShowModal;
-      end;
+    gCurrentPlayer.MoveToLocation(pl_lok, Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(GetLokIDByName(cbLocation.Text)));
+    if gCurrentPlayer.Location > 1000 then // If in Arkham
+    begin
+      pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
+      //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
+      for i := 1 to pl_lok.lok_mon_count do
+        if pl_lok.monsters[1] > 0 then
+        begin
+          frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[1]), gCurrentPlayer);
+          frmMonster.ShowModal;
+        end;
+    end;
 
     if pl_lok.clues > 0 then
     begin
@@ -953,7 +970,10 @@ begin
  case gCurrentPhase of
     PH_UPKEEP: begin
       //gCurrentPhase := PH_MOVE;
-      gCurrentPlayer.Moves := gCurrentPlayer.Stats[1];
+      if not gCurrentPlayer.Delayed then
+        gCurrentPlayer.Moves := gCurrentPlayer.Stats[1]
+      else
+        gCurrentPlayer.Delayed := false;
       lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
     end;
     PH_MOVE: begin
@@ -972,6 +992,10 @@ begin
     end;
     //Encounter(gCurrentPlayer, Downtown.Deck, Downtown.Deck.DrawCard);
     PH_OTHER_WORLDS_ENCOUNTER: begin
+      if gCurrentPlayer.Location < 1000 then
+        owEncounter(gCurrentPlayer.Location, 1)
+      else
+        btnContinueClick(Sender);
     end;
     PH_MYTHOS: begin
       randomize;
@@ -1047,8 +1071,11 @@ begin
   //frmMonster.PrepareMonster(GetMonsterByID(Monsters, Arkham_STreets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).Monsters[1]), gCurrentPlayer);
   //frmMonster.ShowModal;
   //ShowMessage(IntToStr(p_addr));
-  PrepareCardsToDrop(gCurrentPlayer, 2);
-  frmDrop.Show;
+//  PrepareCardsToDrop(gCurrentPlayer, 2);
+//  frmDrop.Show;
+  //players[2].Delayed := True;
+  //owEncounter(151, 1);
+  Arkham_Streets[ton(gCurrentPlayer.Location)].AddGate(gCurrentPlayer.Location, gates[5]);
 end;
 
 procedure TfrmMain.btnTakeWeaponClick(Sender: TObject);
@@ -1068,16 +1095,26 @@ begin
 
 end;
 
-procedure TfrmMain.btn19Click(Sender: TObject);
+procedure TfrmMain.btnContinueClick(Sender: TObject);
 var
   fp, i: integer;
 begin
-  if GetFirstPlayer < player_count then
+  fp := GetFirstPlayer;
+
+  if (fp < player_count) then
   begin
-    fp := GetFirstPlayer;
+    //fp := GetFirstPlayer;
+    if players[fp + 1].Delayed then
+    begin
+      frmMain.lstLog.Items.Add('Игрок задержан. Пропуск хода.');
+      players[fp].bFirstPlayer := False;
+      players[fp + 1].bFirstPlayer := true;
+      btnContinueClick(Sender);
+      exit;
+    end;
     players[fp].bFirstPlayer := False;
     players[fp + 1].bFirstPlayer := true;
-    ShowMessage('След. игрок.');
+    frmMain.lstLog.Items.Add('След. игрок.');
     //current_player := fp + 1;
   end
   else
@@ -1085,12 +1122,12 @@ begin
     players[1].bFirstPlayer := true;
     for i := 2 to player_count do
       players[i].bFirstPlayer := false;
-    ShowMessage('Все игроки походили. След. фаза.');
+    frmMain.lstLog.Items.Add('Все игроки походили. След. фаза.');
     gCurrentPhase := gCurrentPhase + 1;
     if gCurrentPhase > 5 then
       gCurrentPhase := 1;
     if gCurrentPhase = 1 then
-      btnProcessClick(Sender);  
+      btnProcessClick(Sender);
   end;
 
   lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
@@ -1107,6 +1144,84 @@ var
   i: integer;
 begin
 
+end;
+
+function MatchColors(lok_id: Integer; col: integer): boolean;
+var
+  ii, kk: integer;
+begin
+  Result := false;
+  for ii := 1 to 7 do
+  begin
+    //ShowMessage(IntToStr(ii));
+    if (aEncounterSymbols[ii, 1] = lok_id) and (aEncounterSymbols[ii, col + 1] = col) then
+      Result := True;
+  end;
+end;
+
+procedure OWEncounter(lok_id: integer; crd_num: integer);
+var
+  //lok: TOWLocationCard;
+  drawn_items: array [1..3] of integer;
+  card: TOWLocationCard;
+  i: integer;
+  c_node: PLLData;
+  crd_name: string;
+begin
+  //if lok_id mod 1000 = 0 then exit; // No encounters on streets
+
+  //lok := fLok[hon(lok_id)];
+
+  card := Other_Worlds_Deck.cards[crd_num];
+
+  if not MatchColors(gCurrentPlayer.Location, Other_Worlds_Deck.cards[crd_num].color) then
+  begin
+    ShowMessage('Не подходит цвет карты!');
+    exit;
+  end;
+
+  if card.crd_head <> nil then
+  begin
+    crd_name := path_to_exe + 'CardsData\OtherWorlds\' + IntToStr(card.ID) + '.jpg';
+    frmMain.imgEncounter.Picture.LoadFromFile(crd_name);
+    c_node := card.crd_head;
+
+    ShowMessage(Copy(c_node.mnChild[0].data, 7, 3));
+
+    if StrToInt(Copy(c_node.mnChild[0].data, 7, 3)) = lok_id then
+    begin
+      ShowMessage('Yay!');
+      c_node := c_node.mnChild[0];
+    end
+    else
+      if StrToInt(Copy(c_node.mnChild[1].data, 7, 3)) = lok_id then
+      begin
+        ShowMessage('Yay1!');
+        c_node := c_node.mnChild[1];
+      end
+      else
+      begin
+        ShowMessage('Other!');
+        c_node := c_node.mnChild[2];
+      end;
+
+
+    for i := 0 to c_node.mnChildCount-1 do
+      ProcessNode(c_node.mnChild[i]);
+  end
+  else
+    MessageDlg('Карта почему-то пустая :('+#10+#13+'Или вы не перешли на локацию.', mtError, [mbOK], 0);
+
+end;
+
+procedure TfrmMain.edtMovesExit(Sender: TObject);
+begin
+  try
+    gCurrentPlayer.Moves := StrToInt(edtMoves.Text);
+  except
+    ShowMessage('No!');
+    edtPlaMoney.Text := '0';
+  end;
 end;
 
 end.

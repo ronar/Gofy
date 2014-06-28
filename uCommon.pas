@@ -26,6 +26,7 @@ const
   CT_COMMON_ITEM = 1; // Простые предметы (первая цифра в ID)
   CT_UNIQUE_ITEM = 2; // Уникальные предметы (первая цифра в ID)
   CT_ENCOUNTER = 6; // Контакт (первая цифра в ID)
+  CT_OW_ENCOUNTER = 7; // Контакт иного мира (первая цифра в ID)
   CT_INVESTIGATOR = 9;
   COMMON_ITEM_WEAPON = 1; // Оружие
   COMMON_ITEM_TOME = 2; // Книга
@@ -61,12 +62,21 @@ const
   NUMBER_OF_COMMON_CARDS = 59;
   NUMBER_OF_UNIQUE_CARDS = 83;
   NUMBER_OF_ENCOUNTER_CARDS = 20;
+  NUMBER_OF_OW_ENCOUNTER_CARDS = 50;
   NUMBER_OF_MYTHOS_CARDS = 30;
   NUMBER_OF_INVESTIGATORS = 49;
   //LOCATION_CARD_NUMBER = 20; // Число карт на каждую локацию
   //COMMON_ITEMS_CARD_NUMBER = 30;
   //
   //MYTHOS_CARDS_NUMBER = 30;
+
+  // Colors
+  CC_BLUE = 1;
+  CC_GREEN = 2;
+  CC_RED = 3;
+  CC_YELLOW = 4;
+  CC_WHITE = 5;
+
   MAX_PLAYER_ITEMS = 20;
   MONSTER_MAX = 50;
   ALLIES_MAX = 50;
@@ -151,6 +161,16 @@ const
         ('9200', 'Woods'),
         ('011', 'Y''ha-nthlei'),
         ('9300', 'Ye Olde Magick Shoppe'));
+
+    aEncounterSymbols: array [1..8, 1..6] of integer = (
+        (111, 0, 0, CC_RED, CC_YELLOW, 0),
+        (121, 0, CC_GREEN, CC_RED, 0, 0),
+        (131, CC_BLUE, CC_GREEN, CC_RED, CC_YELLOW, 0),
+        (141, CC_BLUE, CC_GREEN, 0, 0, 0),
+        (151, CC_BLUE, 0, 0, CC_YELLOW, 0),
+        (161, 0, CC_GREEN, 0, CC_YELLOW, 0),
+        (171, CC_BLUE, 0, CC_RED, 0, 0),
+        (181, CC_BLUE, CC_GREEN, CC_RED, CC_YELLOW, 0));
 
     aCommon_Items: array [1..NUMBER_OF_COMMON_CARDS, 1..2] of string = (
         ('1012', '.18 Derringer'),

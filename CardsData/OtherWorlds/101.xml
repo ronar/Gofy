@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cards>
+	<card1 data="171">
+		<condition data="|3|2|5|-1|1|">
+			<true>
+				<action data="|0|0|0|"></action>
+			</true>
+			<false>
+				<action data="|4|34|0|"></action>
+			</false>
+		</condition>
+	</card1>
+	<card2 data="151">
+		<condition data="|3|2|2|-1|1|">
+			<true>
+				<action data="|0|0|0|"></action>
+			</true>
+			<false>
+				<action data="|4|15|12|"></action>
+				<action data="|4|30|1|"></action>
+			</false>
+		</condition>
+	</card2>
+	<card3 data="181">
+		<action data="|4|6|1|"></action>
+	</card3>
+</cards>

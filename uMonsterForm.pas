@@ -146,7 +146,7 @@ begin
         HasGate := False;
         lok_mon_count := 0;
       end;
-      gCurrentPlayer.MoveToLocation(empty_lok, 5200);
+      gCurrentPlayer.Location := 5200;
       gCurrentPlayer.Moves := 0;
     end;
 

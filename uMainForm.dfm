@@ -1983,7 +1983,7 @@ object frmMain: TfrmMain
     end
     object Label2: TLabel
       Left = 16
-      Top = 232
+      Top = 264
       Width = 35
       Height = 13
       Caption = #1050#1072#1088#1090#1099':'
@@ -2058,11 +2058,18 @@ object frmMain: TfrmMain
       Height = 13
       Caption = #1057#1099#1097#1080#1082':'
     end
+    object lblMoves: TLabel
+      Left = 16
+      Top = 232
+      Width = 30
+      Height = 13
+      Caption = #1061#1086#1076#1099':'
+    end
     object lbItems: TListBox
       Left = 16
-      Top = 248
+      Top = 280
       Width = 121
-      Height = 113
+      Height = 81
       ItemHeight = 13
       TabOrder = 0
     end
@@ -2178,6 +2185,15 @@ object frmMain: TfrmMain
       Enabled = False
       TabOrder = 13
       Text = '5'
+    end
+    object edtMoves: TEdit
+      Left = 96
+      Top = 232
+      Width = 41
+      Height = 21
+      TabOrder = 14
+      Text = '5'
+      OnExit = edtMovesExit
     end
   end
   object cbLocation: TComboBox
@@ -5592,7 +5608,7 @@ object frmMain: TfrmMain
         TabOrder = 4
       end
     end
-    object btn19: TButton
+    object btnContinue: TButton
       Left = 561
       Top = 148
       Width = 90
@@ -5606,7 +5622,7 @@ object frmMain: TfrmMain
       ParentFont = False
       TabOrder = 5
       WordWrap = True
-      OnClick = btn19Click
+      OnClick = btnContinueClick
     end
     object pb3: TProgressBar
       Left = 562

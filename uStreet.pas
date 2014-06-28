@@ -42,6 +42,7 @@ type
 //  function ProcessCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): boolean;
 //  function ProcessMultiCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): integer;
 //  procedure ProcessAction(action: integer; action_value: integer; suxxess: string = '0');
+  procedure ProcessNode(Node : PLLData; add_data: integer = 0);
 
 
 implementation
@@ -778,7 +779,7 @@ begin
       break;
     end
     else
-      result := 1100;
+      result := 1100; // TODO: Move to nowhere 
 end;
 
 function GetStreetIDByName(street_name: string): integer;

@@ -76,6 +76,7 @@ type
     property Moves: integer read fMoves write fMoves;
     property bFirstPlayer: boolean read fFirstPlayer write fFirstPlayer;
     property Investigator: TInvestigator read fInvestigator;
+    property Delayed: Boolean read fDelayed write fDelayed; // if delayed then pass the turn
     //property Hands: integer read fHands;
     procedure DrawCard(card_id: integer);
     procedure AddItem(var cards: TCommonItemCardDeck; id: integer);
@@ -87,7 +88,7 @@ type
     function CheckAvailability(grade: integer; param: integer): boolean;
     function HasItem(ID: integer): boolean;
     procedure ChangeSkills(x1: integer; x2: integer; x3: integer);
-    procedure MoveToLocation(from_lok: TLocation; id_lok: integer);
+    procedure MoveToLocation(from_lok: TLocation; to_lok: TLocation);
     procedure GetItems; // Copy investigator's items to player
     procedure TakeWeapon(item1: integer); // Take choosen card to hands
     procedure DropCard(indx: Integer);  // Drop card from player's possession
@@ -413,7 +414,7 @@ begin
 
 end;
 
-procedure TPlayer.MoveToLocation(from_lok: TLocation; id_lok: integer);
+procedure TPlayer.MoveToLocation(from_lok: TLocation; to_lok: TLocation);
 var
   i, j: integer;
   num_of_evaded_mobs: integer;
@@ -432,9 +433,19 @@ begin
     ShowMessage('Нельзя сменить локацию! Монстры есть от которых нужно уйти или победить.')
   else
   begin
-    fLocation := id_lok;
-    fNeighborhood := (id_lok div 1000) * 1000; // ?
-    fMoves := fMoves - 1;
+    if to_lok.HasGate then // Drawn into gate
+    begin
+      fLocation := to_lok.gate.other_world;
+      fMoves := 0;
+      frmMain.lstLog.Items.Add('Игрока засосало во врата!');
+    end
+    else
+    begin
+      fLocation := to_lok.lok_id;
+      fNeighborhood := (to_lok.lok_id div 1000) * 1000; // ?
+      fMoves := fMoves - 1;
+      frmMain.lstLog.Items.Add('Игрок перешел в локацию ' + GetLokNameByID(fLocation));
+    end;
   end;
 end;
 
