@@ -80,6 +80,7 @@ type
     //property Hands: integer read fHands;
     procedure DrawCard(card_id: integer);
     procedure AddItem(var cards: TCommonItemCardDeck; id: integer);
+    procedure GiveClue(num: integer);
     procedure AddMonsterTrophies(mon_id: integer);
     procedure AssignInvestigator(inv: TInvestigator);
     //function Get_Item(indx: integer): integer;
@@ -97,6 +98,7 @@ type
     function CardBonus(stat: integer): Integer; // Bonuses from cards?
     function BonusWeapon: Integer; // Bonuses from weapon
     procedure ExposedCards(var exposed_array: array of Boolean);
+    procedure Explored;
     function CloseGate: boolean;
     //procedure
     //property Speed: integer read Stats[1] write Stats[1];
@@ -238,6 +240,11 @@ begin
   fCardsCount := fCardsCount + 1;
   fCards[fCardsCount] := id;
   cards.DecCounter(cards.IndexOfCard(id));
+end;
+
+procedure TPlayer.GiveClue(num: integer);
+begin
+  fClues := fClues + 1;
 end;
 
 procedure TPlayer.AddMonsterTrophies(mon_id: integer);
@@ -569,6 +576,11 @@ begin
     exposed_array[i] := fExposedCards[i];
   end;
 
+end;
+
+procedure TPlayer.Explored;
+begin
+  fExploredMarker := True;
 end;
 
 function TPlayer.CloseGate: boolean;

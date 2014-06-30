@@ -59,6 +59,7 @@ const
   // Основные константы
   NUMBER_OF_STREETS = 19;
   NUMBER_OF_LOCATIONS = 57;
+  NUMBER_OF_OW_LOCATIONS = 16;
   NUMBER_OF_COMMON_CARDS = 59;
   NUMBER_OF_UNIQUE_CARDS = 83;
   NUMBER_OF_ENCOUNTER_CARDS = 20;
@@ -103,6 +104,7 @@ const
         ('0000', 'Kingsport Head'),
         ('0000', 'South Shore'),
         ('0000', 'Village Common'));
+
   aLocationsNames: array [1..NUMBER_OF_LOCATIONS, 1..2] of string = (
         ('011', '607 Water St.'),
         ('012', '7th House on the Left'),
@@ -161,6 +163,24 @@ const
         ('9200', 'Woods'),
         ('011', 'Y''ha-nthlei'),
         ('9300', 'Ye Olde Magick Shoppe'));
+
+    aOtherWorldsNames: array [1..NUMBER_OF_OW_LOCATIONS, 1..2] of string = (
+        ('111', 'Р''лиех. Начало'),
+        ('112', 'Р''лиех. Конец'),
+        ('121', 'Плато Лэнг. Начало'),
+        ('122', 'Плато лэнг. Конец'),
+        ('131', 'Страна снов. Начало'),
+        ('132', 'Страна снов. Конец'),
+        ('141', 'Великий зал целено. Начало'),
+        ('142', 'Великиц зал целено. Конец'),
+        ('151', 'Юггот. Начало'),
+        ('152', 'Юггот. Конец'),
+        ('161', 'Город великой расы. Начало'),
+        ('162', 'Город великой расы. Конец'),
+        ('171', 'Бездна. Начало'),
+        ('172', 'Бездна. Конец'),
+        ('181', 'Другое измерение. Начало'),
+        ('182', 'Другое измерение. Конец'));
 
     aEncounterSymbols: array [1..8, 1..6] of integer = (
         (111, 0, 0, CC_RED, CC_YELLOW, 0),

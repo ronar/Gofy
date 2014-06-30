@@ -555,12 +555,12 @@ begin
     //ShowMessage(Copy(SR.Name, 2, 1));
     crd_num := StrToInt(Copy(SR.Name, 2, 2));
     i := i + 1;
-    fCards[crd_num].id := StrToInt(Copy(SR.Name, 1, 3));
-    New(fCards[crd_num].crd_head);
-    fCards[crd_num].color := StrToInt(Copy(SR.Name, 1, 1));
-    fCards[crd_num].crd_head.mnChildCount := 0;
-    fCards[crd_num].crd_head.data := '';
-    XML2LL(fCards[crd_num].crd_head, file_path + SR.Name);
+    fCards[i].id := StrToInt(Copy(SR.Name, 1, 3));
+    New(fCards[i].crd_head);
+    fCards[i].color := StrToInt(Copy(SR.Name, 1, 1));
+    fCards[i].crd_head.mnChildCount := 0;
+    fCards[i].crd_head.data := '';
+    XML2LL(fCards[i].crd_head, file_path + SR.Name);
     //ShowMessage(Format('%s', [fCards[i, n].crd_head.mnChild[0].data]));
     //Cards^.Cards.Type := CT_UNIQUE_ITEM;
 

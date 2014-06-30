@@ -260,6 +260,7 @@ var
   procedure ShowPlayerCards(pl: TPlayer; cur_cards: integer); // Show current player's card in low right corner
   procedure SelectCards(sel_cards: array of boolean; count: integer); // Draw edges on cards
   function MatchColors(lok_id: Integer; col: integer): boolean; // Player's location in other world, return color match
+  function FindGate(id: integer): integer;
   procedure UpdStatus;
 
 implementation
@@ -634,36 +635,7 @@ var
   i: integer;
   pl_lok: TLocation;
 begin
-  // TODO: point to null
-  if gCurrentPlayer.Location mod 1000 = 0 then // С улицы
-    pl_lok.lok_id := 0
-  else
-    pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
-  if 1=1{gCurrentPhase = PH_MOVE} then
-  begin
-    gCurrentPlayer.MoveToLocation(pl_lok, Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(GetLokIDByName(cbLocation.Text)));
-    if gCurrentPlayer.Location > 1000 then // If in Arkham
-    begin
-      pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
-      //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
-      for i := 1 to pl_lok.lok_mon_count do
-        if pl_lok.monsters[1] > 0 then
-        begin
-          frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[1]), gCurrentPlayer);
-          frmMonster.ShowModal;
-        end;
-    end;
 
-    if pl_lok.clues > 0 then
-    begin
-      gCurrentPlayer.Clues := gCurrentPlayer.Clues + 1; // Сбор улик :)
-      ShowMessage('Игрок нашел улики! Аааа-а-аа-аа-ааа супер круто. *Игрок бегает по-кругу в порывах радости.*');
-    end;
-
-    //gCurrent_phase := PH_ENCOUNTER;
-  end
-  else
-    ShowMessage('Wrong phase.');
 
   UpdStatus;
 
@@ -962,22 +934,66 @@ end;
 
 procedure TfrmMain.btnProcessClick(Sender: TObject);
 var
+  i: integer;
   mythos_card_num: integer;
   drawn_monster: integer;
-  lok: TLocation;
+  lok, pl_lok: TLocation;
   drawn_items: array [1..3] of integer;
+  crd_num: integer;
 begin
  case gCurrentPhase of
     PH_UPKEEP: begin
       //gCurrentPhase := PH_MOVE;
-      if not gCurrentPlayer.Delayed then
-        gCurrentPlayer.Moves := gCurrentPlayer.Stats[1]
-      else
+      if (not gCurrentPlayer.Delayed) and (gCurrentPlayer.Location > 1000) then
+        gCurrentPlayer.Moves := gCurrentPlayer.Stats[1];
+
+      if gCurrentPlayer.Delayed then
         gCurrentPlayer.Delayed := false;
+
       lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
     end;
     PH_MOVE: begin
+      // TODO: point to null
+      if gCurrentPlayer.Location mod 1000 = 0 then // С улицы
+        pl_lok.lok_id := 0
+      else
+        if gCurrentPlayer.Location > 1000 then
+          pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
 
+      if gCurrentPlayer.Location > 1000 then // If in Arkham
+      begin
+        gCurrentPlayer.MoveToLocation(pl_lok, Arkham_Streets[ton(GetLokIDByName(cbLocation.Text))].Lok[hon(GetLokIDByName(cbLocation.Text))]);
+
+        if gCurrentPlayer.Location > 1000 then // If not in other world anyway
+        begin
+          pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
+        //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
+
+        for i := 1 to pl_lok.lok_mon_count do
+          if pl_lok.monsters[1] > 0 then
+          begin
+            frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[1]), gCurrentPlayer);
+            frmMonster.ShowModal;
+          end;
+        end;
+      end
+      else // in mythos
+      begin
+        if ((gCurrentPlayer.Location mod 100) mod 10) = 1 then // В начале иного мира
+          gCurrentPlayer.Location := gCurrentPlayer.Location + 1
+        else  // Игрок возвращается
+        begin
+          gCurrentPlayer.Location := FindGate(gCurrentPlayer.Location - 1);
+          gCurrentPlayer.Explored; // Give marker
+        end;
+      end;
+
+      if pl_lok.clues > 0 then
+      begin
+        gCurrentPlayer.GiveClue(1); // Сбор улик :)
+        Arkham_Streets[ton(gCurrentPlayer.Location)].RemoveClue(gCurrentPlayer.Location, 1);
+        ShowMessage('Игрок нашел улики! Аааа-а-аа-аа-ааа супер круто. *Игрок бегает по-кругу в порывах радости.*');
+      end;
     end;
     PH_ENCOUNTER: begin
       if gCurrentPlayer.Location mod 1000 = 0 then
@@ -988,12 +1004,19 @@ begin
 
       Arkham_Streets[ton(gCurrentPlayer.Location)].Encounter(gCurrentPlayer.Location, seCrdNum.Value);
       //Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.Shuffle;
-      UpdStatus;
     end;
     //Encounter(gCurrentPlayer, Downtown.Deck, Downtown.Deck.DrawCard);
     PH_OTHER_WORLDS_ENCOUNTER: begin
       if gCurrentPlayer.Location < 1000 then
-        owEncounter(gCurrentPlayer.Location, 1)
+      begin
+        crd_num := 1;
+        while not MatchColors(gCurrentPlayer.Location, Other_Worlds_Deck.cards[crd_num].color) do
+        begin
+          crd_num := crd_num + 1;
+          if crd_num > OW_Cards_Count then exit;
+        end;
+        owEncounter(gCurrentPlayer.Location, crd_num);
+      end
       else
         btnContinueClick(Sender);
     end;
@@ -1001,7 +1024,7 @@ begin
       randomize;
       mythos_card_num := random(Mythos_Cards_Count) + 2;
       // Open gate and spawn monster
-      Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fGateSpawn)].AddGate(Mythos_Deck.card[mythos_card_num].fGateSpawn, gates[random(8)+1]);
+      Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fGateSpawn)].SpawnGate(Mythos_Deck.card[mythos_card_num].fGateSpawn, gates[random(8)+1]);
       frmMain.lstLog.Items.Add('Появились ворота: ' + GetLokNameByID(Mythos_Deck.card[mythos_card_num].fGateSpawn));
       drawn_monster := DrawMonsterCard(Monsters);
       Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fGateSpawn)].AddMonster(Mythos_Deck.card[mythos_card_num].fGateSpawn, drawn_monster);
@@ -1009,7 +1032,6 @@ begin
       // Spawn clue
       Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fClueSpawn)].AddClue(Mythos_Deck.card[mythos_card_num].fClueSpawn, 1);
       frmMain.lstLog.Items.Add('Улика появилась: ' + GetLokNameByID(Mythos_Deck.card[mythos_card_num].fClueSpawn));
-      UpdStatus;
     end;
   end;
 {  case cbLocation.ItemIndex of
@@ -1032,6 +1054,7 @@ begin
   16:             ;
   end;
 }
+  UpdStatus;
 end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
@@ -1075,7 +1098,7 @@ begin
 //  frmDrop.Show;
   //players[2].Delayed := True;
   //owEncounter(151, 1);
-  Arkham_Streets[ton(gCurrentPlayer.Location)].AddGate(gCurrentPlayer.Location, gates[5]);
+  Arkham_Streets[ton(gCurrentPlayer.Location)].SpawnGate(gCurrentPlayer.Location, gates[5]);
 end;
 
 procedure TfrmMain.btnTakeWeaponClick(Sender: TObject);
@@ -1146,12 +1169,13 @@ begin
 
 end;
 
+// Проверяет, подходит ли цвет карты
 function MatchColors(lok_id: Integer; col: integer): boolean;
 var
   ii, kk: integer;
 begin
   Result := false;
-  for ii := 1 to 7 do
+  for ii := 1 to 8 do
   begin
     //ShowMessage(IntToStr(ii));
     if (aEncounterSymbols[ii, 1] = lok_id) and (aEncounterSymbols[ii, col + 1] = col) then
@@ -1159,6 +1183,21 @@ begin
   end;
 end;
 
+// id локации другого мира
+function FindGate(id: integer): integer;
+var
+  i, j: integer;
+begin
+  for i := 1 to NUMBER_OF_STREETS do
+    for j := 1 to 3 do
+      if Arkham_Streets[i].Lok[j].gate.other_world = id then
+      begin
+        Result := Arkham_Streets[i].Lok[j].lok_id;
+        exit;
+      end;
+end;
+
+// Контакт в другом мире
 procedure OWEncounter(lok_id: integer; crd_num: integer);
 var
   //lok: TOWLocationCard;
@@ -1173,12 +1212,6 @@ begin
   //lok := fLok[hon(lok_id)];
 
   card := Other_Worlds_Deck.cards[crd_num];
-
-  if not MatchColors(gCurrentPlayer.Location, Other_Worlds_Deck.cards[crd_num].color) then
-  begin
-    ShowMessage('Не подходит цвет карты!');
-    exit;
-  end;
 
   if card.crd_head <> nil then
   begin

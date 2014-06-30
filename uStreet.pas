@@ -21,15 +21,18 @@ type
     fDeck: TLocationCardsDeck;
     fAdjacent: array [1..6] of integer; // Прилегающие локации
     function GetDeck: TLocationCardsDeck;
+    function GetLok(i: integer): TLocation;
   public
     constructor Create(street_id: integer);
     property StreetId: integer read fId write fId;
     property Deck: TLocationCardsDeck read GetDeck;
+    property Lok[i: integer]: TLocation read GetLok;
     function GetLokByID(id: integer): TLocation;
     procedure Encounter(lok_id: integer; crd_num: integer);
     procedure AddMonster(lok_id: integer; mob_id: integer);
     procedure AddClue(lok_id: integer; n: integer);
-    procedure AddGate(lok_id: integer; gate: TGate);
+    procedure RemoveClue(lok_id: integer; n: integer);
+    procedure SpawnGate(lok_id: integer; gate: TGate);
     procedure TakeAwayMonster(lok_id: integer; mob_id: integer);
     procedure CloseGate(lok_id: integer);
   end;
@@ -79,6 +82,11 @@ end;
 function TStreet.GetDeck: TLocationCardsDeck;
 begin
   result := fDeck;
+end;
+
+function TStreet.GetLok(i: integer): TLocation;
+begin
+  Result := fLok[i];
 end;
 
 function TStreet.GetLokByID(id: integer): TLocation;
@@ -446,7 +454,7 @@ begin
       frmMain.lstLog.Items.Add('Появился монстр: ' + IntToStr(drawn_monster));
     end; // case 36
     37: begin // Gate appeared
-      Arkham_Streets[ton(gCurrentPlayer.Location)].AddGate(gCurrentPlayer.Location, gates[random(8)+1]);
+      Arkham_Streets[ton(gCurrentPlayer.Location)].SpawnGate(gCurrentPlayer.Location, gates[random(8)+1]);
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
       frmMain.lstLog.Items.Add('Появились врата.');
     end; // case 37
@@ -773,13 +781,16 @@ var
   i: integer;
 begin
   for i := 1 to NUMBER_OF_LOCATIONS do
-    if ((aLocationsNames[i, 2] = lok_name) AND (StrToInt(aLocationsNames[i, 1]) > 1000)) then
+  begin
+    if (AnsiCompareText(aLocationsNames[i, 2], lok_name) = 0) then
+    if (StrToInt(aLocationsNames[i, 1]) > 1000) then
     begin
       result := StrToInt(aLocationsNames[i, 1]);
       break;
     end
     else
-      result := 1100; // TODO: Move to nowhere 
+      result := 1100; // TODO: Move to nowhere
+  end;
 end;
 
 function GetStreetIDByName(street_name: string): integer;
@@ -804,6 +815,17 @@ begin
   if id mod 1000 = 0 then // Streets.. right
   begin
     Result := aNeighborhoodsNames[ton(id), 2];
+    Exit;
+  end;
+
+  if id < 1000 then // Other worlds
+  begin
+    for i := 1 to NUMBER_OF_OW_LOCATIONS do
+    if StrToInt(aOtherWorldsNames[i, 1]) = id then
+    begin
+      Result := aOtherWorldsNames[i, 2];
+      break;
+    end;
     Exit;
   end;
 
@@ -850,7 +872,12 @@ begin
   fLok[hon(lok_id)].clues := fLok[hon(lok_id)].clues + n;
 end;
 
-procedure TStreet.AddGate(lok_id: integer; gate: TGate);
+procedure TStreet.RemoveClue(lok_id: integer; n: integer);
+begin
+  fLok[hon(lok_id)].clues := fLok[hon(lok_id)].clues - n;
+end;
+
+procedure TStreet.SpawnGate(lok_id: integer; gate: TGate);
 begin
   fLok[hon(lok_id)] := GetLokByID(lok_id);
   fLok[hon(lok_id)].gate.other_world := gate.other_world;
