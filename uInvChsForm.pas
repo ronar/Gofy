@@ -156,7 +156,7 @@ begin
   for k := 1 to player_count do
     if players[k].Investigator = nil then
     begin
-      ShowMessage('Сыщик не выбран!');
+      MessageDlg('Сыщик не выбран!', mtInformation, [mbOK], 0);
       exit;
     end;
 

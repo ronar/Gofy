@@ -90,7 +90,8 @@ begin
   else
   begin
     lst1.Items.Add('Не ушел от моба!!');
-    lst1.Items.Add('Fight!! *играет музыка из MK*');
+    gCurrentPlayer.Stamina := gCurrentPlayer.Stamina - gMonster.fCmbtDmg;
+    lst1.Items.Add('Игроку нанесено урона: ' + IntToStr(gMonster.fCmbtDmg) + '!!');
     btnBattleClick(sender);
   end;
 

@@ -862,9 +862,12 @@ begin
 end;
 
 procedure TStreet.AddMonster(lok_id: integer; mob_id: integer);
+var
+  lok_num: integer;
 begin
-  fLok[hon(lok_id)].monsters[1] := mob_id;
-  fLok[hon(lok_id)].lok_mon_count := fLok[hon(lok_id)].lok_mon_count + 1;
+  lok_num := hon(lok_id);
+  fLok[lok_num].lok_mon_count :=  fLok[lok_num].lok_mon_count + 1;
+  fLok[lok_num].monsters[fLok[lok_num].lok_mon_count] := mob_id;
 end;
 
 procedure TStreet.AddClue(lok_id: integer; n: integer);

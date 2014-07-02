@@ -997,13 +997,13 @@ begin
       begin
         gCurrentPlayer.GiveClue(1); // Сбор улик :)
         Arkham_Streets[ton(gCurrentPlayer.Location)].RemoveClue(gCurrentPlayer.Location, 1);
-        ShowMessage('Игрок нашел улики! Аааа-а-аа-аа-ааа супер круто. *Игрок бегает по-кругу в порывах радости.*');
+        MessageDlg('Игрок нашел улики! Аааа-а-аа-аа-ааа супер круто. *Игрок бегает по-кругу в порывах радости.*', mtInformation, [mbOK], 0);
       end;
     end;
     PH_ENCOUNTER: begin
-      if gCurrentPlayer.Location mod 1000 = 0 then
+      if (gCurrentPlayer.Location mod 1000 = 0) or (gCurrentPlayer.Location < 1000) then
       begin
-        MessageDlg('Для улицы нет контакта!', mtInformation, [mbOK], 0);
+        MessageDlg('Неправильная локация для контакта!', mtInformation, [mbOK], 0);
         Exit;
       end;
 
@@ -1028,6 +1028,7 @@ begin
     PH_MYTHOS: begin
       randomize;
       mythos_card_num := random(Mythos_Cards_Count) + 2;
+      frmMain.imgEncounter.Picture.LoadFromFile(path_to_exe + 'CardsData\Mythos\0' + IntToStr(mythos_card_num) + '.jpg');
       // Open gate and spawn monster
       Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fGateSpawn)].SpawnGate(Mythos_Deck.card[mythos_card_num].fGateSpawn, gates[random(8)+1]);
       frmMain.lstLog.Items.Add('Появились ворота: ' + GetLokNameByID(Mythos_Deck.card[mythos_card_num].fGateSpawn));

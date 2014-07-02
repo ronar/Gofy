@@ -461,6 +461,8 @@ const
         ('Clue(s)'),
         ('Monster trophie(s)'));
 
+ // aMonsterMoves: array [1..      
+
 type
   StrDataArray = array [1..10] of string;
   TGate = record
