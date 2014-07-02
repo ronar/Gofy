@@ -165,7 +165,6 @@ end;
 function TPlayer.GetMonsterTrophies(indx: integer): integer;
 begin
   GetMonsterTrophies := fMonsterTrophies[indx];
-
 end;
 
 function TPlayer.GetPlayerStat(indx: integer): integer;
@@ -249,8 +248,8 @@ end;
 
 procedure TPlayer.AddMonsterTrophies(mon_id: integer);
 begin
-  fMonsterTrophies[fMonsterTrophiesCount] := mon_id;
   fMonsterTrophiesCount := fMonsterTrophiesCount + 1;
+  fMonsterTrophies[fMonsterTrophiesCount] := mon_id;
 end;
 
 procedure TPlayer.AssignInvestigator(inv: TInvestigator);
@@ -431,6 +430,7 @@ begin
     ShowMessage('Нет ходов!');
     exit;
   end;
+
   num_of_evaded_mobs := 0;
   for i := 1 to 5 do
     if evadedmosnters[i] <> 0 then

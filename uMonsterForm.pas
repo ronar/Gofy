@@ -52,6 +52,7 @@ begin
     ShowMessage('Чето нету монстра!');
     exit;
   end;
+  
   gMonster := monster;
   if monster.fId < 100 then
     imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\0'+IntToStr(monster.fId)+'-1.jpg')

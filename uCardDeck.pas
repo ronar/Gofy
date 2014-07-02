@@ -295,6 +295,7 @@ begin
 
     FindRes := FindNext(SR); // продолжение поиска по заданным условиям
   end;
+  output_data.Free;
   FindClose(SR); // закрываем поиск
   FindCards := i;
   fCount := i;
@@ -708,6 +709,7 @@ begin
     FindRes := FindNext(SR); // продолжение поиска по заданным условиям
   end;
 
+  output_data.Free;
   FindClose(SR); // закрываем поиск
   FindCards := i;
   fCount := i;
@@ -851,6 +853,7 @@ begin
     FindRes := FindNext(SR); // продолжение поиска по заданным условиям
   end;
 
+  output_data.Free;
   FindClose(SR); // закрываем поиск
   FindCards := i;
   fCount := i;

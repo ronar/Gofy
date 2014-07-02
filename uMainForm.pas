@@ -530,6 +530,7 @@ begin
   //Skills_Deck.Free;
   Mythos_Deck.Free;
   gInvestigators.Free;
+  Other_Worlds_Deck.Free;
 
   for i := 1 to NUMBER_OF_STREETS do
   begin
@@ -962,12 +963,16 @@ begin
 
       if gCurrentPlayer.Location > 1000 then // If in Arkham
       begin
-        gCurrentPlayer.MoveToLocation(pl_lok, Arkham_Streets[ton(GetLokIDByName(cbLocation.Text))].Lok[hon(GetLokIDByName(cbLocation.Text))]);
+        try
+          gCurrentPlayer.MoveToLocation(pl_lok, Arkham_Streets[ton(GetLokIDByName(cbLocation.Text))].Lok[hon(GetLokIDByName(cbLocation.Text))]);
+        except
+          MessageDlg('Не удалось перейти в локацию!', mtWarning, [mbOK], 0);
+        end;
 
         if gCurrentPlayer.Location > 1000 then // If not in other world anyway
         begin
           pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
-        //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
+          //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
 
         for i := 1 to pl_lok.lok_mon_count do
           if pl_lok.monsters[1] > 0 then
