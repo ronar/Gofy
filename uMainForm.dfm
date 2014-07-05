@@ -1908,16 +1908,6 @@ object frmMain: TfrmMain
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Button1: TButton
-    Left = 160
-    Top = 344
-    Width = 89
-    Height = 25
-    Caption = #1047#1072#1087#1080#1083#1080#1090#1100' '#1084#1086#1073#1072
-    Enabled = False
-    TabOrder = 2
-    OnClick = Button1Click
-  end
   object RadioGroup1: TRadioGroup
     Left = 160
     Top = 104
@@ -1931,7 +1921,7 @@ object frmMain: TfrmMain
       '3rd phase (Arkham Encounter)'
       '4th phase (Other World Encounter) '
       '5th phase (Mythos)')
-    TabOrder = 4
+    TabOrder = 3
     OnClick = RadioGroup1Click
   end
   object btnInit: TButton
@@ -1950,7 +1940,7 @@ object frmMain: TfrmMain
     Width = 81
     Height = 25
     Caption = #1044'-'#1077' '#1086#1073' '#1080#1075#1088#1086#1082#1077
-    TabOrder = 5
+    TabOrder = 4
     OnClick = btnPlaDataClick
   end
   object GroupBox2: TGroupBox
@@ -1959,7 +1949,7 @@ object frmMain: TfrmMain
     Width = 145
     Height = 377
     Caption = #1048#1075#1088#1086#1082
-    TabOrder = 6
+    TabOrder = 5
     object Label1: TLabel
       Left = 16
       Top = 24
@@ -2203,7 +2193,7 @@ object frmMain: TfrmMain
     Height = 19
     Style = csOwnerDrawFixed
     ItemHeight = 13
-    TabOrder = 3
+    TabOrder = 2
     OnChange = cbLocationChange
   end
   object btnEncounter: TButton
@@ -2212,7 +2202,7 @@ object frmMain: TfrmMain
     Width = 65
     Height = 25
     Caption = 'Encounter'
-    TabOrder = 7
+    TabOrder = 6
   end
   object btnMoveToLok: TButton
     Left = 160
@@ -2220,7 +2210,7 @@ object frmMain: TfrmMain
     Width = 65
     Height = 25
     Caption = 'Move 2 lok'
-    TabOrder = 8
+    TabOrder = 7
     OnClick = btnMoveToLokClick
   end
   object btnShuffle: TButton
@@ -2229,7 +2219,7 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = 'Shuffle'
-    TabOrder = 9
+    TabOrder = 8
     OnClick = btnShuffleClick
   end
   object btnNextPers: TButton
@@ -2238,7 +2228,7 @@ object frmMain: TfrmMain
     Width = 89
     Height = 25
     Caption = #1057#1083#1077#1076'. '#1087#1077#1088#1089#1086#1085#1072#1078
-    TabOrder = 10
+    TabOrder = 9
     OnClick = btnNextPersClick
   end
   object btnChsInv: TButton
@@ -2257,7 +2247,7 @@ object frmMain: TfrmMain
     Height = 25
     Caption = #1055#1088#1080#1084'. '#1082#1072#1088#1090#1091
     Enabled = False
-    TabOrder = 11
+    TabOrder = 10
     OnClick = btnUseCardClick
   end
   object btnAddClue: TButton
@@ -2267,7 +2257,7 @@ object frmMain: TfrmMain
     Height = 25
     Caption = 'Add Clue'
     Enabled = False
-    TabOrder = 12
+    TabOrder = 11
     OnClick = btnAddClueClick
   end
   object btnGiveItem: TButton
@@ -2276,7 +2266,7 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = 'Give Item'
-    TabOrder = 13
+    TabOrder = 12
     OnClick = btnGiveItemClick
   end
   object seCrdNum: TSpinEdit
@@ -2286,7 +2276,7 @@ object frmMain: TfrmMain
     Height = 22
     MaxValue = 7
     MinValue = 1
-    TabOrder = 14
+    TabOrder = 13
     Value = 1
   end
   object btnLogClear: TButton
@@ -2295,7 +2285,7 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1083#1086#1075
-    TabOrder = 15
+    TabOrder = 14
     OnClick = btnLogClearClick
   end
   object Button2: TButton
@@ -2304,7 +2294,7 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = 'OpnTrdFrm'
-    TabOrder = 16
+    TabOrder = 15
     OnClick = Button2Click
   end
   object pgc1: TPageControl
@@ -2315,7 +2305,7 @@ object frmMain: TfrmMain
     ActivePage = ts1
     Align = alBottom
     MultiLine = True
-    TabOrder = 17
+    TabOrder = 16
     object ts1: TTabSheet
       Caption = #1048#1075#1088#1072
       object btn3: TButton
@@ -2970,7 +2960,7 @@ object frmMain: TfrmMain
     Width = 1366
     Height = 200
     Align = alBottom
-    TabOrder = 18
+    TabOrder = 17
     object img2: TImage
       Left = 1
       Top = 1
@@ -5651,7 +5641,7 @@ object frmMain: TfrmMain
     BiDiMode = bdLeftToRight
     Caption = #1057#1077#1089#1089#1080#1103
     ParentBiDiMode = False
-    TabOrder = 19
+    TabOrder = 18
     object pgc2: TPageControl
       Left = 1
       Top = 1
@@ -5723,7 +5713,7 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = 'btnShowCards'
-    TabOrder = 20
+    TabOrder = 19
     OnClick = btnShowCardsClick
   end
   object btn1: TButton
@@ -5732,7 +5722,7 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = 'btn1'
-    TabOrder = 21
+    TabOrder = 20
     OnClick = btn1Click
   end
   object btn2: TButton
@@ -5741,7 +5731,7 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = 'btn2'
-    TabOrder = 22
+    TabOrder = 21
     OnClick = btn2Click
   end
   object xmldoc1: TXMLDocument

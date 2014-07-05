@@ -6,8 +6,8 @@ uses
   SysUtils, Dialogs, uCommon;
 
 type
-  TMonster = record
-  //private
+  TMonster = class
+  private
     fId: integer;
     //monData: string;
     fName: string;
@@ -20,25 +20,88 @@ type
     fCmbtRate: integer;
     fCmbtDmg: integer;
     fSpec: string[6];
-    fLocation: integer;
-  //public
-
+    fLocationId: integer;
+  public
+    property Id: Integer read fId write fId;
+    property Name: string read fName write fName;
+    property Awareness:integer read fAwareness write fAwareness;
+    property MovBorder: integer read fMovBorder write fMovBorder;
+    property Dimention: integer read fDimention write fDimention;
+    property HorrorRate: integer read fHorrorRate write fHorrorRate;
+    property HorrorDmg: integer read fHorrorDmg write fHorrorDmg;
+    property Toughness: integer read fToughness write fToughness;
+    property CmbtRate: integer read fCmbtRate write fCmbtRate;
+    property CmbtDmg: integer read fCmbtDmg write fCmbtDmg;
+    //property fSpec: string[6] read fId write fId;
+    property LocationId: integer read fLocationId write fLocationId;
+    constructor Create();
+    function Move(const MobMoveWhite: array of integer; const MobMoveBlack: array of integer): integer;
   end;
 
   TMonsterArray = array of TMonster;
 
   function LoadMonsterCards(var monsters: TMonsterArray; file_path: string): integer;
-  function DrawMonsterCard(var monsters: TMonsterArray): integer;
-  procedure ShuffleMonsterDeck(var monsters: TMonsterArray);
+  function DrawMonsterCard(var monsters: TMonsterArray): TMonster;
+  procedure ShuffleMonsterDeck(monsters: TMonsterArray);
   //procedure MoveMonster(); // TODO: moving of the monsters
   function GetMonsterNameByID(id: integer): string;
-  function GetMonsterByID(var monsters: TMonsterArray; id: integer): TMonster; // Get mob from pool
-  function GetMonsterCount(var monsters: TMonsterArray): integer;
+  function GetMonsterByID(const monsters: TMonsterArray; id: integer): TMonster; // Get mob from pool
+  function GetMonsterCount(const monsters: TMonsterArray): integer;
+
+var
+  monCount: integer = 0; // Kol-vo mobov v pule
 
 implementation
 
+uses
+  uMainForm, uStreet;
+
+constructor TMonster.Create;
+begin
+
+end;
+
+function TMonster.Move(const MobMoveWhite: array of integer; const MobMoveBlack: array of integer): integer;
 var
-  monCount: integer = 0;
+  i: integer;
+  lok_id: Integer;
+begin
+  Result := 0;
+  lok_id := fLocationId;
+  Arkham_Streets[ton(fLocationId)].TakeAwayMonster(fLocationId, fId);
+  //case fMovBorder of
+    //1: begin  // Black (normal)
+      if MobMoveWhite[fDimention - 1] = 1 then // if white mob move in mythos card
+      begin
+        for i := 1 to 36 do
+          if aMonsterMoves[i, 1] = lok_id then
+          begin
+            fLocationId := aMonsterMoves[i, 2];
+            Result := fLocationId;
+            //Arkham_Streets[ton(fLocationId)].AddMonster(fLocationId, fId);
+            frmMain.lstLog.Items.Add('Монстр ' + fName + ' перешел в локацию ' + GetLokNameByID(fLocationId));
+          end;
+      end;
+
+      if MobMoveBlack[fDimention - 1] = 1 then // if black mob move in mythos card
+      begin
+        for i := 1 to 36 do
+          if aMonsterMoves[i, 1] = lok_id then
+          begin
+            fLocationId := aMonsterMoves[i, 3];
+            Result := fLocationId;
+            frmMain.lstLog.Items.Add('Монстр ' + fName + ' перешел в локацию ' + GetLokNameByID(fLocationId));
+          end;
+      end;
+
+  //  end;
+  //2: ; // Stationary (Yellow Border)
+  //3: ; // Fast (Red Border)
+  //4: ; // Unique (Green Border)
+  //5: ; // Flying (Blue Border)
+  //end;
+
+end;
 
 function LoadMonsterCards(var monsters: TMonsterArray; file_path: string): integer;
 var
@@ -62,27 +125,28 @@ begin
       //read(F, );
       //i := i + 1;
     SetLength(Monsters, i);
+    Monsters[i-1] := TMonster.Create;
     with Monsters[i-1] do
     begin
-      fId := StrToInt(Copy(SR.Name, 1, 3));
+      Id := StrToInt(Copy(SR.Name, 1, 3));
       //monData: string;
-      fName := GetMonsterNameByID(fId);
+      Name := GetMonsterNameByID(Id);
       readln(F, s);
-      fAwareness   := StrToInt(s);
+      Awareness   := StrToInt(s);
       readln(F, s);
-      fMovBorder   := StrToInt(s);
+      MovBorder   := StrToInt(s);
       readln(F, s);
-      fDimention   := StrToInt(s);
+      Dimention   := StrToInt(s);
       readln(F, s);
-      fHorrorRate := StrToInt(s);
+      HorrorRate := StrToInt(s);
       readln(F, s);
-      fHorrorDmg  := StrToInt(s);
+      HorrorDmg  := StrToInt(s);
       readln(F, s);
-      fToughness   := StrToInt(s);
+      Toughness   := StrToInt(s);
       readln(F, s);
-      fCmbtRate   := StrToInt(s);
+      CmbtRate   := StrToInt(s);
       readln(F, s);
-      fCmbtDmg    := StrToInt(s);
+      CmbtDmg    := StrToInt(s);
       //spec: string[6];
     end;
 
@@ -98,30 +162,28 @@ begin
 end;
 
 // Return mob ID
-function DrawMonsterCard(var monsters: TMonsterArray): integer;
+function DrawMonsterCard(var monsters: TMonsterArray): TMonster;
 var
   i: integer;
-  dmonster: integer;
+  dmonster: TMOnster;
 begin
   //Assert(monCount > 1);
-  dmonster := 0;
+  dmonster := nil;
   if monCount < 1 then
   begin
     ShowMessage('Нету монстров.');
-    DrawMonsterCard := 0;
+    DrawMonsterCard := nil;
     Exit;
   end;
   randomize;
-  dmonster := monsters[random(monCount)].fId;
-  if dmonster = 22 then
-    ShowMessage('Alert!');
+  dmonster := monsters[random(monCount)];
   Result := dmonster;
   //ShuffleMonsterDeck(monsters);
   monCount := monCount - 1;
 end;
 
 // TODO: Access violation
-procedure ShuffleMonsterDeck(var monsters: TMonsterArray);
+procedure ShuffleMonsterDeck(monsters: TMonsterArray);
 var
   i, r: integer;
   temp: TMonster;
@@ -149,7 +211,7 @@ begin
     end;
 end;
 
-function GetMonsterByID(var monsters: TMonsterArray; id: integer): TMonster;
+function GetMonsterByID(const monsters: TMonsterArray; id: integer): TMonster;
 var
   i: integer;
 begin
@@ -165,7 +227,7 @@ begin
 
 end;
 
-function GetMonsterCount(var monsters: TMonsterArray): integer;
+function GetMonsterCount(const monsters: TMonsterArray): integer;
 var
   i, c: integer;
 begin

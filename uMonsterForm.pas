@@ -46,18 +46,18 @@ procedure TfrmMonster.PrepareMonster(monster: TMonster; player: TPlayer);
 var
   p_addr: ^Integer;
 begin
-  if monster.fId = 0 then
+  if monster.Id = 0 then
   begin
-    imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(monster.fId)+'-1.jpg');
+    imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(monster.Id)+'-1.jpg');
     ShowMessage('Чето нету монстра!');
     exit;
   end;
   
   gMonster := monster;
-  if monster.fId < 100 then
-    imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\0'+IntToStr(monster.fId)+'-1.jpg')
+  if monster.Id < 100 then
+    imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\0'+IntToStr(monster.Id)+'-1.jpg')
   else
-    imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(monster.fId)+'-1.jpg');
+    imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(monster.Id)+'-1.jpg');
   if gCurrentPlayer.active_cards[1] <> 0 then
     imgPlaCard1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\'+IntToStr(gCurrentPlayer.active_cards[1])+'.jpg')
   else
@@ -81,17 +81,17 @@ begin
     exit;
   end;
 
-  if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_SNEAK] + gMonster.fAwareness, 1) > 0 then
+  if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_SNEAK] + gMonster.Awareness, 1) > 0 then
   begin
-    gCurrentPlayer.evadedmosnters[1] := gMonster.fId;
+    gCurrentPlayer.evadedmosnters[1] := gMonster.Id;
     frmMain.lstLog.Items.Add('Ушел от моба!!');
     close;
   end
   else
   begin
     lst1.Items.Add('Не ушел от моба!!');
-    gCurrentPlayer.Stamina := gCurrentPlayer.Stamina - gMonster.fCmbtDmg;
-    lst1.Items.Add('Игроку нанесено урона: ' + IntToStr(gMonster.fCmbtDmg) + '!!');
+    gCurrentPlayer.Stamina := gCurrentPlayer.Stamina - gMonster.CmbtDmg;
+    lst1.Items.Add('Игроку нанесено урона: ' + IntToStr(gMonster.CmbtDmg) + '!!');
     btnBattleClick(sender);
   end;
 
@@ -115,28 +115,28 @@ begin
 
 
   // Horror! check
-  if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_WILL] + gMonster.fHorrorRate, 1) >= 1 then
+  if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_WILL] + gMonster.HorrorRate, 1) >= 1 then
   begin
     lst1.Items.Add('Horror checked!!');
   end
   else
   begin
-    gCurrentPlayer.Sanity := gCurrentPlayer.Sanity - gMonster.fHorrorDmg;
-    lst1.Items.Add('Игрок потерял разум: ' + IntToStr(gMonster.fHorrorDmg) + '!!');
+    gCurrentPlayer.Sanity := gCurrentPlayer.Sanity - gMonster.HorrorDmg;
+    lst1.Items.Add('Игрок потерял разум: ' + IntToStr(gMonster.HorrorDmg) + '!!');
   end;
 
   // Monster fight!
-  if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_FIGHT] + gMonster.fCmbtRate + gCurrentPlayer.BonusWeapon, gMonster.fToughness) >= gMonster.fToughness then
+  if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_FIGHT] + gMonster.CmbtRate + gCurrentPlayer.BonusWeapon, gMonster.Toughness) >= gMonster.Toughness then
   begin
-    gCurrentPlayer.AddMonsterTrophies(gMonster.fId);
-    Arkham_Streets[ton(gCurrentPlayer.Location)].TakeAwayMonster(gCurrentPlayer.Location, gMonster.fId);
+    gCurrentPlayer.AddMonsterTrophies(gMonster.Id);
+    Arkham_Streets[ton(gCurrentPlayer.Location)].TakeAwayMonster(gCurrentPlayer.Location, gMonster.Id);
     lst1.Items.Add('Убил моба!!');
     lst1.Items.Add('Гирок получил монстр-трофеюшек!!');
   end
   else
   begin
-    gCurrentPlayer.Stamina := gCurrentPlayer.Stamina - gMonster.fCmbtDmg;
-    lst1.Items.Add('Игроку нанесено урона: ' + IntToStr(gMonster.fCmbtDmg) + '!!');
+    gCurrentPlayer.Stamina := gCurrentPlayer.Stamina - gMonster.CmbtDmg;
+    lst1.Items.Add('Игроку нанесено урона: ' + IntToStr(gMonster.CmbtDmg) + '!!');
     if gCurrentPlayer.Stamina < 1 then
     begin
       lst1.Items.Add('Гирок без сознания, и перемещен в больницу Св. Марии');
@@ -162,17 +162,17 @@ begin
   mon_pic := not mon_pic;
   if mon_pic then
   begin
-    if gMonster.fId < 100 then
-      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\0'+IntToStr(gmonster.fId)+'-1.jpg')
+    if gMonster.Id < 100 then
+      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\0'+IntToStr(gmonster.Id)+'-1.jpg')
     else
-      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(gmonster.fId)+'-1.jpg');
+      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(gmonster.Id)+'-1.jpg');
   end
   else
   begin
-    if gMonster.fId < 100 then
-      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\0'+IntToStr(gmonster.fId)+'-2.jpg')
+    if gMonster.Id < 100 then
+      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\0'+IntToStr(gmonster.Id)+'-2.jpg')
     else
-      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(gmonster.fId)+'-2.jpg');
+      imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(gmonster.Id)+'-2.jpg');
   end;
 end;
 

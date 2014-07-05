@@ -5,11 +5,10 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, uPlayer, uCardDeck, Choise,
-  uCommon, uMonster, xmldom, XMLIntf, msxmldom, XMLDoc, uCardXML, Spin, uStreet;
+  uCommon, uMonster, xmldom, XMLIntf, msxmldom, XMLDoc, uCardXML, Spin, uStreet, uMythos;
 
 type
   TfrmMain = class(TForm)
-    Button1: TButton;
     RadioGroup1: TRadioGroup;
     btnInit: TButton;
     btnPlaData: TButton;
@@ -170,7 +169,6 @@ type
     procedure btnPlaDataClick(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure btnNextPersClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btnUseCardClick(Sender: TObject);
@@ -237,9 +235,11 @@ var
   //Downtown_Count: integer = 0;
   Locations_Count: integer = 0;
   Cards_Count: integer = 0;
+  Monsters_Count: Integer = 0;
   players: array [1..8] of TPlayer;
   gPlayer, gCurrentPlayer: TPlayer;
   current_player: integer;
+  gCurrentMythosCard: TMythosCard;
   gates: array [1..8] of TGate;
   gStatsMod: array [1..6] of integer;
   player_count: integer;
@@ -252,6 +252,7 @@ var
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(card: TLocationCard);
   procedure OWEncounter(lok_id: integer; crd_num: integer);
+  procedure MoveMonsters(monstr: TPlayer);
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
 //  procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
   //procedure ProcessNode(Node : PLLData; add_data: integer = 0);
@@ -372,6 +373,7 @@ begin
   gPlayer := players[1];
   gCurrentPlayer := players[GetFirstPlayer];
   current_player := 1;
+  //Monsters_Count := 0;
   frmMain.lblCurPlayer.Caption := IntToStr(current_player);
   gCurrentPhase := PH_UPKEEP;
   frmMain.lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
@@ -450,7 +452,7 @@ begin
 
   //monCount := 0;
   // Загрузка monsters
-  LoadMonsterCards(Monsters, ExtractFilePath(Application.ExeName));
+  Monsters_Count := LoadMonsterCards(Monsters, ExtractFilePath(Application.ExeName));
 end;
 
 procedure TfrmMain.btnInitClick(Sender: TObject);
@@ -503,15 +505,6 @@ begin
 
   //frmMain.btn17Click(Sender);
   UpdStatus;
-end;
-
-procedure TfrmMain.Button1Click(Sender: TObject);
-var
-  mob_id: integer;
-begin
-  mob_id := DrawMonsterCard(monsters);
-  ShowMessage(IntToStr(mob_id));
-  Arkham_Streets[ton(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, mob_id);
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -937,7 +930,7 @@ procedure TfrmMain.btnProcessClick(Sender: TObject);
 var
   i: integer;
   mythos_card_num: integer;
-  drawn_monster: integer;
+  drawn_monster: TMonster;
   lok, pl_lok: TLocation;
   drawn_items: array [1..3] of integer;
   crd_num: integer;
@@ -975,9 +968,9 @@ begin
           //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
 
         for i := 1 to pl_lok.lok_mon_count do
-          if pl_lok.monsters[1] > 0 then
+          if pl_lok.monsters[1] <> nil then
           begin
-            frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[1]), gCurrentPlayer);
+            frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[1].id), gCurrentPlayer);
             frmMonster.ShowModal;
           end;
         end;
@@ -1028,16 +1021,17 @@ begin
     PH_MYTHOS: begin
       randomize;
       mythos_card_num := random(Mythos_Cards_Count) + 2;
+      gCurrentMythosCard := Mythos_Deck.card[mythos_card_num];
       frmMain.imgEncounter.Picture.LoadFromFile(path_to_exe + 'CardsData\Mythos\0' + IntToStr(mythos_card_num) + '.jpg');
       // Open gate and spawn monster
-      Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fGateSpawn)].SpawnGate(Mythos_Deck.card[mythos_card_num].fGateSpawn, gates[random(8)+1]);
-      frmMain.lstLog.Items.Add('Появились ворота: ' + GetLokNameByID(Mythos_Deck.card[mythos_card_num].fGateSpawn));
+      Arkham_Streets[ton(gCurrentMythosCard.fGateSpawn)].SpawnGate(gCurrentMythosCard.fGateSpawn, gates[random(8)+1]);
+      frmMain.lstLog.Items.Add('Появились ворота: ' + GetLokNameByID(gCurrentMythosCard.fGateSpawn));
       drawn_monster := DrawMonsterCard(Monsters);
-      Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fGateSpawn)].AddMonster(Mythos_Deck.card[mythos_card_num].fGateSpawn, drawn_monster);
-      frmMain.lstLog.Items.Add('Появился монстр: ' + IntToStr(drawn_monster));
+      Arkham_Streets[ton(gCurrentMythosCard.fGateSpawn)].AddMonster(gCurrentMythosCard.fGateSpawn, drawn_monster);
+      frmMain.lstLog.Items.Add('Появился монстр: ' + GetMonsterNameByID(drawn_monster.id));
       // Spawn clue
-      Arkham_Streets[ton(Mythos_Deck.card[mythos_card_num].fClueSpawn)].AddClue(Mythos_Deck.card[mythos_card_num].fClueSpawn, 1);
-      frmMain.lstLog.Items.Add('Улика появилась: ' + GetLokNameByID(Mythos_Deck.card[mythos_card_num].fClueSpawn));
+      Arkham_Streets[ton(gCurrentMythosCard.fClueSpawn)].AddClue(gCurrentMythosCard.fClueSpawn, 1);
+      frmMain.lstLog.Items.Add('Улика появилась: ' + GetLokNameByID(gCurrentMythosCard.fClueSpawn));
     end;
   end;
 {  case cbLocation.ItemIndex of
@@ -1104,7 +1098,8 @@ begin
 //  frmDrop.Show;
   //players[2].Delayed := True;
   //owEncounter(151, 1);
-  Arkham_Streets[ton(gCurrentPlayer.Location)].SpawnGate(gCurrentPlayer.Location, gates[5]);
+  //Arkham_Streets[ton(gCurrentPlayer.Location)].SpawnGate(gCurrentPlayer.Location, gates[5]);
+  MoveMonsters(gCurrentPlayer);
 end;
 
 procedure TfrmMain.btnTakeWeaponClick(Sender: TObject);
@@ -1251,6 +1246,20 @@ begin
   else
     MessageDlg('Карта почему-то пустая :('+#10+#13+'Или вы не перешли на локацию.', mtError, [mbOK], 0);
 
+end;
+
+procedure MoveMonsters(monstr: TPlayer);
+var
+  s, l, m: integer;
+  lok_id: integer;
+begin
+  for m := 0 to Monsters_Count-1 do
+    if Monsters[m].LocationId <> 0 then
+    begin
+      lok_id := Monsters[m].Move(gCurrentMythosCard.fMobMoveWhite, gCurrentMythosCard.fMobMoveBlack);
+      if lok_id <> 0 then
+        Arkham_Streets[ton(lok_id)].AddMonster(lok_id, Monsters[m]);
+    end;
 end;
 
 procedure TfrmMain.edtMovesExit(Sender: TObject);

@@ -1,7 +1,7 @@
 unit uStreet;
 
 interface
-uses uCommon, uCardDeck, uCardXML, SysUtils, Dialogs, Controls;
+uses uCommon, uCardDeck, uCardXML, SysUtils, Dialogs, Controls, uMonster;
 
 type
   TLocation = record
@@ -10,7 +10,7 @@ type
     clues: integer; // Улики на локации
     gate: TGate; // Врата открытые на локации
     HasGate: Boolean;
-    monsters: array [1..5] of integer;
+    monsters: array [1..5] of TMonster;
     lok_mon_count: integer;
   end;
 
@@ -20,6 +20,8 @@ type
     fLok: array [1..3] of TLocation;
     fDeck: TLocationCardsDeck;
     fAdjacent: array [1..6] of integer; // Прилегающие локации
+    monsters: array [1..5] of TMonster; // Mobs in streets :)
+    st_mob_count: integer;
     function GetDeck: TLocationCardsDeck;
     function GetLok(i: integer): TLocation;
   public
@@ -29,12 +31,13 @@ type
     property Lok[i: integer]: TLocation read GetLok;
     function GetLokByID(id: integer): TLocation;
     procedure Encounter(lok_id: integer; crd_num: integer);
-    procedure AddMonster(lok_id: integer; mob_id: integer);
+    procedure AddMonster(lok_id: integer; mob: TMonster);
     procedure AddClue(lok_id: integer; n: integer);
     procedure RemoveClue(lok_id: integer; n: integer);
     procedure SpawnGate(lok_id: integer; gate: TGate);
     procedure TakeAwayMonster(lok_id: integer; mob_id: integer);
     procedure CloseGate(lok_id: integer);
+    procedure MoveMonsters;
   end;
 
   function GetLokIDByName(lok_name: string): integer; // Получение ID локации по названию
@@ -50,7 +53,7 @@ type
 
 implementation
 
-uses uTradeForm, uMainForm, Choise, uDrop, uChsLok, uMonster, uCardForm, Classes;
+uses uTradeForm, uMainForm, Choise, uDrop, uChsLok, uCardForm, Classes;
 
 constructor TStreet.Create(street_id: integer);
 var
@@ -67,15 +70,15 @@ begin
         fLok[n].gate.modif := 0;
         fLok[n].gate.dimension := 0;
         fLok[n].HasGate := false;
-        fLok[n].monsters[1] := 0;
-        fLok[n].monsters[2] := 0;
-        fLok[n].monsters[3] := 0;
-        fLok[n].monsters[4] := 0;
-        fLok[n].monsters[5] := 0;
+        fLok[n].monsters[1] := nil;
+        fLok[n].monsters[2] := nil;
+        fLok[n].monsters[3] := nil;
+        fLok[n].monsters[4] := nil;
+        fLok[n].monsters[5] := nil;
         fLok[n].lok_mon_count := 0;
     end;
     fDeck := TLocationCardsDeck.Create;
-
+    st_mob_count := 0;
   end;
 end;
 
@@ -223,7 +226,8 @@ end;
 // Выполнение действия согласно карте
 procedure ProcessAction(action: integer; action_value: integer; suxxess: string = '0');
 var
-  i, drawn_monster: integer;
+  i: integer;
+  drawn_monster: TMonster;
 begin
   case action of
     1: begin
@@ -451,7 +455,7 @@ begin
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
       drawn_monster := DrawMonsterCard(Monsters);
       Arkham_Streets[ton(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, drawn_monster);
-      frmMain.lstLog.Items.Add('Появился монстр: ' + IntToStr(drawn_monster));
+      frmMain.lstLog.Items.Add('Появился монстр: ' + IntToStr(drawn_monster.id));
     end; // case 36
     37: begin // Gate appeared
       Arkham_Streets[ton(gCurrentPlayer.Location)].SpawnGate(gCurrentPlayer.Location, gates[random(8)+1]);
@@ -861,13 +865,23 @@ begin
       GetStreetNameByID := aNeighborhoodsNames[i, 2];
 end;
 
-procedure TStreet.AddMonster(lok_id: integer; mob_id: integer);
+procedure TStreet.AddMonster(lok_id: integer; mob: TMonster);
 var
   lok_num: integer;
 begin
-  lok_num := hon(lok_id);
-  fLok[lok_num].lok_mon_count :=  fLok[lok_num].lok_mon_count + 1;
-  fLok[lok_num].monsters[fLok[lok_num].lok_mon_count] := mob_id;
+  if lok_id mod 1000 = 0 then
+  begin
+    st_mob_count := st_mob_count + 1;
+    monsters[st_mob_count] := mob;
+    mob.LocationId := lok_id;
+  end
+  else
+  begin
+    lok_num := hon(lok_id);
+    fLok[lok_num].lok_mon_count := fLok[lok_num].lok_mon_count + 1;
+    fLok[lok_num].monsters[fLok[lok_num].lok_mon_count] := mob;
+    mob.LocationId := lok_id;
+  end;
 end;
 
 procedure TStreet.AddClue(lok_id: integer; n: integer);
@@ -891,14 +905,38 @@ end;
 
 procedure TStreet.TakeAwayMonster(lok_id: integer; mob_id: integer);
 var
-  i: integer;
+  i, j: integer;
+  lok_num: integer;
 begin
-  if fLok[hon(lok_id)].monsters[1] = mob_id then
+  if lok_id mod 1000 = 0 then
   begin
-    fLok[hon(lok_id)].monsters[1] := 0;
-    fLok[hon(lok_id)].lok_mon_count := fLok[hon(lok_id)].lok_mon_count - 1;
+    for i := 1 to st_mob_count do
+    begin
+      if monsters[i].Id = mob_Id then
+      begin
+        monsters[i].LocationId := 0;
+        monsters[i] := nil;
+        st_mob_count := st_mob_count - 1;
+      end;
+      for j := i to st_mob_count do
+        monsters[j] := monsters[j + 1];
+    end;
+  end
+  else
+  begin
+    lok_num := hon(lok_id);
+    for i := 1 to fLok[lok_num].lok_mon_count do
+    begin
+      if fLok[lok_num].monsters[i].Id = mob_Id then
+      begin
+        fLok[lok_num].monsters[i].LocationId := 0;
+        fLok[lok_num].monsters[i] := nil;
+        fLok[lok_num].lok_mon_count := fLok[lok_num].lok_mon_count - 1;
+      end;
+      for j := i to fLok[lok_num].lok_mon_count do
+        fLok[lok_num].monsters[j] := fLok[lok_num].monsters[j + 1];
+    end;
   end;
-
 end;
 
 procedure TStreet.CloseGate(lok_id: integer);
@@ -910,6 +948,11 @@ begin
   fLok[hon(lok_id)].gate.modif := 0;
   fLok[hon(lok_id)].gate.dimension := 0;
   fLok[hon(lok_id)].HasGate := false;
+end;
+
+procedure TStreet.MoveMonsters();
+begin
+
 end;
 
 end.
