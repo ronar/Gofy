@@ -90,6 +90,7 @@ type
     function HasItem(ID: integer): boolean;
     procedure ChangeSkills(x1: integer; x2: integer; x3: integer);
     procedure MoveToLocation(from_lok: TLocation; to_lok: TLocation);
+    procedure MoveToStreet(from_lok: TLocation; st: TStreet);
     procedure GetItems; // Copy investigator's items to player
     procedure TakeWeapon(item1: integer); // Take choosen card to hands
     procedure DropCard(indx: Integer);  // Drop card from player's possession
@@ -454,6 +455,34 @@ begin
       frmMain.lstLog.Items.Add('Игрок перешел в локацию ' + GetLokNameByID(fLocation));
     end;
   end;
+end;
+
+procedure TPlayer.MoveToStreet(from_lok: TLocation; st: TStreet);
+var
+  i, j: integer;
+  num_of_evaded_mobs: integer;
+begin
+  if fMoves = 0 then
+  begin
+    ShowMessage('Нет ходов!');
+    exit;
+  end;
+
+  num_of_evaded_mobs := 0;
+  for i := 1 to 5 do
+    if evadedmosnters[i] <> 0 then
+      num_of_evaded_mobs := num_of_evaded_mobs + 1;
+
+  if (num_of_evaded_mobs <> from_lok.lok_mon_count) and (from_lok.lok_id <> 0) then
+    ShowMessage('Нельзя сменить локацию! Монстры есть от которых нужно уйти или победить.')
+  else
+  begin
+    fLocation := st.StreetId;
+    fNeighborhood := st.StreetId; // ?
+    fMoves := fMoves - 1;
+    frmMain.lstLog.Items.Add('Игрок перешел на улицу ' + GetLokNameByID(fLocation));
+  end;
+
 end;
 
 procedure TPlayer.GetItems;

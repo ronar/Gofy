@@ -554,7 +554,10 @@ begin
   gInvestigators := TInvDeck.Create(CT_INVESTIGATOR);
 
   for i := 1 to NUMBER_OF_STREETS do
+  begin
     Arkham_Streets[i] := TStreet.Create(StrToInt(aNeighborhoodsNames[i, 1]));
+    cbLocation.Items.Add(aNeighborhoodsNames[i, 2]);
+  end;
 
   for i := 1 to NUMBER_OF_LOCATIONS do
   begin
@@ -932,6 +935,8 @@ var
   mythos_card_num: integer;
   drawn_monster: TMonster;
   lok, pl_lok: TLocation;
+  pl_st: TStreet;
+  lok_id: integer;
   drawn_items: array [1..3] of integer;
   crd_num: integer;
 begin
@@ -949,31 +954,55 @@ begin
     PH_MOVE: begin
       // TODO: point to null
       if gCurrentPlayer.Location mod 1000 = 0 then // С улицы
-        pl_lok.lok_id := 0
+      begin
+        pl_lok.lok_id := 0;
+        pl_st.StreetId := gCurrentPlayer.Location;
+      end
       else
         if gCurrentPlayer.Location > 1000 then
           pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
 
-      if gCurrentPlayer.Location > 1000 then // If in Arkham
+      if gCurrentPlayer.Location >= 1000 then // If in Arkham
       begin
         try
-          gCurrentPlayer.MoveToLocation(pl_lok, Arkham_Streets[ton(GetLokIDByName(cbLocation.Text))].Lok[hon(GetLokIDByName(cbLocation.Text))]);
+          lok_id := GetLokIDByName(cbLocation.Text);
+          if lok_id mod 1000 = 0 then // Street
+            gCurrentPlayer.MoveToStreet(pl_lok, Arkham_Streets[ton(lok_id)])
+          else
+            gCurrentPlayer.MoveToLocation(pl_lok, Arkham_Streets[ton(lok_id)].Lok[hon(lok_id)]);
         except
           MessageDlg('Не удалось перейти в локацию!', mtWarning, [mbOK], 0);
         end;
 
-        if gCurrentPlayer.Location > 1000 then // If not in other world anyway
+        if gCurrentPlayer.Location >= 1000 then // If not in other world anyway
         begin
-          pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
-          //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
-
-        for i := 1 to pl_lok.lok_mon_count do
-          if pl_lok.monsters[i] <> nil then
+          if gCurrentPlayer.Location mod 1000 <> 0 then // Not street
           begin
-            frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[i].id), gCurrentPlayer);
-            frmMonster.ShowModal;
+            pl_lok := Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location);
+            //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
+
+            for i := 1 to pl_lok.lok_mon_count do
+              if pl_lok.monsters[i] <> nil then
+              begin
+                frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[i].id), gCurrentPlayer);
+                frmMonster.ShowModal;
+              end;
+          end
+          else
+          begin
+            pl_st := Arkham_Streets[ton(gCurrentPlayer.Location)];
+            //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
+
+            for i := 1 to pl_st.st_mob_count do
+              if pl_st.Monsters[i] <> nil then
+              begin
+                frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_st.Monsters[i].id), gCurrentPlayer);
+                frmMonster.ShowModal;
+              end;
           end;
         end;
+
+
       end
       else // in mythos
       begin

@@ -20,15 +20,18 @@ type
     fLok: array [1..3] of TLocation;
     fDeck: TLocationCardsDeck;
     fAdjacent: array [1..6] of integer; // Прилегающие локации
-    monsters: array [1..5] of TMonster; // Mobs in streets :)
-    st_mob_count: integer;
+    fMonsters: array [1..5] of TMonster; // Mobs in streets :)
+    fStreetMonsterCount: integer;
     function GetDeck: TLocationCardsDeck;
     function GetLok(i: integer): TLocation;
+    function GetMonster(i: integer): TMonster;
   public
     constructor Create(street_id: integer);
     property StreetId: integer read fId write fId;
     property Deck: TLocationCardsDeck read GetDeck;
     property Lok[i: integer]: TLocation read GetLok;
+    property Monsters[i: integer]: TMonster read GetMonster;
+    property st_mob_count: Integer read fStreetMonsterCount write fStreetMonsterCount;
     function GetLokByID(id: integer): TLocation;
     procedure Encounter(lok_id: integer; crd_num: integer);
     function AddMonster(lok_id: integer; mob: TMonster): Boolean;
@@ -78,7 +81,7 @@ begin
         fLok[n].lok_mon_count := 0;
     end;
     fDeck := TLocationCardsDeck.Create;
-    st_mob_count := 0;
+    fStreetMonsterCount := 0;
   end;
 end;
 
@@ -90,6 +93,11 @@ end;
 function TStreet.GetLok(i: integer): TLocation;
 begin
   Result := fLok[i];
+end;
+
+function TStreet.GetMonster(i: integer): TMonster;
+begin
+  Result := fMonsters[i];
 end;
 
 function TStreet.GetLokByID(id: integer): TLocation;
@@ -784,16 +792,32 @@ function GetLokIDByName(lok_name: string): integer;
 var
   i: integer;
 begin
+  result := 0;
+  
+  for i := 1 to NUMBER_OF_STREETS do
+  begin
+    if (AnsiCompareText(aNeighborhoodsNames[i, 2], lok_name) = 0) then
+      if (StrToInt(aNeighborhoodsNames[i, 1]) >= 1000) then
+      begin
+        result := StrToInt(aNeighborhoodsNames[i, 1]);
+        break;
+        Exit;
+      end
+      else
+        result := 0; // TODO: Move to nowhere
+  end;
+
   for i := 1 to NUMBER_OF_LOCATIONS do
   begin
     if (AnsiCompareText(aLocationsNames[i, 2], lok_name) = 0) then
-    if (StrToInt(aLocationsNames[i, 1]) > 1000) then
-    begin
-      result := StrToInt(aLocationsNames[i, 1]);
-      break;
-    end
-    else
-      result := 1100; // TODO: Move to nowhere
+      if (StrToInt(aLocationsNames[i, 1]) > 1000) then
+      begin
+        result := StrToInt(aLocationsNames[i, 1]);
+        break;
+        Exit;
+      end
+      else
+        result := 0; // TODO: Move to nowhere
   end;
 end;
 
@@ -884,8 +908,8 @@ begin
   try
     if lok_id mod 1000 = 0 then
     begin
-      st_mob_count := st_mob_count + 1;
-      monsters[st_mob_count] := mob;
+      fStreetMonsterCount := fStreetMonsterCount + 1;
+      fMonsters[fStreetMonsterCount] := mob;
       mob.LocationId := lok_id;
       uMonster.DeckMobCount := uMonster.DeckMobCount - 1;
     end
@@ -954,17 +978,17 @@ var
 begin
   if lok_id mod 1000 = 0 then
   begin
-    for i := 1 to st_mob_count do
+    for i := 1 to fStreetMonsterCount do
     begin
-      if Self.monsters[i].Id = mob.Id then
+      if Self.fMonsters[i].Id = mob.Id then
       begin
-        Self.monsters[i].LocationId := 0;
-        Self.monsters[i] := nil;
-        st_mob_count := st_mob_count - 1;
+        Self.fMonsters[i].LocationId := 0;
+        Self.fMonsters[i] := nil;
+        fStreetMonsterCount := fStreetMonsterCount - 1;
         uMonster.DeckMobCount := uMonster.DeckMobCount + 1;
       end;
     end;
-    AlignArray(Self.monsters);
+    AlignArray(Self.fMonsters);
   end
   else
   begin
