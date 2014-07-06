@@ -29,22 +29,22 @@ object frmMain: TfrmMain
   end
   object lblLocIDCaption: TLabel
     Left = 160
-    Top = 80
+    Top = 48
     Width = 56
     Height = 13
     Caption = 'id '#1083#1086#1082#1072#1094#1080#1080':'
   end
   object lblLocID: TLabel
     Left = 287
-    Top = 80
+    Top = 48
     Width = 39
     Height = 13
     Alignment = taRightJustify
     Caption = 'lblLocID'
   end
   object imgDR1: TImage
-    Left = 408
-    Top = 139
+    Left = 400
+    Top = 27
     Width = 55
     Height = 55
     Picture.Data = {
@@ -74,8 +74,8 @@ object frmMain: TfrmMain
       4500145145001451450014514500145145007FFFD9}
   end
   object imgDR2: TImage
-    Left = 472
-    Top = 139
+    Left = 464
+    Top = 27
     Width = 55
     Height = 55
     Picture.Data = {
@@ -105,8 +105,8 @@ object frmMain: TfrmMain
       4500145145001451450014514500145145007FFFD9}
   end
   object imgDR3: TImage
-    Left = 536
-    Top = 139
+    Left = 528
+    Top = 27
     Width = 55
     Height = 55
     Picture.Data = {
@@ -136,8 +136,8 @@ object frmMain: TfrmMain
       4500145145001451450014514500145145007FFFD9}
   end
   object imgDR4: TImage
-    Left = 600
-    Top = 139
+    Left = 592
+    Top = 27
     Width = 55
     Height = 55
     Picture.Data = {
@@ -167,8 +167,8 @@ object frmMain: TfrmMain
       4500145145001451450014514500145145007FFFD9}
   end
   object imgDR5: TImage
-    Left = 408
-    Top = 203
+    Left = 400
+    Top = 91
     Width = 55
     Height = 55
     Picture.Data = {
@@ -198,8 +198,8 @@ object frmMain: TfrmMain
       4500145145001451450014514500145145007FFFD9}
   end
   object imgDR6: TImage
-    Left = 472
-    Top = 203
+    Left = 464
+    Top = 91
     Width = 55
     Height = 55
     Picture.Data = {
@@ -229,8 +229,8 @@ object frmMain: TfrmMain
       4500145145001451450014514500145145007FFFD9}
   end
   object imgDR7: TImage
-    Left = 536
-    Top = 203
+    Left = 528
+    Top = 91
     Width = 55
     Height = 55
     Picture.Data = {
@@ -260,8 +260,8 @@ object frmMain: TfrmMain
       4500145145001451450014514500145145007FFFD9}
   end
   object imgDR8: TImage
-    Left = 600
-    Top = 203
+    Left = 592
+    Top = 91
     Width = 55
     Height = 55
     Picture.Data = {
@@ -291,8 +291,8 @@ object frmMain: TfrmMain
       4500145145001451450014514500145145007FFFD9}
   end
   object imgDR9: TImage
-    Left = 408
-    Top = 267
+    Left = 400
+    Top = 155
     Width = 55
     Height = 55
     Picture.Data = {
@@ -322,8 +322,8 @@ object frmMain: TfrmMain
       4500145145001451450014514500145145007FFFD9}
   end
   object imgDR10: TImage
-    Left = 472
-    Top = 267
+    Left = 464
+    Top = 155
     Width = 55
     Height = 55
     Picture.Data = {
@@ -353,8 +353,8 @@ object frmMain: TfrmMain
       4500145145001451450014514500145145007FFFD9}
   end
   object imgDR11: TImage
-    Left = 536
-    Top = 267
+    Left = 528
+    Top = 155
     Width = 55
     Height = 55
     Picture.Data = {
@@ -384,8 +384,8 @@ object frmMain: TfrmMain
       4500145145001451450014514500145145007FFFD9}
   end
   object imgDR12: TImage
-    Left = 600
-    Top = 267
+    Left = 592
+    Top = 155
     Width = 55
     Height = 55
     Picture.Data = {
@@ -1896,8 +1896,8 @@ object frmMain: TfrmMain
     Stretch = True
   end
   object lbl2: TLabel
-    Left = 408
-    Top = 112
+    Left = 400
+    Top = 0
     Width = 66
     Height = 20
     Caption = #1041#1088#1086#1089#1082#1080':'
@@ -1910,7 +1910,7 @@ object frmMain: TfrmMain
   end
   object RadioGroup1: TRadioGroup
     Left = 160
-    Top = 104
+    Top = 72
     Width = 233
     Height = 105
     Caption = 'RadioGroup1'
@@ -1935,8 +1935,8 @@ object frmMain: TfrmMain
     OnClick = btnInitClick
   end
   object btnPlaData: TButton
-    Left = 520
-    Top = 432
+    Left = 8
+    Top = 80
     Width = 81
     Height = 25
     Caption = #1044'-'#1077' '#1086#1073' '#1080#1075#1088#1086#1082#1077
@@ -2196,39 +2196,13 @@ object frmMain: TfrmMain
     TabOrder = 2
     OnChange = cbLocationChange
   end
-  object btnEncounter: TButton
-    Left = 232
-    Top = 48
-    Width = 65
-    Height = 25
-    Caption = 'Encounter'
-    TabOrder = 6
-  end
-  object btnMoveToLok: TButton
-    Left = 160
-    Top = 48
-    Width = 65
-    Height = 25
-    Caption = 'Move 2 lok'
-    TabOrder = 7
-    OnClick = btnMoveToLokClick
-  end
-  object btnShuffle: TButton
-    Left = 160
-    Top = 224
-    Width = 75
-    Height = 25
-    Caption = 'Shuffle'
-    TabOrder = 8
-    OnClick = btnShuffleClick
-  end
   object btnNextPers: TButton
     Left = 160
-    Top = 264
+    Top = 184
     Width = 89
     Height = 25
     Caption = #1057#1083#1077#1076'. '#1087#1077#1088#1089#1086#1085#1072#1078
-    TabOrder = 9
+    TabOrder = 6
     OnClick = btnNextPersClick
   end
   object btnChsInv: TButton
@@ -2242,31 +2216,33 @@ object frmMain: TfrmMain
   end
   object btnUseCard: TButton
     Left = 160
-    Top = 304
+    Top = 216
     Width = 75
     Height = 25
     Caption = #1055#1088#1080#1084'. '#1082#1072#1088#1090#1091
     Enabled = False
-    TabOrder = 10
+    TabOrder = 7
     OnClick = btnUseCardClick
   end
   object btnAddClue: TButton
     Left = 160
-    Top = 384
+    Top = 248
     Width = 75
     Height = 25
     Caption = 'Add Clue'
     Enabled = False
-    TabOrder = 11
+    TabOrder = 8
+    Visible = False
     OnClick = btnAddClueClick
   end
   object btnGiveItem: TButton
     Left = 160
-    Top = 424
+    Top = 280
     Width = 75
     Height = 25
     Caption = 'Give Item'
-    TabOrder = 12
+    TabOrder = 9
+    Visible = False
     OnClick = btnGiveItemClick
   end
   object seCrdNum: TSpinEdit
@@ -2276,7 +2252,7 @@ object frmMain: TfrmMain
     Height = 22
     MaxValue = 7
     MinValue = 1
-    TabOrder = 13
+    TabOrder = 10
     Value = 1
   end
   object btnLogClear: TButton
@@ -2285,7 +2261,7 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1083#1086#1075
-    TabOrder = 14
+    TabOrder = 11
     OnClick = btnLogClearClick
   end
   object Button2: TButton
@@ -2294,7 +2270,8 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = 'OpnTrdFrm'
-    TabOrder = 15
+    TabOrder = 12
+    Visible = False
     OnClick = Button2Click
   end
   object pgc1: TPageControl
@@ -2305,7 +2282,7 @@ object frmMain: TfrmMain
     ActivePage = ts1
     Align = alBottom
     MultiLine = True
-    TabOrder = 16
+    TabOrder = 13
     object ts1: TTabSheet
       Caption = #1048#1075#1088#1072
       object btn3: TButton
@@ -2960,7 +2937,7 @@ object frmMain: TfrmMain
     Width = 1366
     Height = 200
     Align = alBottom
-    TabOrder = 17
+    TabOrder = 14
     object img2: TImage
       Left = 1
       Top = 1
@@ -5641,7 +5618,7 @@ object frmMain: TfrmMain
     BiDiMode = bdLeftToRight
     Caption = #1057#1077#1089#1089#1080#1103
     ParentBiDiMode = False
-    TabOrder = 18
+    TabOrder = 15
     object pgc2: TPageControl
       Left = 1
       Top = 1
@@ -5713,7 +5690,8 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = 'btnShowCards'
-    TabOrder = 19
+    TabOrder = 16
+    Visible = False
     OnClick = btnShowCardsClick
   end
   object btn1: TButton
@@ -5722,7 +5700,8 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = 'btn1'
-    TabOrder = 20
+    TabOrder = 17
+    Visible = False
     OnClick = btn1Click
   end
   object btn2: TButton
@@ -5731,7 +5710,8 @@ object frmMain: TfrmMain
     Width = 75
     Height = 25
     Caption = 'btn2'
-    TabOrder = 21
+    TabOrder = 18
+    Visible = False
     OnClick = btn2Click
   end
   object xmldoc1: TXMLDocument

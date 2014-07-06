@@ -81,6 +81,12 @@ begin
     exit;
   end;
 
+  if gMonster.LocationId = 0 then
+  begin
+    ShowMessage('Биться не с кем :('+#10+#13+'Видимо вы их победили.');
+    exit;
+  end;  
+
   if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_SNEAK] + gMonster.Awareness, 1) > 0 then
   begin
     gCurrentPlayer.evadedmosnters[1] := gMonster.Id;
@@ -107,12 +113,23 @@ begin
     exit;
   end;
 
-  if Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).lok_mon_count = 0 then
+  if (gCurrentPlayer.Location mod 1000 <> 0) and (Arkham_Streets[ton(gCurrentPlayer.Location)].Lok[hon(gCurrentPlayer.Location)].lok_mon_count = 0) then
   begin
     ShowMessage('Биться не с кем :('+#10+#13+'Все монстры вышли.');
     exit;
   end;
 
+  if (gCurrentPlayer.Location mod 1000 = 0) and (Arkham_Streets[ton(gCurrentPlayer.Location)].st_mob_count = 0) then
+  begin
+    ShowMessage('Биться не с кем :('+#10+#13+'Все монстры вышли.');
+    exit;
+  end;
+
+  if gMonster.LocationId = 0 then
+  begin
+    ShowMessage('Биться не с кем :('+#10+#13+'Видимо вы их победили.');
+    exit;
+  end;
 
   // Horror! check
   if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_WILL] + gMonster.HorrorRate, 1) >= 1 then
@@ -135,6 +152,11 @@ begin
   end
   else
   begin
+    if ((gCurrentPlayer.Location mod 1000 = 0) and (Arkham_Streets[ton(gCurrentPlayer.Location)].st_mob_count > 0)) or
+      ((gCurrentPlayer.Location mod 1000 <> 0) and (Arkham_Streets[ton(gCurrentPlayer.Location)].Lok[hon(gCurrentPlayer.Location)].lok_mon_count > 0)) then
+    begin
+
+
     gCurrentPlayer.Stamina := gCurrentPlayer.Stamina - gMonster.CmbtDmg;
     lst1.Items.Add('Игроку нанесено урона: ' + IntToStr(gMonster.CmbtDmg) + '!!');
     if gCurrentPlayer.Stamina < 1 then
@@ -148,10 +170,10 @@ begin
         HasGate := False;
         lok_mon_count := 0;
       end;
-      gCurrentPlayer.Location := 5200;
+      gCurrentPlayer.Location := 9100;
       gCurrentPlayer.Moves := 0;
     end;
-
+    end;
   end;
 
 

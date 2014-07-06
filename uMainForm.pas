@@ -20,7 +20,6 @@ type
     Label2: TLabel;
     cbLocation: TComboBox;
     Label11: TLabel;
-    btnEncounter: TButton;
     lblLocIDCaption: TLabel;
     lblLocID: TLabel;
     Label16: TLabel;
@@ -40,8 +39,6 @@ type
     edStatLuck: TEdit;
     Label14: TLabel;
     edtPlaLoc: TEdit;
-    btnMoveToLok: TButton;
-    btnShuffle: TButton;
     Label20: TLabel;
     edtPlaClue: TEdit;
     Label27: TLabel;
@@ -501,7 +498,7 @@ begin
   lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
   gCurrentPlayer := players[GetFirstPlayer];
   current_player := GetFirstPlayer;
-  btnEncounter.Enabled := true;
+  //btnEncounter.Enabled := true;
 
   //frmMain.btn17Click(Sender);
   UpdStatus;
@@ -1193,7 +1190,7 @@ begin
   lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
   gCurrentPlayer := players[GetFirstPlayer];
   current_player := GetFirstPlayer;
-  btnEncounter.Enabled := true;
+  //btnEncounter.Enabled := true;
 
   //frmMain.btn17Click(Sender);
   UpdStatus;
@@ -1288,12 +1285,14 @@ procedure MoveMonsters();
 var
   s, l, m: integer;
   lok_id: integer;
+  old_lok_id: integer;
 begin
   for m := 0 to uMainForm.Monsters_Count-1 do
     if uMainForm.Monsters[m].LocationId <> 0 then
     begin
+      old_lok_id := uMainForm.Monsters[m].LocationId;
       lok_id := uMainForm.Monsters[m].Move(gCurrentMythosCard.fMobMoveWhite, gCurrentMythosCard.fMobMoveBlack);
-      if lok_id <> 0 then
+      if (lok_id <> 0) and (uMainForm.Monsters[m].LocationId <> old_lok_id) then
       begin
         Arkham_Streets[ton(lok_id)].AddMonster(lok_id, Monsters[m]);
         frmMain.lstLog.Items.Add('Монстр ' + Monsters[m].Name + ' перешел в локацию ' + GetLokNameByID(lok_id));
