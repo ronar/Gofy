@@ -252,7 +252,7 @@ var
   procedure Load_Cards(Card_Type: integer);
   procedure Encounter(card: TLocationCard);
   procedure OWEncounter(lok_id: integer; crd_num: integer);
-  procedure MoveMonsters(monstr: TPlayer);
+  procedure MoveMonsters();
   function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
 //  procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
   //procedure ProcessNode(Node : PLLData; add_data: integer = 0);
@@ -373,7 +373,7 @@ begin
   gPlayer := players[1];
   gCurrentPlayer := players[GetFirstPlayer];
   current_player := 1;
-  //Monsters_Count := 0;
+  Monsters_Count := 0;
   frmMain.lblCurPlayer.Caption := IntToStr(current_player);
   gCurrentPhase := PH_UPKEEP;
   frmMain.lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
@@ -968,9 +968,9 @@ begin
           //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
 
         for i := 1 to pl_lok.lok_mon_count do
-          if pl_lok.monsters[1] <> nil then
+          if pl_lok.monsters[i] <> nil then
           begin
-            frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[1].id), gCurrentPlayer);
+            frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[i].id), gCurrentPlayer);
             frmMonster.ShowModal;
           end;
         end;
@@ -1024,14 +1024,21 @@ begin
       gCurrentMythosCard := Mythos_Deck.card[mythos_card_num];
       frmMain.imgEncounter.Picture.LoadFromFile(path_to_exe + 'CardsData\Mythos\0' + IntToStr(mythos_card_num) + '.jpg');
       // Open gate and spawn monster
-      Arkham_Streets[ton(gCurrentMythosCard.fGateSpawn)].SpawnGate(gCurrentMythosCard.fGateSpawn, gates[random(8)+1]);
-      frmMain.lstLog.Items.Add('Появились ворота: ' + GetLokNameByID(gCurrentMythosCard.fGateSpawn));
+      if not Arkham_Streets[ton(gCurrentMythosCard.fGateSpawn)].Lok[hon(gCurrentMythosCard.fGateSpawn)].HasGate then
+      begin
+        if Arkham_Streets[ton(gCurrentMythosCard.fGateSpawn)].SpawnGate(gCurrentMythosCard.fGateSpawn, gates[random(8)+1]) then
+          frmMain.lstLog.Items.Add('Появились ворота: ' + GetLokNameByID(gCurrentMythosCard.fGateSpawn));
+      end;
       drawn_monster := DrawMonsterCard(Monsters);
-      Arkham_Streets[ton(gCurrentMythosCard.fGateSpawn)].AddMonster(gCurrentMythosCard.fGateSpawn, drawn_monster);
-      frmMain.lstLog.Items.Add('Появился монстр: ' + GetMonsterNameByID(drawn_monster.id));
+      if drawn_monster <> nil then
+        if Arkham_Streets[ton(gCurrentMythosCard.fGateSpawn)].AddMonster(gCurrentMythosCard.fGateSpawn, drawn_monster) then
+          frmMain.lstLog.Items.Add('Появился монстр: ' + GetMonsterNameByID(drawn_monster.id));
+
       // Spawn clue
-      Arkham_Streets[ton(gCurrentMythosCard.fClueSpawn)].AddClue(gCurrentMythosCard.fClueSpawn, 1);
-      frmMain.lstLog.Items.Add('Улика появилась: ' + GetLokNameByID(gCurrentMythosCard.fClueSpawn));
+      if Arkham_Streets[ton(gCurrentMythosCard.fClueSpawn)].AddClue(gCurrentMythosCard.fClueSpawn, 1) then
+        frmMain.lstLog.Items.Add('Улика появилась: ' + GetLokNameByID(gCurrentMythosCard.fClueSpawn));
+      MoveMonsters();
+//      btnContinueClick(Sender);
     end;
   end;
 {  case cbLocation.ItemIndex of
@@ -1099,7 +1106,7 @@ begin
   //players[2].Delayed := True;
   //owEncounter(151, 1);
   //Arkham_Streets[ton(gCurrentPlayer.Location)].SpawnGate(gCurrentPlayer.Location, gates[5]);
-  MoveMonsters(gCurrentPlayer);
+
 end;
 
 procedure TfrmMain.btnTakeWeaponClick(Sender: TObject);
@@ -1248,17 +1255,20 @@ begin
 
 end;
 
-procedure MoveMonsters(monstr: TPlayer);
+procedure MoveMonsters();
 var
   s, l, m: integer;
   lok_id: integer;
 begin
-  for m := 0 to Monsters_Count-1 do
-    if Monsters[m].LocationId <> 0 then
+  for m := 0 to uMainForm.Monsters_Count-1 do
+    if uMainForm.Monsters[m].LocationId <> 0 then
     begin
-      lok_id := Monsters[m].Move(gCurrentMythosCard.fMobMoveWhite, gCurrentMythosCard.fMobMoveBlack);
+      lok_id := uMainForm.Monsters[m].Move(gCurrentMythosCard.fMobMoveWhite, gCurrentMythosCard.fMobMoveBlack);
       if lok_id <> 0 then
+      begin
         Arkham_Streets[ton(lok_id)].AddMonster(lok_id, Monsters[m]);
+        frmMain.lstLog.Items.Add('Монстр ' + Monsters[m].Name + ' перешел в локацию ' + GetLokNameByID(lok_id));
+      end;
     end;
 end;
 

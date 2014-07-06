@@ -42,14 +42,14 @@ type
 
   function LoadMonsterCards(var monsters: TMonsterArray; file_path: string): integer;
   function DrawMonsterCard(var monsters: TMonsterArray): TMonster;
-  procedure ShuffleMonsterDeck(monsters: TMonsterArray);
+  procedure ShuffleMonsterDeck(var monsters_deck: TMonsterArray);
   //procedure MoveMonster(); // TODO: moving of the monsters
   function GetMonsterNameByID(id: integer): string;
   function GetMonsterByID(const monsters: TMonsterArray; id: integer): TMonster; // Get mob from pool
   function GetMonsterCount(const monsters: TMonsterArray): integer;
 
 var
-  monCount: integer = 0; // Kol-vo mobov v pule
+  DeckMobCount: integer = 0; // Kol-vo mobov v pule
 
 implementation
 
@@ -68,7 +68,6 @@ var
 begin
   Result := 0;
   lok_id := fLocationId;
-  Arkham_Streets[ton(fLocationId)].TakeAwayMonster(fLocationId, fId);
   //case fMovBorder of
     //1: begin  // Black (normal)
       if MobMoveWhite[fDimention - 1] = 1 then // if white mob move in mythos card
@@ -76,10 +75,8 @@ begin
         for i := 1 to 36 do
           if aMonsterMoves[i, 1] = lok_id then
           begin
-            fLocationId := aMonsterMoves[i, 2];
-            Result := fLocationId;
-            //Arkham_Streets[ton(fLocationId)].AddMonster(fLocationId, fId);
-            frmMain.lstLog.Items.Add('Монстр ' + fName + ' перешел в локацию ' + GetLokNameByID(fLocationId));
+            Arkham_Streets[ton(fLocationId)].TakeAwayMonster(fLocationId, Self);
+            Result := aMonsterMoves[i, 2];
           end;
       end;
 
@@ -88,9 +85,8 @@ begin
         for i := 1 to 36 do
           if aMonsterMoves[i, 1] = lok_id then
           begin
-            fLocationId := aMonsterMoves[i, 3];
-            Result := fLocationId;
-            frmMain.lstLog.Items.Add('Монстр ' + fName + ' перешел в локацию ' + GetLokNameByID(fLocationId));
+            Arkham_Streets[ton(fLocationId)].TakeAwayMonster(fLocationId, Self);
+            Result := aMonsterMoves[i, 3];
           end;
       end;
 
@@ -158,7 +154,7 @@ begin
   end;
   FindClose(SR); // закрываем поиск
   LoadMonsterCards := i;
-  monCount := i;
+  DeckMobCount := i;
 end;
 
 // Return mob ID
@@ -169,32 +165,39 @@ var
 begin
   //Assert(monCount > 1);
   dmonster := nil;
-  if monCount < 1 then
+
+  if DeckMobCount < 1 then
   begin
-    ShowMessage('Нету монстров.');
-    DrawMonsterCard := nil;
+    ShowMessage('DrawMonsterCard: нету монстров!');
+    Result := nil;
     Exit;
   end;
-  randomize;
-  dmonster := monsters[random(monCount)];
-  Result := dmonster;
-  //ShuffleMonsterDeck(monsters);
-  monCount := monCount - 1;
+
+  ShuffleMonsterDeck(monsters);
+  if monsters[DeckMobCount - 1].fLocationId = 0 then
+  begin
+    dmonster := monsters[DeckMobCount - 1];
+    Result := dmonster;
+  end
+  else
+    ShowMessage('Ошибочка! Схватил не того монстра!');
 end;
 
 // TODO: Access violation
-procedure ShuffleMonsterDeck(monsters: TMonsterArray);
+procedure ShuffleMonsterDeck(var monsters_deck: TMonsterArray);
 var
   i, r: integer;
   temp: TMonster;
 begin
+  if DeckMobCount < 2 then exit;
+
   randomize;
-  for i := 0 to monCount-1 do
+  for i := 0 to DeckMobCount - 1 do
   begin
-    temp := monsters[i];
-    r := random(monCount);
-    monsters[i] := monsters[r];
-    monsters[r] := temp;
+    temp := monsters_deck[i];
+    r := random(DeckMobCount);
+    monsters_deck[i] := monsters_deck[r];
+    monsters_deck[r] := temp;
   end;
 end;
 

@@ -31,11 +31,11 @@ type
     property Lok[i: integer]: TLocation read GetLok;
     function GetLokByID(id: integer): TLocation;
     procedure Encounter(lok_id: integer; crd_num: integer);
-    procedure AddMonster(lok_id: integer; mob: TMonster);
-    procedure AddClue(lok_id: integer; n: integer);
+    function AddMonster(lok_id: integer; mob: TMonster): Boolean;
+    function AddClue(lok_id: integer; n: integer): Boolean;
+    function SpawnGate(lok_id: integer; gate: TGate): Boolean;
     procedure RemoveClue(lok_id: integer; n: integer);
-    procedure SpawnGate(lok_id: integer; gate: TGate);
-    procedure TakeAwayMonster(lok_id: integer; mob_id: integer);
+    procedure TakeAwayMonster(lok_id: integer; mob: TMonster);
     procedure CloseGate(lok_id: integer);
     procedure MoveMonsters;
   end;
@@ -865,28 +865,56 @@ begin
       GetStreetNameByID := aNeighborhoodsNames[i, 2];
 end;
 
-procedure TStreet.AddMonster(lok_id: integer; mob: TMonster);
+function TStreet.AddMonster(lok_id: integer; mob: TMonster): Boolean;
 var
   lok_num: integer;
 begin
-  if lok_id mod 1000 = 0 then
+  if mob = nil then
   begin
-    st_mob_count := st_mob_count + 1;
-    monsters[st_mob_count] := mob;
-    mob.LocationId := lok_id;
-  end
-  else
-  begin
-    lok_num := hon(lok_id);
-    fLok[lok_num].lok_mon_count := fLok[lok_num].lok_mon_count + 1;
-    fLok[lok_num].monsters[fLok[lok_num].lok_mon_count] := mob;
-    mob.LocationId := lok_id;
+    ShowMessage('Невозможно добавить моба!');
+    Result := false;
+    exit;
   end;
+
+  if not (mob is TMonster) then
+  begin
+    ShowMessage('Alarm!!!');
+  end;
+
+  try
+    if lok_id mod 1000 = 0 then
+    begin
+      st_mob_count := st_mob_count + 1;
+      monsters[st_mob_count] := mob;
+      mob.LocationId := lok_id;
+      uMonster.DeckMobCount := uMonster.DeckMobCount - 1;
+    end
+    else
+    begin
+      lok_num := hon(lok_id);
+      fLok[lok_num].lok_mon_count := fLok[lok_num].lok_mon_count + 1;
+      fLok[lok_num].monsters[fLok[lok_num].lok_mon_count] := mob;
+      mob.LocationId := lok_id;
+      uMonster.DeckMobCount := uMonster.DeckMobCount - 1;
+    end;
+
+    result := true;
+  except
+    ShowMessage('Невозможно добавить монстра!');
+    Result := false;
+  end;
+
 end;
 
-procedure TStreet.AddClue(lok_id: integer; n: integer);
+function TStreet.AddClue(lok_id: integer; n: integer): Boolean;
 begin
-  fLok[hon(lok_id)].clues := fLok[hon(lok_id)].clues + n;
+  result := true;
+  try
+    fLok[hon(lok_id)].clues := fLok[hon(lok_id)].clues + n;
+  except
+    ShowMessage('Невозможно добавить улику!');
+    Result := false;
+  end;
 end;
 
 procedure TStreet.RemoveClue(lok_id: integer; n: integer);
@@ -894,49 +922,66 @@ begin
   fLok[hon(lok_id)].clues := fLok[hon(lok_id)].clues - n;
 end;
 
-procedure TStreet.SpawnGate(lok_id: integer; gate: TGate);
+function TStreet.SpawnGate(lok_id: integer; gate: TGate): boolean;
 begin
-  fLok[hon(lok_id)] := GetLokByID(lok_id);
-  fLok[hon(lok_id)].gate.other_world := gate.other_world;
-  fLok[hon(lok_id)].gate.modif := gate.modif;
-  fLok[hon(lok_id)].gate.dimension := gate.dimension;
-  fLok[hon(lok_id)].HasGate := true;
+  try
+    fLok[hon(lok_id)] := GetLokByID(lok_id);
+    fLok[hon(lok_id)].gate.other_world := gate.other_world;
+    fLok[hon(lok_id)].gate.modif := gate.modif;
+    fLok[hon(lok_id)].gate.dimension := gate.dimension;
+    fLok[hon(lok_id)].HasGate := true;
+    result := true;
+  except
+    ShowMessage('Невозможно добавить врата!');
+    Result := false;
+  end;
+
 end;
 
-procedure TStreet.TakeAwayMonster(lok_id: integer; mob_id: integer);
+procedure TStreet.TakeAwayMonster(lok_id: integer; mob: TMonster);
 var
   i, j: integer;
   lok_num: integer;
+  procedure AlignArray(var mobs: array of TMonster);
+  var
+    k, l: Integer;
+  begin
+    for k := 0 to 4 do
+      if mobs[k] = nil then
+        for l := k to 3 do
+          mobs[l] := mobs[l + 1];
+  end;
 begin
   if lok_id mod 1000 = 0 then
   begin
     for i := 1 to st_mob_count do
     begin
-      if monsters[i].Id = mob_Id then
+      if Self.monsters[i].Id = mob.Id then
       begin
-        monsters[i].LocationId := 0;
-        monsters[i] := nil;
+        Self.monsters[i].LocationId := 0;
+        Self.monsters[i] := nil;
         st_mob_count := st_mob_count - 1;
+        uMonster.DeckMobCount := uMonster.DeckMobCount + 1;
       end;
-      for j := i to st_mob_count do
-        monsters[j] := monsters[j + 1];
     end;
+    AlignArray(Self.monsters);
   end
   else
   begin
     lok_num := hon(lok_id);
     for i := 1 to fLok[lok_num].lok_mon_count do
     begin
-      if fLok[lok_num].monsters[i].Id = mob_Id then
+      if fLok[lok_num].monsters[i].Id = mob.Id then
       begin
         fLok[lok_num].monsters[i].LocationId := 0;
         fLok[lok_num].monsters[i] := nil;
         fLok[lok_num].lok_mon_count := fLok[lok_num].lok_mon_count - 1;
+        uMonster.DeckMobCount := uMonster.DeckMobCount + 1;
       end;
-      for j := i to fLok[lok_num].lok_mon_count do
-        fLok[lok_num].monsters[j] := fLok[lok_num].monsters[j + 1];
     end;
+    AlignArray(fLok[lok_num].monsters);
   end;
+
 end;
 
 procedure TStreet.CloseGate(lok_id: integer);

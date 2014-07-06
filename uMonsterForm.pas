@@ -129,7 +129,7 @@ begin
   if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_FIGHT] + gMonster.CmbtRate + gCurrentPlayer.BonusWeapon, gMonster.Toughness) >= gMonster.Toughness then
   begin
     gCurrentPlayer.AddMonsterTrophies(gMonster.Id);
-    Arkham_Streets[ton(gCurrentPlayer.Location)].TakeAwayMonster(gCurrentPlayer.Location, gMonster.Id);
+    Arkham_Streets[ton(gCurrentPlayer.Location)].TakeAwayMonster(gCurrentPlayer.Location, gMonster);
     lst1.Items.Add('Убил моба!!');
     lst1.Items.Add('Гирок получил монстр-трофеюшек!!');
   end
