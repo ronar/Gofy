@@ -10,7 +10,7 @@ type
     clues: integer; // Улики на локации
     gate: TGate; // Врата открытые на локации
     HasGate: Boolean;
-    monsters: array [1..5] of TMonster;
+    lok_monsters: array [1..MONSTER_MAX_ON_LOK] of TMonster;
     lok_mon_count: integer;
   end;
 
@@ -20,25 +20,26 @@ type
     fLok: array [1..3] of TLocation;
     fDeck: TLocationCardsDeck;
     fAdjacent: array [1..6] of integer; // Прилегающие локации
-    fMonsters: array [1..5] of TMonster; // Mobs in streets :)
+    fMonsters: array [1..MONSTER_MAX_ON_LOK] of TMonster; // Mobs in streets :)
     fStreetMonsterCount: integer;
     function GetDeck: TLocationCardsDeck;
     function GetLok(i: integer): TLocation;
     function GetMonster(i: integer): TMonster;
+    procedure SetMonster(i: integer; mob: TMonster);
   public
     constructor Create(street_id: integer);
     property StreetId: integer read fId write fId;
     property Deck: TLocationCardsDeck read GetDeck;
     property Lok[i: integer]: TLocation read GetLok;
-    property Monsters[i: integer]: TMonster read GetMonster;
+    property Monsters[i: integer]: TMonster read GetMonster write SetMonster;
     property st_mob_count: Integer read fStreetMonsterCount write fStreetMonsterCount;
     function GetLokByID(id: integer): TLocation;
     procedure Encounter(lok_id: integer; crd_num: integer);
-    function AddMonster(lok_id: integer; mob: TMonster): Boolean;
+    function AddMonster(to_lok: integer; mob: TMonster): Boolean;
     function AddClue(lok_id: integer; n: integer): Boolean;
     function SpawnGate(lok_id: integer; gate: TGate): Boolean;
     procedure RemoveClue(lok_id: integer; n: integer);
-    procedure TakeAwayMonster(lok_id: integer; mob: TMonster);
+    procedure TakeAwayMonster(from_lok: integer; mob: TMonster);
     procedure CloseGate(lok_id: integer);
     procedure MoveMonsters;
   end;
@@ -73,11 +74,11 @@ begin
         fLok[n].gate.modif := 0;
         fLok[n].gate.dimension := 0;
         fLok[n].HasGate := false;
-        fLok[n].monsters[1] := nil;
-        fLok[n].monsters[2] := nil;
-        fLok[n].monsters[3] := nil;
-        fLok[n].monsters[4] := nil;
-        fLok[n].monsters[5] := nil;
+        fLok[n].lok_monsters[1] := nil;
+        fLok[n].lok_monsters[2] := nil;
+        fLok[n].lok_monsters[3] := nil;
+        fLok[n].lok_monsters[4] := nil;
+        fLok[n].lok_monsters[5] := nil;
         fLok[n].lok_mon_count := 0;
     end;
     fDeck := TLocationCardsDeck.Create;
@@ -98,6 +99,11 @@ end;
 function TStreet.GetMonster(i: integer): TMonster;
 begin
   Result := fMonsters[i];
+end;
+
+procedure TStreet.SetMonster(i: integer; mob: TMonster);
+begin
+  Monsters[i] := mob;
 end;
 
 function TStreet.GetLokByID(id: integer): TLocation;
@@ -889,13 +895,13 @@ begin
       GetStreetNameByID := aNeighborhoodsNames[i, 2];
 end;
 
-function TStreet.AddMonster(lok_id: integer; mob: TMonster): Boolean;
+function TStreet.AddMonster(to_lok: integer; mob: TMonster): Boolean;
 var
-  lok_num: integer;
+  i, lok_num: integer;
 begin
   if mob = nil then
   begin
-    ShowMessage('Невозможно добавить моба!');
+    ShowMessage('Невозможно добавить моба! Nil');
     Result := false;
     exit;
   end;
@@ -906,25 +912,29 @@ begin
   end;
 
   try
-    if lok_id mod 1000 = 0 then
+    if to_lok mod 1000 = 0 then
     begin
       fStreetMonsterCount := fStreetMonsterCount + 1;
       fMonsters[fStreetMonsterCount] := mob;
-      mob.LocationId := lok_id;
+      mob.LocationId := to_lok;
       uMonster.DeckMobCount := uMonster.DeckMobCount - 1;
+
+     // ShowMessage('Добавлен на локацию: ' + IntToStr(to_lok));
     end
     else
     begin
-      lok_num := hon(lok_id);
+      lok_num := hon(to_lok);
       fLok[lok_num].lok_mon_count := fLok[lok_num].lok_mon_count + 1;
-      fLok[lok_num].monsters[fLok[lok_num].lok_mon_count] := mob;
-      mob.LocationId := lok_id;
+      fLok[lok_num].lok_monsters[fLok[lok_num].lok_mon_count] := mob;
+      mob.LocationId := to_lok;
       uMonster.DeckMobCount := uMonster.DeckMobCount - 1;
+
+     // ShowMessage('Добавлен на локацию: ' + IntToStr(to_lok));
     end;
 
     result := true;
   except
-    ShowMessage('Невозможно добавить монстра!');
+    ShowMessage('Невозможно добавить монстра! Except');
     Result := false;
   end;
 
@@ -962,48 +972,63 @@ begin
 
 end;
 
-procedure TStreet.TakeAwayMonster(lok_id: integer; mob: TMonster);
+procedure TStreet.TakeAwayMonster(from_lok: integer; mob: TMonster);
 var
   i, j: integer;
   lok_num: integer;
+  mob_count: Integer;
   procedure AlignArray(var mobs: array of TMonster);
   var
     k, l: Integer;
   begin
-    for k := 0 to 4 do
-      if mobs[k] = nil then
-        for l := k to 3 do
-          mobs[l] := mobs[l + 1];
+    for k := 0 to MONSTER_MAX_ON_LOK - 2 do
+      if (mobs[k] = nil) then
+        for l := k to MONSTER_MAX_ON_LOK - 2 do
+          if (mobs[l + 1] <> nil) then
+          begin
+            mobs[l] := mobs[l + 1];
+            mobs[l + 1] := nil;
+          end;
   end;
 begin
-  if lok_id mod 1000 = 0 then
+  if from_lok mod 1000 = 0 then // Street
   begin
-    for i := 1 to fStreetMonsterCount do
+    mob_count := fStreetMonsterCount;
+    for i := 1 to mob_count do
     begin
-      if Self.fMonsters[i].Id = mob.Id then
+      if fMonsters[i] = mob then
       begin
-        Self.fMonsters[i].LocationId := 0;
-        Self.fMonsters[i] := nil;
+        fMonsters[i].LocationId := 0;
+        fMonsters[i] := nil;
+        mob.LocationId := 0;
         fStreetMonsterCount := fStreetMonsterCount - 1;
         uMonster.DeckMobCount := uMonster.DeckMobCount + 1;
+       // ShowMessage('Убран с локации: ' + IntToStr(from_lok));
       end;
     end;
     AlignArray(Self.fMonsters);
+//    ShowMessage('s');
+    //AlignArray(Self.fMonsters);
   end
-  else
+  else // Location
   begin
-    lok_num := hon(lok_id);
-    for i := 1 to fLok[lok_num].lok_mon_count do
+    lok_num := hon(from_lok);
+    mob_count := fLok[lok_num].lok_mon_count;
+    for i := 1 to mob_count do
     begin
-      if fLok[lok_num].monsters[i].Id = mob.Id then
+      if fLok[lok_num].lok_monsters[i] = mob then
       begin
-        fLok[lok_num].monsters[i].LocationId := 0;
-        fLok[lok_num].monsters[i] := nil;
+        fLok[lok_num].lok_monsters[i].LocationId := 0;
+        fLok[lok_num].lok_monsters[i] := nil;
+        mob.LocationId := 0;
         fLok[lok_num].lok_mon_count := fLok[lok_num].lok_mon_count - 1;
         uMonster.DeckMobCount := uMonster.DeckMobCount + 1;
+       // ShowMessage('Убран с локации: ' + IntToStr(from_lok));
       end;
     end;
-    AlignArray(fLok[lok_num].monsters);
+    AlignArray(fLok[lok_num].lok_monsters);
+//    ShowMessage('s');
+    //AlignArray(fLok[lok_num].lok_monsters);
   end;
 
 end;

@@ -3153,22 +3153,6 @@ object frmMonster: TfrmMonster
     Height = 129
     Stretch = True
   end
-  object btnNextMob: TButton
-    Left = 40
-    Top = 200
-    Width = 75
-    Height = 25
-    Caption = #1057#1083#1077#1076'. '#1084#1086#1073
-    TabOrder = 0
-  end
-  object btnPrevMob: TButton
-    Left = 296
-    Top = 200
-    Width = 75
-    Height = 25
-    Caption = #1055#1088#1077#1076'. '#1084#1086#1073
-    TabOrder = 1
-  end
   object btnBattle: TButton
     Left = 440
     Top = 432
@@ -3181,7 +3165,7 @@ object frmMonster: TfrmMonster
     Font.Name = 'Tahoma'
     Font.Style = [fsBold, fsItalic]
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 0
     OnClick = btnBattleClick
   end
   object btnEvade: TButton
@@ -3196,7 +3180,7 @@ object frmMonster: TfrmMonster
     Font.Name = 'Tahoma'
     Font.Style = [fsBold, fsItalic]
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 1
     OnClick = btnEvadeClick
   end
   object lst1: TListBox
@@ -3205,6 +3189,6 @@ object frmMonster: TfrmMonster
     Width = 257
     Height = 409
     ItemHeight = 13
-    TabOrder = 4
+    TabOrder = 2
   end
 end

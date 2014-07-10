@@ -9,8 +9,6 @@ uses
 type
   TfrmMonster = class(TForm)
     imgMonster: TImage;
-    btnNextMob: TButton;
-    btnPrevMob: TButton;
     btnBattle: TButton;
     btnEvade: TButton;
     lst1: TListBox;
@@ -71,6 +69,7 @@ begin
   else
     imgPlaCard3.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Spells\30.jpg');
   mon_pic := not mon_pic;
+  //ShowMessage(IntToStr(Integer(gMonster)));
 end;
 
 procedure TfrmMonster.btnEvadeClick(Sender: TObject);
@@ -172,6 +171,7 @@ begin
       end;
       gCurrentPlayer.Location := 9100;
       gCurrentPlayer.Moves := 0;
+      gCurrentPlayer.Stamina := 1;
     end;
     end;
   end;

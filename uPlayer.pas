@@ -432,6 +432,12 @@ begin
     exit;
   end;
 
+  if to_lok.lok_id <= 0 then
+  begin
+    ShowMessage('Что-то не туда вы пытаетесь перейти! :)');
+    exit;
+  end;
+
   num_of_evaded_mobs := 0;
   for i := 1 to 5 do
     if evadedmosnters[i] <> 0 then

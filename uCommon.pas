@@ -80,6 +80,7 @@ const
 
   MAX_PLAYER_ITEMS = 20;
   MONSTER_MAX = 50;
+  MONSTER_MAX_ON_LOK = 10;
   ALLIES_MAX = 50;
   //COMMON_ITEMS_MAX = 100;
   aStats: array [1..6] of string = ('Скорость', 'Скрытность', 'Битва', 'Воля', 'Знание', 'Удача');
@@ -359,15 +360,15 @@ const
         ('033', 'Bayakee'),
         ('043', 'Bayakee'),
         ('053', 'Bayakee'),
-        ('063', 'Bayakee'),
+        ('1063', 'Bayakee'),
         ('073', 'Bayakee'),
         ('083', 'Bayakee'),
         ('093', 'Bayakee'),
         ('103', 'Bayakee'),
-        ('112', 'Chthonian'),
+        ('1112', 'Chthonian'),
         ('123', 'Bayakee'),
         ('133', 'Bayakee'),
-        ('146', 'Cultist'),
+        ('1146', 'Cultist'),
         ('153', 'Bayakee'),
         ('163', 'Bayakee'),
         ('173', 'Bayakee'),
@@ -381,7 +382,7 @@ const
         ('253', 'Bayakee'),
         ('263', 'Bayakee'),
         ('273', 'Bayakee'),
-        ('282', 'Fire Vampire'),
+        ('1282', 'Fire Vampire'),
         ('063', 'Bayakee'),
         ('063', 'Bayakee'),
         ('063', 'Bayakee'),
@@ -393,7 +394,7 @@ const
         ('063', 'Bayakee'),
         ('063', 'Bayakee'),
         ('063', 'Bayakee'),
-        ('063', 'Bayakee'),
+        ('1402', 'Gug'),
         ('063', 'Bayakee'),
         ('063', 'Bayakee'),
         ('063', 'Bayakee'),

@@ -1,11 +1,11 @@
 object frmMain: TfrmMain
-  Left = 427
-  Top = 158
+  Left = 244
+  Top = 151
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'frmMain'
-  ClientHeight = 768
-  ClientWidth = 1366
+  ClientHeight = 769
+  ClientWidth = 1362
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1908,6 +1908,13 @@ object frmMain: TfrmMain
     Font.Style = [fsBold]
     ParentFont = False
   end
+  object lblMonCount: TLabel
+    Left = 560
+    Top = 416
+    Width = 59
+    Height = 13
+    Caption = 'lblMonCount'
+  end
   object RadioGroup1: TRadioGroup
     Left = 160
     Top = 72
@@ -1922,6 +1929,7 @@ object frmMain: TfrmMain
       '4th phase (Other World Encounter) '
       '5th phase (Mythos)')
     TabOrder = 3
+    Visible = False
     OnClick = RadioGroup1Click
   end
   object btnInit: TButton
@@ -2276,8 +2284,8 @@ object frmMain: TfrmMain
   end
   object pgc1: TPageControl
     Left = 0
-    Top = 481
-    Width = 1366
+    Top = 482
+    Width = 1362
     Height = 87
     ActivePage = ts1
     Align = alBottom
@@ -2328,7 +2336,7 @@ object frmMain: TfrmMain
       object pnl1: TPanel
         Left = 0
         Top = 31
-        Width = 1358
+        Width = 1354
         Height = 28
         Align = alBottom
         TabOrder = 0
@@ -2385,7 +2393,7 @@ object frmMain: TfrmMain
           ParentFont = False
         end
         object img1: TImage
-          Left = 1319
+          Left = 1315
           Top = 1
           Width = 38
           Height = 26
@@ -2933,8 +2941,8 @@ object frmMain: TfrmMain
   end
   object pnl2: TPanel
     Left = 0
-    Top = 568
-    Width = 1366
+    Top = 569
+    Width = 1362
     Height = 200
     Align = alBottom
     TabOrder = 14
@@ -5240,7 +5248,7 @@ object frmMain: TfrmMain
       TabOrder = 1
     end
     object grp4: TGroupBox
-      Left = 865
+      Left = 861
       Top = 1
       Width = 500
       Height = 198
@@ -5711,7 +5719,6 @@ object frmMain: TfrmMain
     Height = 25
     Caption = 'btn2'
     TabOrder = 18
-    Visible = False
     OnClick = btn2Click
   end
   object xmldoc1: TXMLDocument

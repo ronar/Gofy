@@ -21,6 +21,12 @@ type
     fCmbtDmg: integer;
     fSpec: string[6];
     fLocationId: integer;
+    fAmbush: boolean; // Засада
+    fEndless: boolean; // Неисчислимость
+    fPhysical: integer; // Физ. сопр/иммун
+    fMagical: integer; // Маг. сопр/иммун
+    fNightmarish: Integer; // Кошмар
+    fOverwhelming: integer; // Сокрушение
   public
     property Id: Integer read fId write fId;
     property Name: string read fName write fName;
@@ -32,6 +38,13 @@ type
     property Toughness: integer read fToughness write fToughness;
     property CmbtRate: integer read fCmbtRate write fCmbtRate;
     property CmbtDmg: integer read fCmbtDmg write fCmbtDmg;
+    property Ambush: boolean read fAmbush write fAmbush;
+    property Endless: boolean read fEndless write fEndless;
+    property Physical: integer read fPhysical write fPhysical;
+    property Magical: integer read fMagical write fMagical;
+    property Nightmarish: Integer read fNightmarish write fNightmarish;
+    property Overwhelming: Integer read fOverwhelming write fOverwhelming;
+    
     //property fSpec: string[6] read fId write fId;
     property LocationId: integer read fLocationId write fLocationId;
     constructor Create();
@@ -41,7 +54,7 @@ type
   TMonsterArray = array of TMonster;
 
   function LoadMonsterCards(var monsters: TMonsterArray; file_path: string): integer;
-  function DrawMonsterCard(var monsters: TMonsterArray): TMonster;
+  function DrawMonsterCard(monsters: TMonsterArray): TMonster;
   procedure ShuffleMonsterDeck(var monsters_deck: TMonsterArray);
   //procedure MoveMonster(); // TODO: moving of the monsters
   function GetMonsterNameByID(id: integer): string;
@@ -63,7 +76,7 @@ end;
 
 function TMonster.Move(const MobMoveWhite: array of integer; const MobMoveBlack: array of integer): integer;
 var
-  i: integer;
+  i, j: integer;
   lok_id: Integer;
 begin
   Result := 0;
@@ -76,7 +89,9 @@ begin
           if aMonsterMoves[i, 1] = lok_id then
           begin
             Arkham_Streets[ton(fLocationId)].TakeAwayMonster(fLocationId, Self);
+            Arkham_Streets[ton(aMonsterMoves[i, 2])].AddMonster(aMonsterMoves[i, 2], Self);
             Result := aMonsterMoves[i, 2];
+            break;
           end;
       end;
 
@@ -86,7 +101,9 @@ begin
           if aMonsterMoves[i, 1] = lok_id then
           begin
             Arkham_Streets[ton(fLocationId)].TakeAwayMonster(fLocationId, Self);
+            Arkham_Streets[ton(aMonsterMoves[i, 3])].AddMonster(aMonsterMoves[i, 3], Self);
             Result := aMonsterMoves[i, 3];
+            break;
           end;
       end;
 
@@ -105,7 +122,7 @@ var
   SR: TSearchRec; // поисковая переменная
   FindRes: Integer; // переменная для записи результата поиска
   s: string;
-  i, a: integer;
+  i, a, amt, j: integer;
 begin
   // задание условий поиска и начало поиска
   FindRes := FindFirst(file_path+'\CardsData\Monsters\' + '*.txt', faAnyFile, SR);
@@ -115,35 +132,54 @@ begin
 
   while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
   begin
-    i := i + 1;
     AssignFile (F, file_path+'\CardsData\Monsters\' + SR.Name);
     Reset(F);
-      //read(F, );
-      //i := i + 1;
-    SetLength(Monsters, i);
-    Monsters[i-1] := TMonster.Create;
-    with Monsters[i-1] do
+
+    amt := StrToInt(Copy(SR.Name, 4, 1));
+
+    for j := 0 to amt - 1 do
     begin
-      Id := StrToInt(Copy(SR.Name, 1, 3));
-      //monData: string;
-      Name := GetMonsterNameByID(Id);
-      readln(F, s);
-      Awareness   := StrToInt(s);
-      readln(F, s);
-      MovBorder   := StrToInt(s);
-      readln(F, s);
-      Dimention   := StrToInt(s);
-      readln(F, s);
-      HorrorRate := StrToInt(s);
-      readln(F, s);
-      HorrorDmg  := StrToInt(s);
-      readln(F, s);
-      Toughness   := StrToInt(s);
-      readln(F, s);
-      CmbtRate   := StrToInt(s);
-      readln(F, s);
-      CmbtDmg    := StrToInt(s);
-      //spec: string[6];
+      i := i + 1;
+      SetLength(Monsters, i);
+      Monsters[i-1] := TMonster.Create;
+      with Monsters[i-1] do
+      begin
+        Id := StrToInt(Copy(SR.Name, 1, 4));
+        //monData: string;
+        Name := GetMonsterNameByID(Id);
+        readln(F, s);
+        Awareness   := StrToInt(s);
+        readln(F, s);
+        MovBorder   := StrToInt(s);
+        readln(F, s);
+        Dimention   := StrToInt(s);
+        readln(F, s);
+        HorrorRate := StrToInt(s);
+        readln(F, s);
+        HorrorDmg  := StrToInt(s);
+        readln(F, s);
+        Toughness   := StrToInt(s);
+        readln(F, s);
+        CmbtRate   := StrToInt(s);
+        readln(F, s);
+        CmbtDmg    := StrToInt(s);
+        readln(F, s);
+        Ambush     := StrToBool(s);
+        readln(F, s);
+        Endless    := StrToBool(s);
+        readln(F, s);
+        Physical   := StrToInt(s);
+        readln(F, s);
+        Magical    := StrToInt(s);
+        readln(F, s);
+        Magical    := StrToInt(s);
+        readln(F, s);
+        Nightmarish:= StrToInt(s);
+        readln(F, s);
+        Overwhelming:= StrToInt(s);
+        //spec: string[6];
+      end;
+      Reset(F);
     end;
 
     CloseFile(F);
@@ -158,7 +194,7 @@ begin
 end;
 
 // Return mob ID
-function DrawMonsterCard(var monsters: TMonsterArray): TMonster;
+function DrawMonsterCard(monsters: TMonsterArray): TMonster;
 var
   i: integer;
   dmonster: TMOnster;
@@ -168,19 +204,24 @@ begin
 
   if DeckMobCount < 1 then
   begin
-    ShowMessage('DrawMonsterCard: нету монстров!');
+    frmMain.lstLog.Items.Add('DrawMonsterCard: нету монстров!');
     Result := nil;
     Exit;
   end;
 
-  ShuffleMonsterDeck(monsters);
-  if monsters[DeckMobCount - 1].fLocationId = 0 then
+  //ShuffleMonsterDeck(monsters);
+  for i := 0 to uMainForm.Monsters_Count - 1 do
   begin
-    dmonster := monsters[DeckMobCount - 1];
-    Result := dmonster;
-  end
-  else
-    ShowMessage('Ошибочка! Схватил не того монстра!');
+    if monsters[i].fLocationId = 0 then
+    begin
+      dmonster := monsters[i];
+      Result := dmonster;
+      Exit;
+    end;
+  end;
+
+  ShowMessage('Ошибочка! Схватил не того монстра!');
+  Result := dmonster;
 end;
 
 // TODO: Access violation

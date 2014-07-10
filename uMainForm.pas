@@ -161,6 +161,7 @@ type
     btn2: TButton;
     edtMoves: TEdit;
     lblMoves: TLabel;
+    lblMonCount: TLabel;
     procedure RadioGroup1Click(Sender: TObject);
     procedure btnInitClick(Sender: TObject);
     procedure btnPlaDataClick(Sender: TObject);
@@ -214,7 +215,7 @@ var
   frmMain: TfrmMain;
   gCurrentPhase: integer;
   Common_Items_Deck: TCommonItemCardDeck;
-  //Unique_Items_Deck: TItemCardDeck;
+  Unique_Items_Deck: TUniqueItemCardDeck;
   //Spells_Deck: TItemCardDeck;
   //Skills_Deck: TItemCardDeck;
   Mythos_Deck: TMythosDeck;
@@ -281,7 +282,7 @@ begin
 
     CT_UNIQUE_ITEM: begin
       // задание условий поиска и начало поиска
-      //Unique_Items_Count := Unique_Items_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\UniqueItems\\');
+      Unique_Items_Count := Unique_Items_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\CardsData\UniqueItems\');
 
     end; // CT_UNIQUE_ITEM
 
@@ -544,7 +545,7 @@ begin
   path_to_exe := ExtractFilePath(Application.ExeName);
   Common_Items_Deck:= TCommonItemCardDeck.Create(CT_COMMON_ITEM);
   Other_Worlds_Deck := TOtherWorldCardsDeck.Create();
-  //Unique_Items_Deck:= TItemCardDeck.Create(CT_UNIQUE_ITEM);
+  Unique_Items_Deck:= TUniqueItemCardDeck.Create(CT_UNIQUE_ITEM);
   //Spells_Deck:= TItemCardDeck.Create(CT_SPELL);
   //Skills_Deck:= TItemCardDeck.Create(CT_SKILL);
   Mythos_Deck := TMythosDeck.Create(CT_MYTHOS);
@@ -907,6 +908,8 @@ begin
   // Отрисовка карт в наличии у игрока
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
   SelectCards(selected_cards, player_current_card[current_player] - 1);
+
+  frmMain.lblMonCount.Caption := IntToStr(uMonster.DeckMobCount);
 end;
 
 procedure TfrmMain.btnPrevCardsClick(Sender: TObject);
@@ -936,6 +939,7 @@ var
   lok_id: integer;
   drawn_items: array [1..3] of integer;
   crd_num: integer;
+  ptr: Pointer;
 begin
  case gCurrentPhase of
     PH_UPKEEP: begin
@@ -949,6 +953,11 @@ begin
       lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
     end;
     PH_MOVE: begin
+      if cbLocation.ItemIndex < 0 then
+      begin
+        ShowMessage('Нужно выбрать локацию!');
+        Exit;
+      end;
       // TODO: point to null
       if gCurrentPlayer.Location mod 1000 = 0 then // С улицы
       begin
@@ -963,10 +972,11 @@ begin
       begin
         try
           lok_id := GetLokIDByName(cbLocation.Text);
-          if lok_id mod 1000 = 0 then // Street
+          if (lok_id <> 0) and (lok_id mod 1000 = 0) then // Street
             gCurrentPlayer.MoveToStreet(pl_lok, Arkham_Streets[ton(lok_id)])
           else
-            gCurrentPlayer.MoveToLocation(pl_lok, Arkham_Streets[ton(lok_id)].Lok[hon(lok_id)]);
+            if lok_id > 1000 then
+              gCurrentPlayer.MoveToLocation(pl_lok, Arkham_Streets[ton(lok_id)].Lok[hon(lok_id)]);
         except
           MessageDlg('Не удалось перейти в локацию!', mtWarning, [mbOK], 0);
         end;
@@ -979,9 +989,9 @@ begin
             //Showmessage(IntToStr(GetLokByID(gCurrentPlayer.Location).monsters[1]));
 
             for i := 1 to pl_lok.lok_mon_count do
-              if pl_lok.monsters[i] <> nil then
+              if pl_lok.lok_monsters[i] <> nil then
               begin
-                frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_lok.Monsters[i].id), gCurrentPlayer);
+                frmMonster.PrepareMonster(pl_lok.lok_monsters[i], gCurrentPlayer);
                 frmMonster.ShowModal;
               end;
           end
@@ -993,7 +1003,7 @@ begin
             for i := 1 to pl_st.st_mob_count do
               if pl_st.Monsters[i] <> nil then
               begin
-                frmMonster.PrepareMonster(GetMonsterByID(Monsters, pl_st.Monsters[i].id), gCurrentPlayer);
+                frmMonster.PrepareMonster(pl_st.Monsters[i], gCurrentPlayer);
                 frmMonster.ShowModal;
               end;
           end;
@@ -1049,6 +1059,9 @@ begin
       mythos_card_num := random(Mythos_Cards_Count) + 2;
       gCurrentMythosCard := Mythos_Deck.card[mythos_card_num];
       frmMain.imgEncounter.Picture.LoadFromFile(path_to_exe + 'CardsData\Mythos\0' + IntToStr(mythos_card_num) + '.jpg');
+
+      MoveMonsters(); // move all monsters
+
       // Open gate and spawn monster
       if not Arkham_Streets[ton(gCurrentMythosCard.fGateSpawn)].Lok[hon(gCurrentMythosCard.fGateSpawn)].HasGate then
       begin
@@ -1063,7 +1076,6 @@ begin
       // Spawn clue
       if Arkham_Streets[ton(gCurrentMythosCard.fClueSpawn)].AddClue(gCurrentMythosCard.fClueSpawn, 1) then
         frmMain.lstLog.Items.Add('Улика появилась: ' + GetLokNameByID(gCurrentMythosCard.fClueSpawn));
-      MoveMonsters();
 //      btnContinueClick(Sender);
     end;
   end;
@@ -1123,6 +1135,8 @@ begin
 end;
 
 procedure TfrmMain.btn2Click(Sender: TObject);
+var
+  ptr: Pointer;
 begin
   //frmMonster.PrepareMonster(GetMonsterByID(Monsters, Arkham_STreets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).Monsters[1]), gCurrentPlayer);
   //frmMonster.ShowModal;
@@ -1132,7 +1146,12 @@ begin
   //players[2].Delayed := True;
   //owEncounter(151, 1);
   //Arkham_Streets[ton(gCurrentPlayer.Location)].SpawnGate(gCurrentPlayer.Location, gates[5]);
-
+  //MoveMonsters;
+  ptr := Monsters[1];
+  ShowMessage(IntToStr(Integer(ptr)));
+  frmMonster.PrepareMonster(Monsters[1], gCurrentPlayer);
+  //ShowMessage(Monsters[1].Name);
+  UpdStatus;
 end;
 
 procedure TfrmMain.btnTakeWeaponClick(Sender: TObject);
@@ -1292,9 +1311,9 @@ begin
     begin
       old_lok_id := uMainForm.Monsters[m].LocationId;
       lok_id := uMainForm.Monsters[m].Move(gCurrentMythosCard.fMobMoveWhite, gCurrentMythosCard.fMobMoveBlack);
-      if (lok_id <> 0) and (uMainForm.Monsters[m].LocationId <> old_lok_id) then
+      if (lok_id <> 0) and (lok_id <> old_lok_id) then
       begin
-        Arkham_Streets[ton(lok_id)].AddMonster(lok_id, Monsters[m]);
+
         frmMain.lstLog.Items.Add('Монстр ' + Monsters[m].Name + ' перешел в локацию ' + GetLokNameByID(lok_id));
       end;
     end;
