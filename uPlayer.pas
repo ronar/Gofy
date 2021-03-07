@@ -1,8 +1,8 @@
-unit uPlayer;
+п»їunit uPlayer;
 
 interface
 uses
-  SysUtils, Dialogs, uCardDeck, uChsLok, uInvestigator, uCommon, ExtCtrls,
+  SysUtils, Dialogs, uCardDeck, uCommonItemCardDeck, uLocationSelectorForm, uInvestigator, uCommon, ExtCtrls,
   Controls, uStreet;
 
 type
@@ -22,13 +22,13 @@ type
     fClues: integer;
     fMonsterTrophies: array [1..10] of integer; // Monster trophies of player
     fGateTrophies:Integer;
-    fStats: array [1..6] of integer; // Статы игрока (1 - Скорость, 2 - Скрытность)
-    fBonusStats: array [1..6] of integer; // Прибавка от карт навыков, мифа.
+    fStats: array [1..6] of integer; // РЎС‚Р°С‚С‹ РёРіСЂРѕРєР° (1 - РЎРєРѕСЂРѕСЃС‚СЊ, 2 - РЎРєСЂС‹С‚РЅРѕСЃС‚СЊ)
+    fBonusStats: array [1..6] of integer; // РџСЂРёР±Р°РІРєР° РѕС‚ РєР°СЂС‚ РЅР°РІС‹РєРѕРІ, РјРёС„Р°.
     fBlessed: boolean;
     fCursed: boolean;
-    fFirstPlayer: boolean; // Флаг первого игрока
+    fFirstPlayer: boolean; // Р¤Р»Р°Рі РїРµСЂРІРѕРіРѕ РёРіСЂРѕРєР°
     fInvestigator: TInvestigator;
-    fMoves: integer; // кол-во оставшихся ходов
+    fMoves: integer; // РєРѕР»-РІРѕ РѕСЃС‚Р°РІС€РёС…СЃСЏ С…РѕРґРѕРІ
     fPlNumber: integer;
     fHands: Integer; // Number of hands :)
     fRollResults: array [1..20] of integer;
@@ -54,8 +54,8 @@ type
     evadedmosnters: array [1..5] of integer; // id of mobs which player succesfully evaded
     constructor Create(var init_stats: array of integer; first_player: boolean);
     destructor Destroy; override;
-    property Location: integer read fLocation write fLocation; // id локации в виде xxy, где (хх - номер улицы, y - номер локации)
-    property Neighborhood: integer read fNeighborhood write fNeighborhood; // id прилегающей улицы
+    property Location: integer read fLocation write fLocation; // id Р»РѕРєР°С†РёРё РІ РІРёРґРµ xxy, РіРґРµ (С…С… - РЅРѕРјРµСЂ СѓР»РёС†С‹, y - РЅРѕРјРµСЂ Р»РѕРєР°С†РёРё)
+    property Neighborhood: integer read fNeighborhood write fNeighborhood; // id РїСЂРёР»РµРіР°СЋС‰РµР№ СѓР»РёС†С‹
     property Cards[indx: integer]: integer read GetPlayerCard; // write AddItem;
     property MonsterTrophies[indx: integer]: integer read GetMonsterTrophies; // write AddItem;
     property ItemsCount: integer read fCardsCount;
@@ -109,7 +109,7 @@ implementation
 
 uses uMainForm;
 
-// Конструктор игрока
+// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РёРіСЂРѕРєР°
 constructor TPlayer.Create(var init_stats: array of integer; first_player: boolean);
 var
   i: integer;
@@ -141,13 +141,13 @@ begin
   fInvestigator := nil;
 end;
 
-// Деструктор объекта TPlayer
+// Р”РµСЃС‚РѕСѓРєС‚РѕРѕ РѕР±СЉРµРєС‚Р° TPlayer
 destructor TPlayer.Destroy;
 begin
   inherited;
 end;
 
-// Функция: взятие карты из колоды
+// Р¤СѓРЅРєС†РёСЏ: РІР·СЏС‚РёРµ РєР°СЂС‚С‹ РёР· РєРѕР»РѕРґС‹
 procedure TPlayer.DrawCard(card_id: integer);
 begin
   //Items_Count := Items_Count + 1;
@@ -155,8 +155,8 @@ begin
   //Cards[Items_Count] := Card_ID;
 end;
 
-// Функция: получение предмета по индексу.
-// Достаем предметы по одному, а не массивом
+// Р¤СѓРЅРєС†РёСЏ: РїРѕР»СѓС‡РµРЅРёРµ РїСЂРµРґРјРµС‚Р° РїРѕ РёРЅРґРµРєСЃСѓ.
+// Р”РѕСЃС‚Р°РµРј РїСЂРµРґРјРµС‚С‹ РїРѕ РѕРґРЅРѕРјСѓ, Р° РЅРµ РјР°СЃСЃРёРІРѕРј
 function TPlayer.GetPlayerCard(indx: integer): integer;
 begin
   GetPlayerCard := fCards[indx];
@@ -264,7 +264,7 @@ begin
   fFocus := inv.focus;
 end;
 
-// Бросок кубика (Возвращает число успехов, 0 - провал)
+// Р‘СЂРѕСЃРѕРє РєСѓР±РёРєР° (Р’РѕР·РІСЂР°С‰Р°РµС‚ С‡РёСЃР»Рѕ СѓСЃРїРµС…РѕРІ, 0 - РїСЂРѕРІР°Р»)
 // Rename this func to SkillCheck
 function TPlayer.RollADice(stat: integer; difficulty: integer): integer; // stat - exactly value of stat
 var
@@ -278,18 +278,18 @@ begin
   while (Successes < difficulty) do
   begin
     // Deprecated
-    frmMain.imgDR1.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-    frmMain.imgDR2.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-    frmMain.imgDR3.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-    frmMain.imgDR4.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-    frmMain.imgDR5.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-    frmMain.imgDR6.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-    frmMain.imgDR7.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-    frmMain.imgDR8.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-    frmMain.imgDR9.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-    frmMain.imgDR10.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-    frmMain.imgDR11.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
-    frmMain.imgDR12.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR1.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR2.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR3.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR4.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR5.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR6.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR7.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR8.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR9.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR10.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR11.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
+    MainForm.imgDR12.Picture.LoadFromFile(path_to_exe+'\Pictures\0.jpg');
     // !Deprecated
     //RollADice := random(6)+1;
       //pl := TPlayer.Create(False);
@@ -304,12 +304,12 @@ begin
         if i < 13 then
         begin
           case fRollResults[i] of
-          1: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\1.jpg');
-          2: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\2.jpg');
-          3: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\3.jpg');
-          4: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\4.jpg');
-          5: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\5.jpg');
-          6: (frmMain.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\6.jpg');
+          1: (MainForm.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\1.jpg');
+          2: (MainForm.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\2.jpg');
+          3: (MainForm.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\3.jpg');
+          4: (MainForm.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\4.jpg');
+          5: (MainForm.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\5.jpg');
+          6: (MainForm.FindComponent('imgDR'+IntToStr(i)) as TImage).Picture.LoadFromFile(path_to_exe+'\Pictures\6.jpg');
           end;
         end;
         // !Deprecated
@@ -326,7 +326,7 @@ begin
     end;
 
 
-    RollADice := Successes; { TODO : Добавить сложность броска }
+    RollADice := Successes; { TODO : Р”РѕР±Р°РІРёС‚СЊ СЃР»РѕР¶РЅРѕСЃС‚СЊ Р±СЂРѕСЃРєР° }
     if ((Successes < difficulty) and (fClues > 0)) then
     begin
       if MessageDlg('Reroll (using one clue)?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
@@ -353,7 +353,7 @@ begin
 end;
 
 
-// Разрешить контакт
+// Р Р°Р·СЂРµС€РёС‚СЊ РєРѕРЅС‚Р°РєС‚
 procedure TPlayer.Encounter(var Locations_Deck: TCardDeck);
 begin
 
@@ -365,7 +365,7 @@ var
 begin
   result := false;
 
-  if grade = 10 then // Проверка наличия карт
+  if grade = 10 then // РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ РєР°СЂС‚
     for i := 1 to fCardsCount do
       if fCards[i] = param then
         Result := True;
@@ -428,13 +428,13 @@ var
 begin
   if fMoves = 0 then
   begin
-    ShowMessage('Нет ходов!');
+    ShowMessage('РќРµС‚ С…РѕРґРѕРІ!');
     exit;
   end;
 
   if to_lok.lok_id <= 0 then
   begin
-    ShowMessage('Что-то не туда вы пытаетесь перейти! :)');
+    ShowMessage('Р§С‚Рѕ-С‚Рѕ РЅРµ С‚СѓРґР° РІС‹ РїС‹С‚Р°РµС‚РµСЃСЊ РїРµСЂРµР№С‚Рё! :)');
     exit;
   end;
 
@@ -444,21 +444,21 @@ begin
       num_of_evaded_mobs := num_of_evaded_mobs + 1;
 
   if (num_of_evaded_mobs <> from_lok.lok_mon_count) and (from_lok.lok_id <> 0) then
-    ShowMessage('Нельзя сменить локацию! Монстры есть от которых нужно уйти или победить.')
+    ShowMessage('РќРµР»СЊР·СЏ СЃРјРµРЅРёС‚СЊ Р»РѕРєР°С†РёСЋ! РњРѕРЅСЃС‚СЋС‹ РµСЃС‚СЊ РѕС‚ РєРѕС‚РѕСЋС‹С… РЅСѓР¶РЅРѕ СѓР№С‚Рё РёР»Рё РїРѕР±РµРґРёС‚СЊ.')
   else
   begin
     if to_lok.HasGate then // Drawn into gate
     begin
       fLocation := to_lok.gate.other_world;
       fMoves := 0;
-      frmMain.lstLog.Items.Add('Игрока засосало во врата!');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРєР° Р·Р°СЃРѕСЃР°Р»Рѕ РІ РІРѕСЂРѕС‚РёРєРё!');
     end
     else
     begin
       fLocation := to_lok.lok_id;
       fNeighborhood := (to_lok.lok_id div 1000) * 1000; // ?
       fMoves := fMoves - 1;
-      frmMain.lstLog.Items.Add('Игрок перешел в локацию ' + GetLokNameByID(fLocation));
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРµСЂРµС€РµР» РІ Р»РѕРєР°С†РёСЋ' + GetLokNameByID(fLocation));
     end;
   end;
 end;
@@ -470,7 +470,7 @@ var
 begin
   if fMoves = 0 then
   begin
-    ShowMessage('Нет ходов!');
+    ShowMessage('РќРµС‚ С…РѕРґРѕРІ!');
     exit;
   end;
 
@@ -480,13 +480,13 @@ begin
       num_of_evaded_mobs := num_of_evaded_mobs + 1;
 
   if (num_of_evaded_mobs <> from_lok.lok_mon_count) and (from_lok.lok_id <> 0) then
-    ShowMessage('Нельзя сменить локацию! Монстры есть от которых нужно уйти или победить.')
+    ShowMessage('РќРµР»СЊР·СЏ СЃРјРµРЅРёС‚СЊ Р»РѕРєР°С†РёСЋ! РњРѕРЅСЃС‚СЂС‹ РµСЃС‚СЊ РѕС‚ РєРѕС‚РѕСЂС‹С… РЅСѓР¶РЅРѕ СѓР№С‚Рё РёР»Рё РїРѕР±РµРґРёС‚СЊ.')
   else
   begin
     fLocation := st.StreetId;
     fNeighborhood := st.StreetId; // ?
     fMoves := fMoves - 1;
-    frmMain.lstLog.Items.Add('Игрок перешел на улицу ' + GetLokNameByID(fLocation));
+    MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРµСЂРµС€РµР» РЅР° СѓР»РёС†Сѓ ' + GetLokNameByID(fLocation));
   end;
 
 end;
@@ -574,7 +574,7 @@ begin
     begin
       for i := 1 to fCardsCount do
       begin
-        if ((Common_Items_Deck.GetCardByID(fCards[i]).crd_type = CT_WEAPON) and
+        if ((Common_Items_Deck.GetCardByID(fCards[i]).CardType = CT_WEAPON) and
           (Common_Items_Deck.GetCardByID(fCards[i]).prm = 2)) then
           begin
             Common_Items_Deck.IncCounter(i);
@@ -622,7 +622,7 @@ function TPlayer.CloseGate: boolean;
 begin
   if not fExploredMarker then
   begin
-    ShowMessage('Нету маркера исследованности!');
+    ShowMessage('РќРµС‚Сѓ РјР°СЂРєРµСЂР° РёСЃСЃР»РµРґРѕРІР°РЅРЅРѕСЃС‚Рё!');
     Result := False;
     Exit;
   end;

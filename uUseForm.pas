@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, jpeg, ExtCtrls;
 
 type
-  TfrmUse = class(TForm)
+  TItemUseForm = class(TForm)
     Image1: TImage;
     lbCard: TLabel;
     cbCard: TComboBox;
@@ -21,18 +21,18 @@ type
   end;
 
 var
-  frmUse: TfrmUse;
+  ItemUseForm: TItemUseForm;
 
 implementation
 
 {$R *.dfm}
 
-procedure TfrmUse.btnUseClick(Sender: TObject);
+procedure TItemUseForm.btnUseClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TfrmUse.cbCardChange(Sender: TObject);
+procedure TItemUseForm.cbCardChange(Sender: TObject);
 begin
   if cbCard.Items.Count > 0 then
   begin

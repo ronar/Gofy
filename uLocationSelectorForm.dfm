@@ -1,0 +1,72 @@
+object LocationSelectorForm: TLocationSelectorForm
+  AlignWithMargins = True
+  Left = 947
+  Top = 484
+  BorderStyle = bsDialog
+  Caption = 'Choose location'
+  ClientHeight = 213
+  ClientWidth = 411
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object btn1: TButton
+    Left = 165
+    Top = 143
+    Width = 75
+    Height = 25
+    Caption = 'Close'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 0
+    OnClick = btn1Click
+  end
+  object edtLocationId: TEdit
+    Left = 53
+    Top = 68
+    Width = 121
+    Height = 31
+    Margins.Left = 8
+    Margins.Right = 8
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+  end
+  object cbb1: TComboBox
+    AlignWithMargins = True
+    Left = 53
+    Top = 26
+    Width = 270
+    Height = 31
+    Margins.Left = 20
+    Margins.Top = 8
+    Margins.Right = 8
+    Margins.Bottom = 8
+    BevelEdges = []
+    BevelInner = bvNone
+    BevelOuter = bvNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
+    Text = 'cbLocationName'
+    Visible = False
+    StyleElements = [seFont, seClient]
+  end
+end

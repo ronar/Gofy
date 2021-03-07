@@ -1,9 +1,9 @@
-object frmMonster: TfrmMonster
+object MonsterForm: TMonsterForm
   Left = 443
   Top = 176
-  Width = 706
-  Height = 507
-  Caption = 'frmMonster'
+  Caption = 'MonsterForm'
+  ClientHeight = 468
+  ClientWidth = 690
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -3109,6 +3109,7 @@ object frmMonster: TfrmMonster
       ED2B43B7B0822DA9B980FBEFCB7E75A1D28A2BDCA508C69FBA8E8168A28AE800
       A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800
       A28A2800A28A2800A28A2800A28A2803FFD9}
+    ExplicitLeft = 8
   end
   object imgMonster: TImage
     Left = 120

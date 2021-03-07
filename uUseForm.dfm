@@ -1,9 +1,9 @@
-object frmUse: TfrmUse
+object ItemUseForm: TItemUseForm
   Left = 410
   Top = 261
-  Width = 473
-  Height = 509
-  Caption = 'frmUse'
+  Caption = 'ItemUseForm'
+  ClientHeight = 470
+  ClientWidth = 457
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -23075,7 +23075,6 @@ object frmUse: TfrmUse
     Top = 24
     Width = 145
     Height = 21
-    ItemHeight = 13
     TabOrder = 0
     Text = 'cbCard'
     OnChange = cbCardChange

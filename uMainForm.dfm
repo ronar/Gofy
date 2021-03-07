@@ -1,10 +1,10 @@
-object frmMain: TfrmMain
+object MainForm: TMainForm
   Left = 244
   Top = 151
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
-  Caption = 'frmMain'
-  ClientHeight = 769
+  Caption = 'MainForm'
+  ClientHeight = 775
   ClientWidth = 1362
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -2284,7 +2284,7 @@ object frmMain: TfrmMain
   end
   object pgc1: TPageControl
     Left = 0
-    Top = 482
+    Top = 485
     Width = 1362
     Height = 87
     ActivePage = ts1
@@ -2293,6 +2293,10 @@ object frmMain: TfrmMain
     TabOrder = 13
     object ts1: TTabSheet
       Caption = #1048#1075#1088#1072
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object btn3: TButton
         Left = 0
         Top = 1
@@ -2356,7 +2360,7 @@ object frmMain: TfrmMain
         object lblPlNum: TLabel
           Left = 124
           Top = 1
-          Width = 96
+          Width = 93
           Height = 24
           Caption = #8470' '#1080#1075#1088#1086#1082#1072': '
           Font.Charset = DEFAULT_CHARSET
@@ -2838,8 +2842,12 @@ object frmMain: TfrmMain
     object ts2: TTabSheet
       Caption = #1054#1082#1088#1072#1080#1085#1099' '#1075#1086#1088#1086#1076#1072
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object grp1: TGroupBox
-        Left = 1036
+        Left = 1058
         Top = 0
         Width = 296
         Height = 59
@@ -2874,7 +2882,7 @@ object frmMain: TfrmMain
       object grp2: TGroupBox
         Left = 296
         Top = 0
-        Width = 740
+        Width = 762
         Height = 59
         Align = alClient
         Caption = #1053#1077#1073#1086
@@ -2941,17 +2949,18 @@ object frmMain: TfrmMain
   end
   object pnl2: TPanel
     Left = 0
-    Top = 569
+    Top = 572
     Width = 1362
-    Height = 200
+    Height = 203
     Align = alBottom
     TabOrder = 14
     object img2: TImage
       Left = 1
       Top = 1
       Width = 198
-      Height = 198
+      Height = 201
       Align = alLeft
+      ExplicitHeight = 198
     end
     object lbl8: TLabel
       Left = 200
@@ -5248,10 +5257,10 @@ object frmMain: TfrmMain
       TabOrder = 1
     end
     object grp4: TGroupBox
-      Left = 861
+      Left = 880
       Top = 1
-      Width = 500
-      Height = 198
+      Width = 481
+      Height = 201
       Align = alRight
       Caption = #1050#1072#1088#1090#1099
       Font.Charset = DEFAULT_CHARSET
@@ -5262,17 +5271,17 @@ object frmMain: TfrmMain
       ParentFont = False
       TabOrder = 2
       object pnlCard1: TPanel
-        Left = 22
-        Top = 10
+        Left = 21
+        Top = 16
         Width = 153
-        Height = 182
+        Height = 171
         Color = clGray
         TabOrder = 2
         object imgPlaCard1: TImage
-          Left = 4
-          Top = 3
+          Left = 3
+          Top = 8
           Width = 145
-          Height = 176
+          Height = 169
           Stretch = True
           OnClick = imgPlaCard1Click
         end
@@ -5299,32 +5308,32 @@ object frmMain: TfrmMain
       end
       object pnlCard2: TPanel
         Left = 176
-        Top = 10
+        Top = 16
         Width = 153
-        Height = 182
+        Height = 176
         Color = clGray
         TabOrder = 3
         object imgPlaCard2: TImage
-          Left = 3
-          Top = 3
+          Left = 4
+          Top = 8
           Width = 145
-          Height = 176
+          Height = 169
           Stretch = True
           OnClick = imgPlaCard2Click
         end
       end
       object pnlCard3: TPanel
-        Left = 328
-        Top = 10
+        Left = 331
+        Top = 16
         Width = 153
-        Height = 182
+        Height = 171
         Color = clGray
         TabOrder = 4
         object imgPlaCard3: TImage
           Left = 3
-          Top = 3
+          Top = 8
           Width = 145
-          Height = 176
+          Height = 169
           Stretch = True
           OnClick = imgPlaCard3Click
         end
@@ -5637,6 +5646,10 @@ object frmMain: TfrmMain
       TabOrder = 0
       object ts3: TTabSheet
         Caption = #1048#1075#1088#1086#1082#1080
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object lst1: TListBox
           Left = 0
           Top = 0
@@ -5650,6 +5663,10 @@ object frmMain: TfrmMain
       object ts4: TTabSheet
         Caption = #1046#1091#1088#1085#1072#1083
         ImageIndex = 1
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object lstLog: TListBox
           Left = 0
           Top = 0
@@ -5664,6 +5681,10 @@ object frmMain: TfrmMain
         Caption = #1063#1072#1090
         ImageIndex = 2
         TabVisible = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object lst3: TListBox
           Left = 0
           Top = 0

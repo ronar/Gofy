@@ -1,4 +1,4 @@
-unit uMonster;
+п»їunit uMonster;
 
 interface
 
@@ -21,12 +21,12 @@ type
     fCmbtDmg: integer;
     fSpec: string[6];
     fLocationId: integer;
-    fAmbush: boolean; // Засада
-    fEndless: boolean; // Неисчислимость
-    fPhysical: integer; // Физ. сопр/иммун
-    fMagical: integer; // Маг. сопр/иммун
-    fNightmarish: Integer; // Кошмар
-    fOverwhelming: integer; // Сокрушение
+    fAmbush: boolean; // Р—Р°СЃР°РґР°
+    fEndless: boolean; // РќРµРёСЃС‡РёСЃР»РёРјРѕСЃС‚СЊ
+    fPhysical: integer; // Р¤РёР·. СЃРѕРїСЂ/РёРјРјСѓРЅ
+    fMagical: integer; // РњР°Рі. СЃРѕРїСЂ/РёРјРјСѓРЅ
+    fNightmarish: Integer; // РљРѕС€РјР°СЂ
+    fOverwhelming: integer; // РЎРѕРєСЂСѓС€РµРЅРёРµ
   public
     property Id: Integer read fId write fId;
     property Name: string read fName write fName;
@@ -44,7 +44,7 @@ type
     property Magical: integer read fMagical write fMagical;
     property Nightmarish: Integer read fNightmarish write fNightmarish;
     property Overwhelming: Integer read fOverwhelming write fOverwhelming;
-    
+
     //property fSpec: string[6] read fId write fId;
     property LocationId: integer read fLocationId write fLocationId;
     constructor Create();
@@ -119,18 +119,18 @@ end;
 function LoadMonsterCards(var monsters: TMonsterArray; file_path: string): integer;
 var
   F: TextFile;
-  SR: TSearchRec; // поисковая переменная
-  FindRes: Integer; // переменная для записи результата поиска
+  SR: TSearchRec; // РїРѕРёСЃРєРѕРІР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
+  FindRes: Integer; // РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ Р·Р°РїРёСЃРё СЂРµР·СѓР»СЊС‚Р°С‚Р° РїРѕРёСЃРєР°
   s: string;
   i, a, amt, j: integer;
 begin
-  // задание условий поиска и начало поиска
+  // Р·Р°РґР°РЅРёРµ СѓСЃР»РѕРІРёР№ РїРѕРёСЃРєР° Рё РЅР°С‡Р°Р»Рѕ РїРѕРёСЃРєР°
   FindRes := FindFirst(file_path+'\CardsData\Monsters\' + '*.txt', faAnyFile, SR);
 
   i := 0;
   a := 0;
 
-  while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+  while FindRes = 0 do // РїРѕРєР° РјС‹ РЅР°С…РѕРґРёРј С„Р°Р№Р»С‹ (РєР°С‚Р°Р»РѕРіРё), С‚Рѕ РІС‹РїРѕР»РЅСЏС‚СЊ С†РёРєР»
   begin
     AssignFile (F, file_path+'\CardsData\Monsters\' + SR.Name);
     Reset(F);
@@ -185,10 +185,10 @@ begin
     CloseFile(F);
     //Cards^.Cards.Type := CT_UNIQUE_ITEM;
 
-    FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+    FindRes := FindNext(SR); // РїСЂРѕРґРѕР»Р¶РµРЅРёРµ РїРѕРёСЃРєР° РїРѕ Р·Р°РґР°РЅРЅС‹Рј СѓСЃР»РѕРІРёСЏРј
     //Form1.ComboBox2.Items.Add(IntToStr(Cards^[i].Card_ID));
   end;
-  FindClose(SR); // закрываем поиск
+  FindClose(SR); // Р·Р°РєСЂС‹РІР°РµРј РїРѕРёСЃРє
   LoadMonsterCards := i;
   DeckMobCount := i;
 end;
@@ -204,7 +204,7 @@ begin
 
   if DeckMobCount < 1 then
   begin
-    frmMain.lstLog.Items.Add('DrawMonsterCard: нету монстров!');
+    MainForm.lstLog.Items.Add('DrawMonsterCard: РЅРµС‚Сѓ РјРѕРЅСЃС‚СЂРѕРІ!');
     Result := nil;
     Exit;
   end;
@@ -220,7 +220,7 @@ begin
     end;
   end;
 
-  ShowMessage('Ошибочка! Схватил не того монстра!');
+  ShowMessage('РћС€РёР±РѕС‡РєР°! РЎС…РІР°С‚РёР» РЅРµ С‚РѕРіРѕ РјРѕРЅСЃС‚СЂР°!');
   Result := dmonster;
 end;
 

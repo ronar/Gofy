@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <actions>
 	<or data="|2|2|'Потратить 3 улики'|'Не тратить'">
 		<or1>
@@ -12,7 +12,7 @@
 						<false>
 							<action data="|4|9|2|"></action>
 						</false>
-					</condition>						
+					</condition>
 				</true>
 				<false>
 					<action data="|0|0|32|"></action>

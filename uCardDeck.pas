@@ -1,3 +1,24 @@
+п»ї{******************************************************************************}
+{                                                                              }
+{ Gofy - Arkham Horror Card Game                                               }
+{                                                                              }
+{ The contents of this file are subject to the Mozilla Public License Version  }
+{ 1.0 (the "License"); you may not use this file except in compliance with the }
+{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
+{                                                                              }
+{ Software distributed under the License is distributed on an "AS IS" basis,   }
+{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
+{ the specific language governing rights and limitations under the License.    }
+{                                                                              }
+{ The Original Code is CardDeck.pas.                                           }
+{                                                                              }
+{ Contains methods to work with various kinds of in-game cards.                }
+{                                                                              }
+{ Unit owner:    Ronar                                                         }
+{ Last modified: March 7, 2021                                                 }
+{                                                                              }
+{******************************************************************************}
+
 unit uCardDeck;
 
 interface
@@ -8,7 +29,7 @@ uses
 type
   TCommonItemCard = record
     id: integer;
-    amt: Integer; // Количество присутсвующих карт в колоде
+    amt: Integer; // РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРёСЃСѓС‚СЃРІСѓСЋС‰РёС… РєР°СЂС‚ РІ РєРѕР»РѕРґРµ
     ccounter: integer; // how many times card was used
     ccounter_max: integer; // max times uses
     data: string;
@@ -23,7 +44,7 @@ type
 
   TUniqueItemCard = record
     id: integer;
-    amt: Integer; // Количество присутсвующих карт в колоде
+    amt: Integer; // РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРёСЃСѓС‚СЃРІСѓСЋС‰РёС… РєР°СЂС‚ РІ РєРѕР»РѕРґРµ
     ccounter: integer; // how many times card was used
     ccounter_max: integer; // max times uses
     data: string;
@@ -48,25 +69,27 @@ type
     color: integer;
   end;
 
-  TCardDeck = class(TObject) // Общий класс колод карт
+  TCardDeck = class(TObject) // РћР±С‰РёР№ РєР»Р°СЃСЃ РєРѕР»РѕРґ РєР°СЂС‚
   private
-    fCount: integer; // Кол-во карт
-    fCardType: integer; // Тип карты (предмет, миф, контакт и т.д.)
+  protected
+    fCount: integer; // РљРѕР»-РІРѕ РєР°СЂС‚
+    fCardType: integer; // РўРёРї РєР°СЂС‚С‹ (РїСЂРµРґРјРµС‚, РјРёС„, РєРѕРЅС‚Р°РєС‚ Рё С‚.Рґ.)
+    property Count: integer read fCount;
+    property CardType: integer read fCardType;
   public
     destructor Destroy; override;
-    property Count: integer read fCount;
     //function GetCardID(i: integer): Integer; overload;
     //function GetCardData(i: integer): string; overload;
     //function GetCardByID(id: integer): CCard; overload;
     function FindCards(file_path: string): integer; virtual; abstract;
     function DrawCard(n: integer): Integer; virtual; abstract;
     procedure Shuffle(); virtual; abstract;
-    //function Get_Card_By_ID(id: integer): TCard; // Нахождение карты по ее ID
+    //function Get_Card_By_ID(id: integer): TCard; // РќР°С…РѕР¶РґРµРЅРёРµ РєР°СЂС‚С‹ РїРѕ РµРµ ID
   end;
 
   TCommonItemCardDeck = class(TCardDeck)
   private
-    fCards: array [1..NUMBER_OF_COMMON_CARDS] of TCommonItemCard; // Данные о каждой карте
+    fCards: array [1..NUMBER_OF_COMMON_CARDS] of TCommonItemCard; // Р”Р°РЅРЅС‹Рµ Рѕ РєР°Р¶РґРѕР№ РєР°СЂС‚Рµ
     function GetCardID(i: integer): Integer;
     function GetCardData(i: integer): string;
   public
@@ -79,8 +102,8 @@ type
     function DrawWeaponCard: Integer;
     procedure Shuffle(); override;
     function CheckAvailability(N: integer): boolean;
-    procedure IncCounter(indx: integer); // Увеличивает счетчик карты
-    procedure DecCounter(indx: integer); // Уменьшает счетчик карты
+    procedure IncCounter(indx: integer); // РЈРІРµР»РёС‡РёРІР°РµС‚ СЃС‡РµС‚С‡РёРє РєР°СЂС‚С‹
+    procedure DecCounter(indx: integer); // РЈРјРµРЅСЊС€Р°РµС‚ СЃС‡РµС‚С‡РёРє РєР°СЂС‚С‹
     procedure AddCardToDeck(indx: integer);
     procedure RemoveCardFromDeck(indx: integer);
     //destructor Destroy; override;
@@ -108,51 +131,51 @@ type
     //destructor Destroy; override;
   end;
 
-  TLocationCardsDeck = class(TCardDeck) // Карты
+  TLocationCardsDeck = class(TCardDeck) // РљР°СЂС‚С‹
   private
-    fCards: array [1..NUMBER_OF_ENCOUNTER_CARDS, 1..3] of TLocationCard; // Данные о каждой карте
-    function GetCard(indx: integer; n: integer): TLocationCard; // Получает карту из колоды (для трех локаций улицы). Для св-ва.
+    fCards: array [1..NUMBER_OF_ENCOUNTER_CARDS, 1..3] of TLocationCard; // Р”Р°РЅРЅС‹Рµ Рѕ РєР°Р¶РґРѕР№ РєР°СЂС‚Рµ
+    function GetCard(indx: integer; n: integer): TLocationCard; // РџРѕР»СѓС‡Р°РµС‚ РєР°СЂС‚Сѓ РёР· РєРѕР»РѕРґС‹ (РґР»СЏ С‚СЂРµС… Р»РѕРєР°С†РёР№ СѓР»РёС†С‹). Р”Р»СЏ СЃРІ-РІР°.
     //function GetLokation: integer;
     //function GetNom: integer;
     //procedure SetLok;
   public
     constructor Create;
     //destructor Destroy; override;
-    //property Lokaciya: integer read GetLokation; // Локация карты (свойство)
-    function GetCardID(i, n: integer): Integer; overload; // Получить ID карты по порядковому номеру
-    function GetCardData(i, n: integer): PLLData; overload; // Получить данные карты по порядковому номеру
+    //property Lokaciya: integer read GetLokation; // Р›РѕРєР°С†РёСЏ РєР°СЂС‚С‹ (СЃРІРѕР№СЃС‚РІРѕ)
+    function GetCardID(i, n: integer): Integer; overload; // РџРѕР»СѓС‡РёС‚СЊ ID РєР°СЂС‚С‹ РїРѕ РїРѕСЂСЏРґРєРѕРІРѕРјСѓ РЅРѕРјРµСЂСѓ
+    function GetCardData(i, n: integer): PLLData; overload; // РџРѕР»СѓС‡РёС‚СЊ РґР°РЅРЅС‹Рµ РєР°СЂС‚С‹ РїРѕ РїРѕСЂСЏРґРєРѕРІРѕРјСѓ РЅРѕРјРµСЂСѓ
     function FindCards(file_path: string): integer; override;
     function DrawCard(n: integer): TLocationCard; // Returns ID of the card on top of the deck
     property cards[i: integer; n: integer]: TLocationCard read GetCard;
     //property Nom: integer;
     procedure Shuffle();
-    //function Get_Card_By_ID(id: integer): TCard; // Нахождение карты по ее ID
+    //function Get_Card_By_ID(id: integer): TCard; // РќР°С…РѕР¶РґРµРЅРёРµ РєР°СЂС‚С‹ РїРѕ РµРµ ID
   end;
 
-  TOtherWorldCardsDeck = class(TCardDeck) // Карты контактов иного мира
+  TOtherWorldCardsDeck = class(TCardDeck) // РљР°СЂС‚С‹ РєРѕРЅС‚Р°РєС‚РѕРІ РёРЅРѕРіРѕ РјРёСЂР°
   private
-    fCards: array [1..NUMBER_OF_OW_ENCOUNTER_CARDS] of TOWLocationCard; // Данные о каждой карте
-    function GetCard(n: integer): TOWLocationCard; // Получает карту из колоды (для трех локаций улицы). Для св-ва.
+    fCards: array [1..NUMBER_OF_OW_ENCOUNTER_CARDS] of TOWLocationCard; // Р”Р°РЅРЅС‹Рµ Рѕ РєР°Р¶РґРѕР№ РєР°СЂС‚Рµ
+    function GetCard(n: integer): TOWLocationCard; // РџРѕР»СѓС‡Р°РµС‚ РєР°СЂС‚Сѓ РёР· РєРѕР»РѕРґС‹ (РґР»СЏ С‚СЂРµС… Р»РѕРєР°С†РёР№ СѓР»РёС†С‹). Р”Р»СЏ СЃРІ-РІР°.
     //function GetLokation: integer;
     //function GetNom: integer;
     //procedure SetLok;
   public
     constructor Create;
     //destructor Destroy; override;
-    //property Lokaciya: integer read GetLokation; // Локация карты (свойство)
-    function GetCardID(n: integer): Integer; overload; // Получить ID карты по порядковому номеру
-    function GetCardData(n: integer): PLLData; overload; // Получить данные карты по порядковому номеру
+    //property Lokaciya: integer read GetLokation; // Р›РѕРєР°С†РёСЏ РєР°СЂС‚С‹ (СЃРІРѕР№СЃС‚РІРѕ)
+    function GetCardID(n: integer): Integer; overload; // РџРѕР»СѓС‡РёС‚СЊ ID РєР°СЂС‚С‹ РїРѕ РїРѕСЂСЏРґРєРѕРІРѕРјСѓ РЅРѕРјРµСЂСѓ
+    function GetCardData(n: integer): PLLData; overload; // РџРѕР»СѓС‡РёС‚СЊ РґР°РЅРЅС‹Рµ РєР°СЂС‚С‹ РїРѕ РїРѕСЂСЏРґРєРѕРІРѕРјСѓ РЅРѕРјРµСЂСѓ
     function FindCards(file_path: string): integer; override;
     function DrawCard(n: integer): TOWLocationCard; // Returns ID of the card on top of the deck
     property cards[n: integer]: TOWLocationCard read GetCard;
     //property Nom: integer;
     procedure Shuffle();
-    //function Get_Card_By_ID(id: integer): TCard; // Нахождение карты по ее ID
+    //function Get_Card_By_ID(id: integer): TCard; // РќР°С…РѕР¶РґРµРЅРёРµ РєР°СЂС‚С‹ РїРѕ РµРµ ID
   end;
 
   TInvDeck = class(TCardDeck)
   private
-    fCards: array [1..NUMBER_OF_INVESTIGATORS] of TInvestigator; // Данные о каждой карте
+    fCards: array [1..NUMBER_OF_INVESTIGATORS] of TInvestigator; // Р”Р°РЅРЅС‹Рµ Рѕ РєР°Р¶РґРѕР№ РєР°СЂС‚Рµ
     function GetCardByID(id: integer): TInvestigator;
     function GetCardID(i: integer): Integer;
     function GetCardData(i: integer): string;
@@ -167,7 +190,7 @@ type
 
   TMythosDeck = class(TCardDeck)
   private
-    fCards: array [1..NUMBER_OF_MYTHOS_CARDS] of TMythosCard; // Данные о каждой карте
+    fCards: array [1..NUMBER_OF_MYTHOS_CARDS] of TMythosCard; // Р”Р°РЅРЅС‹Рµ Рѕ РєР°Р¶РґРѕР№ РєР°СЂС‚Рµ
     function GetCardByID(id: integer): TMythosCard;
     function GetCardID(i: integer): Integer;
     //function GetCardData(i: integer): string;
@@ -185,7 +208,7 @@ implementation
 
 uses Classes;
 
-// Деструктор TCardDeck
+// Р”РµСЃС‚СЂСѓРєС‚РѕСЂ TCardDeck
 destructor TCardDeck.Destroy;
 begin
   inherited;
@@ -195,7 +218,7 @@ end;
 /////////////////////////////// TItemCardDeck //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// Конструктор
+// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 constructor TCommonItemCardDeck.Create(crd_type: integer);
 var
   i: Integer;
@@ -247,13 +270,13 @@ begin
   end;
 end;
 
-// Получение ID карты
+// РџРѕР»СѓС‡РµРЅРёРµ ID РєР°СЂС‚С‹
 function TCommonItemCardDeck.GetCardID(i: integer): integer;
 begin
   GetCardID := fCards[i].id;
 end;
 
-// Получение данных карты (указатель на голову связного списка)
+// РџРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С… РєР°СЂС‚С‹ (СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РіРѕР»РѕРІСѓ СЃРІСЏР·РЅРѕРіРѕ СЃРїРёСЃРєР°)
 function TCommonItemCardDeck.GetCardData(i: integer): string;
 begin
   GetCardData := fCards[i].data;
@@ -282,12 +305,12 @@ begin
 
 end;
 
-// Поиск файлов в картами
+// РџРѕРёСЃРє С„Р°Р№Р»РѕРІ РІ РєР°СЂС‚Р°РјРё
 function TCommonItemCardDeck.FindCards(file_path: string): integer;
 var
   F: TextFile;
-  SR: TSearchRec; // поисковая переменная
-  FindRes: Integer; // переменная для записи результата поиска
+  SR: TSearchRec; // РїРѕРёСЃРєРѕРІР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
+  FindRes: Integer; // РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ Р·Р°РїРёСЃРё СЂРµР·СѓР»СЊС‚Р°С‚Р° РїРѕРёСЃРєР°
   s: string[80];
   i: integer;
   output_data: TStringList;
@@ -299,13 +322,13 @@ var
     output_data.DelimitedText := str;
   end;
 begin
-  // задание условий поиска и начало поиска
+  // Р·Р°РґР°РЅРёРµ СѓСЃР»РѕРІРёР№ РїРѕРёСЃРєР° Рё РЅР°С‡Р°Р»Рѕ РїРѕРёСЃРєР°
   FindRes := FindFirst(file_path + '*.txt', faAnyFile, SR);
 
   i := 0;
   output_data := TStringList.Create;
 
-  while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+  while FindRes = 0 do // РїРѕРєР° РјС‹ РЅР°С…РѕРґРёРј С„Р°Р№Р»С‹ (РєР°С‚Р°Р»РѕРіРё), С‚Рѕ РІС‹РїРѕР»РЅСЏС‚СЊ С†РёРєР»
   begin
     i := i + 1;
     AssignFile (F, file_path + SR.Name);
@@ -330,15 +353,15 @@ begin
      end;
 
 
-    FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+    FindRes := FindNext(SR); // РїСЂРѕРґРѕР»Р¶РµРЅРёРµ РїРѕРёСЃРєР° РїРѕ Р·Р°РґР°РЅРЅС‹Рј СѓСЃР»РѕРІРёСЏРј
   end;
   output_data.Free;
-  FindClose(SR); // закрываем поиск
+  FindClose(SR); // Р·Р°РєСЂС‹РІР°РµРј РїРѕРёСЃРє
   FindCards := i;
   fCount := i;
 end;
 
-// Тасовка колоды
+// РўР°СЃРѕРІРєР° РєРѕР»РѕРґС‹
 procedure TCommonItemCardDeck.Shuffle();
 var
   i, r: integer;
@@ -374,14 +397,14 @@ begin
   fCards[indx].ccounter := fCards[indx].ccounter - 1;
 end;
 
-// Добавление карты в колоду (например, при возвращении)
+// Р”РѕР±Р°РІР»РµРЅРёРµ РєР°СЂС‚С‹ РІ РєРѕР»РѕРґСѓ (РЅР°РїСЂРёРјРµСЂ, РїСЂРё РІРѕР·РІСЂР°С‰РµРЅРёРё)
 procedure TCommonItemCardDeck.AddCardToDeck(indx: integer);
 begin
   if fCards[indx].amt < StrToInt(IntToStr(fCards[indx].id)[4]) then
     fCards[indx].amt := fCards[indx].amt + 1;
 end;
 
-// Удаление карты из колоды (при передаче ее игроку)
+// РЈРґР°Р»РµРЅРёРµ РєР°СЂС‚С‹ РёР· РєРѕР»РѕРґС‹ (РїСЂРё РїРµСЂРµРґР°С‡Рµ РµРµ РёРіСЂРѕРєСѓ)
 procedure TCommonItemCardDeck.RemoveCardFromDeck(indx: integer);
 begin
   if fCards[indx].amt > 0 then
@@ -393,7 +416,7 @@ end;
 /////////////////////////////// TItemCardDeck //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// Конструктор
+// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 constructor TUniqueItemCardDeck.Create(crd_type: integer);
 var
   i: Integer;
@@ -434,12 +457,12 @@ begin
 
 end;
 
-// Поиск файлов в картами
+// РџРѕРёСЃРє С„Р°Р№Р»РѕРІ РІ РєР°СЂС‚Р°РјРё
 function TUniqueItemCardDeck.FindCards(file_path: string): integer;
 var
   F: TextFile;
-  SR: TSearchRec; // поисковая переменная
-  FindRes: Integer; // переменная для записи результата поиска
+  SR: TSearchRec; // РїРѕРёСЃРєРѕРІР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
+  FindRes: Integer; // РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ Р·Р°РїРёСЃРё СЂРµР·СѓР»СЊС‚Р°С‚Р° РїРѕРёСЃРєР°
   s: string[80];
   i: integer;
   output_data: TStringList;
@@ -451,13 +474,13 @@ var
     output_data.DelimitedText := str;
   end;
 begin
-  // задание условий поиска и начало поиска
+  // Р·Р°РґР°РЅРёРµ СѓСЃР»РѕРІРёР№ РїРѕРёСЃРєР° Рё РЅР°С‡Р°Р»Рѕ РїРѕРёСЃРєР°
   FindRes := FindFirst(file_path + '*.txt', faAnyFile, SR);
 
   i := 0;
   output_data := TStringList.Create;
 
-  while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+  while FindRes = 0 do // РїРѕРєР° РјС‹ РЅР°С…РѕРґРёРј С„Р°Р№Р»С‹ (РєР°С‚Р°Р»РѕРіРё), С‚Рѕ РІС‹РїРѕР»РЅСЏС‚СЊ С†РёРєР»
   begin
     i := i + 1;
     AssignFile (F, file_path + SR.Name);
@@ -482,15 +505,15 @@ begin
      end;
 
 
-    FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+    FindRes := FindNext(SR); // РїСЂРѕРґРѕР»Р¶РµРЅРёРµ РїРѕРёСЃРєР° РїРѕ Р·Р°РґР°РЅРЅС‹Рј СѓСЃР»РѕРІРёСЏРј
   end;
   output_data.Free;
-  FindClose(SR); // закрываем поиск
+  FindClose(SR); // Р·Р°РєСЂС‹РІР°РµРј РїРѕРёСЃРє
   FindCards := i;
   fCount := i;
 end;
 
-// Тасовка колоды
+// РўР°СЃРѕРІРєР° РєРѕР»РѕРґС‹
 procedure TUniqueItemCardDeck.Shuffle();
 var
   i, r: integer;
@@ -511,7 +534,7 @@ end;
 ///////////////////////////// TLocationCardDeck ////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// Конструктор
+// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 constructor TLocationCardsDeck.Create;
 var
   i, j: Integer;
@@ -553,42 +576,42 @@ begin
     end;
 end;    }
 
-// Получение ID карты
+// РџРѕР»СѓС‡РµРЅРёРµ ID РєР°СЂС‚С‹
 function TLocationCardsDeck.GetCardID(i, n: integer): integer;
 begin
   GetCardID := fCards[i, n].id;
 end;
 
-// Получение данных карты
+// РџРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С… РєР°СЂС‚С‹
 function TLocationCardsDeck.GetCardData(i, n: integer): PLLData;
 begin
   GetCardData := fCards[i, n].crd_head;
 end;
 
 
-// n - номер локации на карте
+// n - РЅРѕРјРµСЂ Р»РѕРєР°С†РёРё РЅР° РєР°СЂС‚Рµ
 function TLocationCardsDeck.DrawCard(n: integer): TLocationCard;
 begin
   DrawCard := fCards[7{fCount div 3}, n];//n];
   //Shuffle;
 end;
 
-// Поиск файлов в картами
+// РџРѕРёСЃРє С„Р°Р№Р»РѕРІ РІ РєР°СЂС‚Р°РјРё
 function TLocationCardsDeck.FindCards(file_path: string): integer;
 var
   F: TextFile;
-  SR: TSearchRec; // поисковая переменная
-  FindRes: Integer; // переменная для записи результата поиска
+  SR: TSearchRec; // РїРѕРёСЃРєРѕРІР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
+  FindRes: Integer; // РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ Р·Р°РїРёСЃРё СЂРµР·СѓР»СЊС‚Р°С‚Р° РїРѕРёСЃРєР°
   s: string[80];
   i, n, crd_num: integer;
 begin
-  // задание условий поиска и начало поиска
+  // Р·Р°РґР°РЅРёРµ СѓСЃР»РѕРІРёР№ РїРѕРёСЃРєР° Рё РЅР°С‡Р°Р»Рѕ РїРѕРёСЃРєР°
   FindRes := FindFirst(file_path + '*.xml', faAnyFile, SR);
 
   i := 0;
   n := 0;
 
-  while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+  while FindRes = 0 do // РїРѕРєР° РјС‹ РЅР°С…РѕРґРёРј С„Р°Р№Р»С‹ (РєР°С‚Р°Р»РѕРіРё), С‚Рѕ РІС‹РїРѕР»РЅСЏС‚СЊ С†РёРєР»
   begin
     //ShowMessage(Copy(SR.Name, 2, 1));
     if n <> StrToInt(Copy(SR.Name, 2, 1)) then
@@ -606,15 +629,15 @@ begin
     //Cards^.Cards.Type := CT_UNIQUE_ITEM;
 
 
-    FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+    FindRes := FindNext(SR); // РїСЂРѕРґРѕР»Р¶РµРЅРёРµ РїРѕРёСЃРєР° РїРѕ Р·Р°РґР°РЅРЅС‹Рј СѓСЃР»РѕРІРёСЏРј
   end;
 
-  FindClose(SR); // закрываем поиск
+  FindClose(SR); // Р·Р°РєСЂС‹РІР°РµРј РїРѕРёСЃРє
   FindCards := i;
   fCount := i;
 end;
 
-// Тасовка колоды
+// РўР°СЃРѕРІРєР° РєРѕР»РѕРґС‹
 procedure TLocationCardsDeck.Shuffle();
 var
   i, j, r: integer;
@@ -637,7 +660,7 @@ end;
 //////////////////////////// TOtherWorldCardDeck ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// Конструктор
+// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 constructor TOtherWorldCardsDeck.Create;
 var
   i, j: Integer;
@@ -672,42 +695,42 @@ begin
     end;
 end;    }
 
-// Получение ID карты
+// РџРѕР»СѓС‡РµРЅРёРµ ID РєР°СЂС‚С‹
 function TOtherWorldCardsDeck.GetCardID(n: integer): integer;
 begin
   GetCardID := fCards[n].id;
 end;
 
-// Получение данных карты
+// РџРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С… РєР°СЂС‚С‹
 function TOtherWorldCardsDeck.GetCardData(n: integer): PLLData;
 begin
   GetCardData := fCards[n].crd_head;
 end;
 
 
-// n - номер карты
+// n - РЅРѕРјРµСЂ РєР°СЂС‚С‹
 function TOtherWorldCardsDeck.DrawCard(n: integer): TOWLocationCard;
 begin
   DrawCard := fCards[n];//n];
   //Shuffle;
 end;
 
-// Поиск файлов с картами
+// РџРѕРёСЃРє С„Р°Р№Р»РѕРІ СЃ РєР°СЂС‚Р°РјРё
 function TOtherWorldCardsDeck.FindCards(file_path: string): integer;
 var
   F: TextFile;
-  SR: TSearchRec; // поисковая переменная
-  FindRes: Integer; // переменная для записи результата поиска
+  SR: TSearchRec; // РїРѕРёСЃРєРѕРІР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
+  FindRes: Integer; // РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ Р·Р°РїРёСЃРё СЂРµР·СѓР»СЊС‚Р°С‚Р° РїРѕРёСЃРєР°
   s: string[80];
   i, n, crd_num: integer;
 begin
-  // задание условий поиска и начало поиска
+  // Р·Р°РґР°РЅРёРµ СѓСЃР»РѕРІРёР№ РїРѕРёСЃРєР° Рё РЅР°С‡Р°Р»Рѕ РїРѕРёСЃРєР°
   FindRes := FindFirst(file_path + '*.xml', faAnyFile, SR);
 
   i := 0;
   n := 0;
 
-  while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+  while FindRes = 0 do // РїРѕРєР° РјС‹ РЅР°С…РѕРґРёРј С„Р°Р№Р»С‹ (РєР°С‚Р°Р»РѕРіРё), С‚Рѕ РІС‹РїРѕР»РЅСЏС‚СЊ С†РёРєР»
   begin
     //ShowMessage(Copy(SR.Name, 2, 1));
     crd_num := StrToInt(Copy(SR.Name, 2, 2));
@@ -722,15 +745,15 @@ begin
     //Cards^.Cards.Type := CT_UNIQUE_ITEM;
 
 
-    FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+    FindRes := FindNext(SR); // РїСЂРѕРґРѕР»Р¶РµРЅРёРµ РїРѕРёСЃРєР° РїРѕ Р·Р°РґР°РЅРЅС‹Рј СѓСЃР»РѕРІРёСЏРј
   end;
 
-  FindClose(SR); // закрываем поиск
+  FindClose(SR); // Р·Р°РєСЂС‹РІР°РµРј РїРѕРёСЃРє
   FindCards := i;
   fCount := i;
 end;
 
-// Тасовка колоды
+// РўР°СЃРѕРІРєР° РєРѕР»РѕРґС‹
 procedure TOtherWorldCardsDeck.Shuffle();
 var
   i, j, r: integer;
@@ -777,13 +800,13 @@ begin
   GetCardByID := fCards[i];
 end;
 
-// Получение ID карты
+// РџРѕР»СѓС‡РµРЅРёРµ ID РєР°СЂС‚С‹
 function TInvDeck.GetCardID(i: integer): integer;
 begin
  // GetCardID := fCards[i].fId;
 end;
 
-// Получение данных карты (указатель на голову связного списка)
+// РџРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С… РєР°СЂС‚С‹ (СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РіРѕР»РѕРІСѓ СЃРІСЏР·РЅРѕРіРѕ СЃРїРёСЃРєР°)
 function TInvDeck.GetCardData(i: integer): string;
 begin
 //  GetCardData := fCards[i].name;
@@ -798,8 +821,8 @@ end;
 function TInvDeck.FindCards(file_path: string): integer;
 var
   F: TextFile;
-  SR: TSearchRec; // поисковая переменная
-  FindRes: Integer; // переменная для записи результата поиска
+  SR: TSearchRec; // РїРѕРёСЃРєРѕРІР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
+  FindRes: Integer; // РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ Р·Р°РїРёСЃРё СЂРµР·СѓР»СЊС‚Р°С‚Р° РїРѕРёСЃРєР°
   s: string[100];
   i, j, k, n, crd_num: integer;
   output_data: TStringList;
@@ -811,14 +834,14 @@ var
     output_data.DelimitedText := str;
   end;
 begin
-  // задание условий поиска и начало поиска
+  // Р·Р°РґР°РЅРёРµ СѓСЃР»РѕРІРёР№ РїРѕРёСЃРєР° Рё РЅР°С‡Р°Р»Рѕ РїРѕРёСЃРєР°
   FindRes := FindFirst(file_path + '*.inv', faAnyFile, SR);
 
   i := 0;
   n := 0;
   output_data := TStringList.Create;
 
-  while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+  while FindRes = 0 do // РїРѕРєР° РјС‹ РЅР°С…РѕРґРёРј С„Р°Р№Р»С‹ (РєР°С‚Р°Р»РѕРіРё), С‚Рѕ РІС‹РїРѕР»РЅСЏС‚СЊ С†РёРєР»
   begin
     i := i + 1;
     AssignFile (F, file_path + SR.Name);
@@ -862,17 +885,17 @@ begin
       //can_take[j, k] := StrToInt(output_data[2]); // What, how many
     end;
 
-    FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+    FindRes := FindNext(SR); // РїСЂРѕРґРѕР»Р¶РµРЅРёРµ РїРѕРёСЃРєР° РїРѕ Р·Р°РґР°РЅРЅС‹Рј СѓСЃР»РѕРІРёСЏРј
   end;
 
   output_data.Free;
-  FindClose(SR); // закрываем поиск
+  FindClose(SR); // Р·Р°РєСЂС‹РІР°РµРј РїРѕРёСЃРє
   FindCards := i;
   fCount := i;
 
 end;
 
-// Тасовка колоды
+// РўР°СЃРѕРІРєР° РєРѕР»РѕРґС‹
 procedure TInvDeck.Shuffle();
 var
   i, r: integer;
@@ -926,7 +949,7 @@ begin
   end;
 end;
 
-// Получение ID карты
+// РџРѕР»СѓС‡РµРЅРёРµ ID РєР°СЂС‚С‹
 function TMythosDeck.GetCardID(i: integer): integer;
 begin
   GetCardID := fCards[i].fId;
@@ -943,8 +966,8 @@ end;
 function TMythosDeck.FindCards(file_path: string): integer;
 var
   F: TextFile;
-  SR: TSearchRec; // поисковая переменная
-  FindRes: Integer; // переменная для записи результата поиска
+  SR: TSearchRec; // РїРѕРёСЃРєРѕРІР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
+  FindRes: Integer; // РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ Р·Р°РїРёСЃРё СЂРµР·СѓР»СЊС‚Р°С‚Р° РїРѕРёСЃРєР°
   s: string[100];
   i, j, k, n, crd_num: integer;
   output_data: TStringList;
@@ -956,14 +979,14 @@ var
     output_data.DelimitedText := str;
   end;
 begin
-  // задание условий поиска и начало поиска
+  // Р·Р°РґР°РЅРёРµ СѓСЃР»РѕРІРёР№ РїРѕРёСЃРєР° Рё РЅР°С‡Р°Р»Рѕ РїРѕРёСЃРєР°
   FindRes := FindFirst(file_path + '*.myt', faAnyFile, SR);
 
   i := 0;
   n := 0;
   output_data := TStringList.Create;
 
-  while FindRes = 0 do // пока мы находим файлы (каталоги), то выполнять цикл
+  while FindRes = 0 do // РїРѕРєР° РјС‹ РЅР°С…РѕРґРёРј С„Р°Р№Р»С‹ (РєР°С‚Р°Р»РѕРіРё), С‚Рѕ РІС‹РїРѕР»РЅСЏС‚СЊ С†РёРєР»
   begin
     i := i + 1;
     AssignFile (F, file_path + SR.Name);
@@ -1006,17 +1029,17 @@ begin
       //can_take[j, k] := StrToInt(output_data[2]); // What, how many
     end;
 
-    FindRes := FindNext(SR); // продолжение поиска по заданным условиям
+    FindRes := FindNext(SR); // РїСЂРѕРґРѕР»Р¶РµРЅРёРµ РїРѕРёСЃРєР° РїРѕ Р·Р°РґР°РЅРЅС‹Рј СѓСЃР»РѕРІРёСЏРј
   end;
 
   output_data.Free;
-  FindClose(SR); // закрываем поиск
+  FindClose(SR); // Р·Р°РєСЂС‹РІР°РµРј РїРѕРёСЃРє
   FindCards := i;
   fCount := i;
 
 end;
 
-// Тасовка колоды
+// РўР°СЃРѕРІРєР° РєРѕР»РѕРґС‹
 procedure TMythosDeck.Shuffle();
 var
   i, r: integer;

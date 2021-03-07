@@ -1,14 +1,16 @@
-unit uMainForm;
+п»їunit uMainForm;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, uPlayer, uCardDeck, Choise,
-  uCommon, uMonster, xmldom, XMLIntf, msxmldom, XMLDoc, uCardXML, Spin, uStreet, uMythos;
+  Dialogs, StdCtrls, ExtCtrls, Jpeg, ComCtrls, uPlayer, uCardDeck, uLocationCardDeck,
+  uCommonItemCardDeck, uUniqueItemCardDeck, uMythosCardDeck, uInvestigatorCardDeck,
+  uOtherWorldCardDeck, uEncounterInquiryForm, uCommon, uMonster, xmldom, XMLIntf, msxmldom, XMLDoc,
+  uCardXML, Spin, uStreet, uMythos;
 
 type
-  TfrmMain = class(TForm)
+  TMainForm = class(TForm)
     RadioGroup1: TRadioGroup;
     btnInit: TButton;
     btnPlaData: TButton;
@@ -212,17 +214,17 @@ type
   end;
 
 var
-  frmMain: TfrmMain;
+  MainForm: TMainForm;
   gCurrentPhase: integer;
   Common_Items_Deck: TCommonItemCardDeck;
   Unique_Items_Deck: TUniqueItemCardDeck;
   //Spells_Deck: TItemCardDeck;
   //Skills_Deck: TItemCardDeck;
   Mythos_Deck: TMythosDeck;
-  gInvestigators: TInvDeck;
+  gInvestigators: TInvestigatorCardDeck;
   Monsters: TMonsterArray;//array [1..MONSTER_MAX] of TMonster;
   Arkham_Streets: array [1..NUMBER_OF_STREETS] of TStreet;
-  Other_Worlds_Deck: TOtherWorldCardsDeck;
+  Other_Worlds_Deck: TOtherWorldCardDeck;
   exposed_cards: array [1..MAX_PLAYER_ITEMS] of boolean;
   Common_Items_Count: integer = 0;
   Unique_Items_Count: integer = 0;
@@ -251,7 +253,7 @@ var
   procedure Encounter(card: TLocationCard);
   procedure OWEncounter(lok_id: integer; crd_num: integer);
   procedure MoveMonsters();
-  function GetFirstPlayer: integer; // Получение номера игрока с жетоном первого игрока
+  function GetFirstPlayer: integer; // РџРѕР»СѓС‡РµРЅРёРµ РЅРѕРјРµСЂР° РёРіСЂРѕРєР° СЃ Р¶РµС‚РѕРЅРѕРј РїСЂРІРѕРіРѕ РёРіСЂРѕРєР°
 //  procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
   //procedure ProcessNode(Node : PLLData; add_data: integer = 0);
 
@@ -264,36 +266,36 @@ var
 
 implementation
 
-uses uChsLok, Math,  uTradeForm, uUseForm, uInvChsForm, uMonsterForm,
+uses uLocationSelectorForm, Math, uTradeForm, uUseForm, uInvestigatorSelectorForm, uMonsterForm,
   uCardForm, uDrop;
 
 {$R *.dfm}
 
-// Загрузка данных в карты из файла
+// Р—Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С… РІ РєР°СЂС‚С‹ РёР· С„Р°Р№Р»Р°
 procedure Load_Cards(card_type: integer);
 var
   i: integer;
 begin
   case card_type of
     CT_COMMON_ITEM: begin
-      // Загружаем все карты, находящиеся в каталоге
+      // Р—Р°РіСЂСѓР¶Р°РµРј РІСЃРµ РєР°СЂС‚С‹, РЅР°С…РѕРґСЏС‰РёРµСЃСЏ РІ РєР°С‚Р°Р»РѕРіРµ
       Common_Items_Count :=  Common_Items_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\CardsData\CommonItems\');
     end; // CT_COMMON_ITEM
 
     CT_UNIQUE_ITEM: begin
-      // задание условий поиска и начало поиска
+      // Р·Р°РґР°РЅРёРµ СѓСЃР»РѕРІРёР№ РїРѕРёСЃРєР° Рё РЅР°С‡Р°Р»Рѕ РїРѕРёСЃРєР°
       Unique_Items_Count := Unique_Items_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\CardsData\UniqueItems\');
 
     end; // CT_UNIQUE_ITEM
 
     CT_SPELL: begin
-      // задание условий поиска и начало поиска
+      // Р·Р°РґР°РЅРёРµ СѓСЃР»РѕРІРёР№ РїРѕРёСЃРєР° Рё РЅР°С‡Р°Р»Рѕ РїРѕРёСЃРєР°
       //Spells_Count := Spells_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Spells\\');
 
     end; // CT_UNIQUE_ITEM
 
     CT_SKILL: begin
-      // задание условий поиска и начало поиска
+      // Р·Р°РґР°РЅРёРµ СѓСЃР»РѕРІРёР№ РїРѕРёСЃРєР° Рё РЅР°С‡Р°Р»Рѕ РїРѕРёСЃРєР°
 //      Skills_Count := Skills_Deck.FindCards(ExtractFilePath(Application.ExeName)+'\\CardsData\\Skills\\');
     end; // CT_UNIQUE_ITEM
 
@@ -332,7 +334,7 @@ begin
 end;
 
 
-procedure TfrmMain.RadioGroup1Click(Sender: TObject);
+procedure TMainForm.RadioGroup1Click(Sender: TObject);
 begin
   if RadioGroup1.ItemIndex = 0 then
   begin
@@ -359,10 +361,10 @@ begin
   lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
 end;
 
-// Инициализация
-// После инициализации, массив карт будет содержать
-// в себе все карты определенного типа, начальные значения
-// переменных и т.д.
+// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
+// РџРѕСЃР»Рµ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё, РјР°СЃСЃРёРІ РєР°СЂС‚ Р±СѓРґРµС‚ СЃРѕРґРµСЂР¶Р°С‚СЊ
+// РІ СЃРµР±Рµ РІСЃРµ РєР°СЂС‚С‹ РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ С‚РёРїР°, РЅР°С‡Р°Р»СЊРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ
+// РїРµСЂРµРјРµРЅРЅС‹С… Рё С‚.Рґ.
 procedure GameInit;
 var
   i: integer;
@@ -372,14 +374,14 @@ begin
   gCurrentPlayer := players[GetFirstPlayer];
   current_player := 1;
   Monsters_Count := 0;
-  frmMain.lblCurPlayer.Caption := IntToStr(current_player);
+  MainForm.lblCurPlayer.Caption := IntToStr(current_player);
   gCurrentPhase := PH_UPKEEP;
-  frmMain.lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
+  MainForm.lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
  { gCurrentPlayer.Stamina := 5; // Give 5 stamina
   gCurrentPlayer.Sanity := 5; // Give 5 sanity
   gCurrentPlayer.Clues := 10; // Give 10 clues
   gCurrentPlayer.Money := 10; // Give 10$    }
-  frmMain.lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
+  MainForm.lblCurPlayer.Caption := IntToStr(GetFirstPlayer);
 
   // Create gates
   gates[1].other_world := 141;
@@ -420,45 +422,45 @@ begin
   for i := 1 to MAX_PLAYER_ITEMS do
     exposed_cards[i] := false;
 
-  // Загрузка карт n-го типа (Контакты)
+  // Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚ n-РіРѕ С‚РёРїР° (РљРѕРЅС‚Р°РєС‚С‹)
 
-  // Загрузка карт обычных предметов
+  // Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚ РѕР±С‹С‡РЅС‹С… РїСЂРµРґРјРµС‚РѕРІ
   Load_Cards(CT_COMMON_ITEM);
 
-  // Загрузка карт уникальных предметов
+  // Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚ СѓРЅРёРєР°Р»СЊРЅС‹С… РїСЂРµРґРјРµС‚РѕРІ
   Load_Cards(CT_UNIQUE_ITEM);
 
-  // Загрузка карт заклов
+  // Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚ Р·Р°РєР»РѕРІ
   Load_Cards(CT_SPELL);
 
-  // Загрузка карт навыков
+  // Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚ РЅР°РІС‹РєРѕРІ
   Load_Cards(CT_SKILL);
 
-  // Загрузка карт контактов
+  // Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚ РєРѕРЅС‚Р°РєС‚РѕРІ
   Load_Cards(CT_ENCOUNTER);
 
-  // Загрузка карт контактов иных миров
+  // Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚ РєРѕРЅС‚Р°РєС‚РѕРІ РёРЅС‹С… РјРёСЂРѕРІ
   Load_Cards(CT_OW_ENCOUNTER);  
 
-  // Загрузка карт mythos
+  // Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚ mythos
   Load_Cards(CT_MYTHOS);
 
-  // Загрузка карт investigators
+  // Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚ investigators
   Load_Cards(CT_INVESTIGATOR);
 
   //ShowMessage(Arkham_Streets[4].Deck.cards[1, 1].crd_head.mnChild[0].data);
 
   //monCount := 0;
-  // Загрузка monsters
+  // Р—Р°РіСЂСѓР·РєР° monsters
   Monsters_Count := LoadMonsterCards(Monsters, ExtractFilePath(Application.ExeName));
 end;
 
-procedure TfrmMain.btnInitClick(Sender: TObject);
+procedure TMainForm.btnInitClick(Sender: TObject);
 begin
   GameInit;
 end;
 
-procedure TfrmMain.btnPlaDataClick(Sender: TObject);
+procedure TMainForm.btnPlaDataClick(Sender: TObject);
 var
   i: integer;
 begin
@@ -468,13 +470,13 @@ begin
     lbItems.Items.Add(IntToStr(gCurrentPlayer.cards[i]));      }
 end;
 
-procedure TfrmMain.ComboBox1Change(Sender: TObject);
+procedure TMainForm.ComboBox1Change(Sender: TObject);
 begin
   //Image1.Picture.LoadFromFile('..\Gofy\CardsData\CommonItems\'+ComboBox1.Text+'.jpg');
   //Common_Items_Deck.Cards[ComboBox1.ItemIndex+1].Dejstvie_karti;
 end;
 
-procedure TfrmMain.btnNextPersClick(Sender: TObject);
+procedure TMainForm.btnNextPersClick(Sender: TObject);
 var
   fp, i: integer;
 begin
@@ -490,7 +492,7 @@ begin
     players[1].bFirstPlayer := true;
     for i := 2 to player_count do
       players[i].bFirstPlayer := false;
-    ShowMessage('Все игроки походили. След. фаза.');
+    ShowMessage('Р’СЃРµ РёРіСЂРѕРєРё РїРѕС…РѕРґРёР»Рё. РЎР»РµРґ. С„Р°Р·Р°.');
     gCurrentPhase := gCurrentPhase + 1;
     if gCurrentPhase > 5 then
       gCurrentPhase := 1;
@@ -505,13 +507,13 @@ begin
   UpdStatus;
 end;
 
-procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   i: integer;
 begin
   for i := 1 to player_count do
   begin
-    // Освобождение ресурсов игрока
+    // РћСЃРІРѕР±РѕР¶РґРµРЅРёРµ СЂРµСЃСѓСЂСЃРѕРІ РёРіСЂРѕРєР°
     players[i].Free;
   end;
 
@@ -530,7 +532,7 @@ begin
   //Application.Terminate;
 end;
 
-procedure TfrmMain.FormCreate(Sender: TObject);
+procedure TMainForm.FormCreate(Sender: TObject);
 var
   i, n: integer;
   PlStats: array [1..6] of integer;
@@ -544,12 +546,12 @@ begin
 
   path_to_exe := ExtractFilePath(Application.ExeName);
   Common_Items_Deck:= TCommonItemCardDeck.Create(CT_COMMON_ITEM);
-  Other_Worlds_Deck := TOtherWorldCardsDeck.Create();
+  Other_Worlds_Deck := TOtherWorldCardDeck.Create();
   Unique_Items_Deck:= TUniqueItemCardDeck.Create(CT_UNIQUE_ITEM);
   //Spells_Deck:= TItemCardDeck.Create(CT_SPELL);
   //Skills_Deck:= TItemCardDeck.Create(CT_SKILL);
   Mythos_Deck := TMythosDeck.Create(CT_MYTHOS);
-  gInvestigators := TInvDeck.Create(CT_INVESTIGATOR);
+  gInvestigators := TInvestigatorCardDeck.Create(CT_INVESTIGATOR);
 
   for i := 1 to NUMBER_OF_STREETS do
   begin
@@ -568,7 +570,7 @@ begin
 
   for i := 1 to player_count do
   begin
-    // Загрузка объекта игрока
+    // Р—Р°РіСЂСѓР·РєР° РѕР±СЉРµРєС‚Р° РёРіСЂРѕРєР°
     players[i] := TPlayer.Create(PlStats, False);
     //
   end;
@@ -581,23 +583,23 @@ end;
 
 
 
-procedure TfrmMain.btnUseCardClick(Sender: TObject);
+procedure TMainForm.btnUseCardClick(Sender: TObject);
 var
   i: integer;
 begin
-  frmUse.cbCard.Clear;
+  ItemUseForm.cbCard.Clear;
   for i := 1 to gCurrentPlayer.ItemsCount do
-    frmUse.cbCard.Items.Add(IntToStr(gCurrentPlayer.Cards[i]));
-  frmUse.ShowModal;
+    ItemUseForm.cbCard.Items.Add(IntToStr(gCurrentPlayer.Cards[i]));
+  ItemUseForm.ShowModal;
 end;
 
-procedure TfrmMain.ComboBox2Change(Sender: TObject);
+procedure TMainForm.ComboBox2Change(Sender: TObject);
 begin
   //Image2.Picture.LoadFromFile('..\Gofy\CardsData\UniqueItems\'+ComboBox2.Text+'.jpg');
   //Unique_Items_Deck[ComboBox2.ItemIndex+1].Dejstvie_karti;
 end;
 
-procedure TfrmMain.cbLocationChange(Sender: TObject);
+procedure TMainForm.cbLocationChange(Sender: TObject);
 var
   LocNum: integer;
 begin
@@ -605,14 +607,14 @@ begin
   lblLocID.Caption := IntToStr(LocNum);
 end;
 
-procedure TfrmMain.DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
+procedure TMainForm.DateTimePicker1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if key = VK_MULTIPLY then
     showmessage ('iwr');
 end;
 
-procedure TfrmMain.edPlaStaminaChange(Sender: TObject);
+procedure TMainForm.edPlaStaminaChange(Sender: TObject);
 begin
   try
     gCurrentPlayer.Stamina := StrToInt(edPlaStamina.Text);
@@ -625,7 +627,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.btnMoveToLokClick(Sender: TObject);
+procedure TMainForm.btnMoveToLokClick(Sender: TObject);
 var
   i: integer;
   pl_lok: TLocation;
@@ -637,7 +639,7 @@ begin
   //gPlayer.Encounter(Locations_Deck);
 end;
 
-procedure TfrmMain.btnShuffleClick(Sender: TObject);
+procedure TMainForm.btnShuffleClick(Sender: TObject);
 var
   i: integer;
 begin
@@ -645,7 +647,7 @@ begin
 
 end;
 
-// Разрешить контакт
+// Р Р°Р·СЂРµС€РёС‚СЊ РєРѕРЅС‚Р°РєС‚
 procedure Encounter(card: TLocationCard);
 begin
 
@@ -662,12 +664,12 @@ begin
   end;
 end;
 
-procedure TfrmMain.btnChsInvClick(Sender: TObject);
+procedure TMainForm.btnChsInvClick(Sender: TObject);
 var
   i: integer;
 begin
   //frmInv.cbInvPlayer1.Items.Add(aInvestigators[]);
-  frmInv.ShowModal;
+  InvestigatorSelectorForm.ShowModal;
   //gCurrentPlayer.AssignInvestigator(inv); // Investigator := inv;
   //gCurrentPlayer.ChangeSkills(1,1);
   //gCurrentPlayer.ChangeSkills(2,1);
@@ -693,12 +695,12 @@ begin
     end;
 end;
 
-procedure TfrmMain.btnAddClueClick(Sender: TObject);
+procedure TMainForm.btnAddClueClick(Sender: TObject);
 begin
   Arkham_Streets[ton(gCurrentPlayer.Location)].AddClue(gCurrentPlayer.Location, 1);
 end;
 
-procedure TfrmMain.edStatSpeedChange(Sender: TObject);
+procedure TMainForm.edStatSpeedChange(Sender: TObject);
 begin
   try
     gCurrentPlayer.Speed := StrToInt(edStatSpeed.Text);
@@ -721,18 +723,18 @@ begin
 
 end;
 
-procedure TfrmMain.btnGiveItemClick(Sender: TObject);
+procedure TMainForm.btnGiveItemClick(Sender: TObject);
 begin
   //gCurrentPlayer.AddItem(1582);
 end;
 
-procedure TfrmMain.btnMoveToExactLokClick(Sender: TObject);
+procedure TMainForm.btnMoveToExactLokClick(Sender: TObject);
 begin
   //Encounter(gCurrentPlayer, Arkham_Streets[GetStreetIndxByLokID(StrToInt(edtLokID.Text))].deck.cards[StrToInt(edtLokID.Text)]);
   //ShowMessage(IntToStr(hon(2200)));
 end;
 
-procedure TfrmMain.edtPlaClueExit(Sender: TObject);
+procedure TMainForm.edtPlaClueExit(Sender: TObject);
 begin
   try
     gCurrentPlayer.Clues := StrToInt(edtPlaClue.Text);
@@ -742,7 +744,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.edStatFightExit(Sender: TObject);
+procedure TMainForm.edStatFightExit(Sender: TObject);
 begin
   try
     gCurrentPlayer.Fight := StrToInt(edStatFight.Text);
@@ -752,7 +754,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.btnShowCardsClick(Sender: TObject);
+procedure TMainForm.btnShowCardsClick(Sender: TObject);
 var
   temp: TTreeView;
   tmp: PLLData;
@@ -760,7 +762,7 @@ begin
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
 end;
 
-procedure TfrmMain.edStatWillExit(Sender: TObject);
+procedure TMainForm.edStatWillExit(Sender: TObject);
 begin
   try
     gCurrentPlayer.Will := StrToInt(edStatWill.Text);
@@ -770,7 +772,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.edStatLuckExit(Sender: TObject);
+procedure TMainForm.edStatLuckExit(Sender: TObject);
 begin
   try
     gCurrentPlayer.Luck := StrToInt(edStatLuck.Text);
@@ -781,7 +783,7 @@ begin
 
 end;
 
-procedure TfrmMain.edtPlaMoneyExit(Sender: TObject);
+procedure TMainForm.edtPlaMoneyExit(Sender: TObject);
 begin
   try
     gCurrentPlayer.Money := StrToInt(edtPlaMoney.Text);
@@ -791,7 +793,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.edStatLoreExit(Sender: TObject);
+procedure TMainForm.edStatLoreExit(Sender: TObject);
 begin
   try
     gCurrentPlayer.Lore := StrToInt(edStatLore.Text);
@@ -801,12 +803,12 @@ begin
   end;
 end;
 
-procedure TfrmMain.btnLogClearClick(Sender: TObject);
+procedure TMainForm.btnLogClearClick(Sender: TObject);
 begin
-  frmMain.lstLog.Clear;
+  MainForm.lstLog.Clear;
 end;
 
-procedure TfrmMain.Button2Click(Sender: TObject);
+procedure TMainForm.Button2Click(Sender: TObject);
 begin
   Trade(TR_BUY_NOM_PRICE, CT_COMMON_ITEM, 3);
   {OpenTrdFrm(Common_Items_Deck.card[Common_Items_Deck.DrawCard],
@@ -815,7 +817,7 @@ begin
 //    frmTrade.Show;
 end;
 
-procedure TfrmMain.btn17Click(Sender: TObject);
+procedure TMainForm.btn17Click(Sender: TObject);
 begin
   if gCurrentPhase <> PH_UPKEEP then
   begin
@@ -831,9 +833,9 @@ var
   i: integer;
   card_name: string;
 begin
-  frmMain.imgPlaCard1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\Spells\30.jpg');
-  frmMain.imgPlaCard2.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\Spells\30.jpg');
-  frmMain.imgPlaCard3.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\Spells\30.jpg');
+  MainForm.imgPlaCard1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\Spells\30.jpg');
+  MainForm.imgPlaCard2.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\Spells\30.jpg');
+  MainForm.imgPlaCard3.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\Spells\30.jpg');
 
   for i := 1 to 3 do
   begin
@@ -852,11 +854,11 @@ begin
       card_name := ExtractFilePath(Application.ExeName) + 'CardsData\Skills\' + card_name + '.jpg';
 
     if i = 1 then
-      frmMain.imgPlaCard1.Picture.LoadFromFile(card_name);
+      MainForm.imgPlaCard1.Picture.LoadFromFile(card_name);
     if i = 2 then
-      frmMain.imgPlaCard2.Picture.LoadFromFile(card_name);
+      MainForm.imgPlaCard2.Picture.LoadFromFile(card_name);
     if i = 3 then
-      frmMain.imgPlaCard3.Picture.LoadFromFile(card_name);
+      MainForm.imgPlaCard3.Picture.LoadFromFile(card_name);
 
   end;
 
@@ -871,18 +873,18 @@ begin
   for i := 1 to 3 do
   begin
     if selected_cards[i + (3 * count)] then
-      (frmMain.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clLime
+      (MainForm.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clLime
     else
-      (frmMain.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clGray;
+      (MainForm.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clGray;
     if exposed_cards[i + (3 * count)] then
-      (frmMain.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clRed;
+      (MainForm.FindComponent('pnlCard'+IntToStr(i)) as TPanel).Color := clRed;
   end;
 end;
 
 // Update labels on the form
 procedure UpdStatus;
 begin
-  with frmMain do
+  with MainForm do
   begin
     lblStaminaValue.Caption := IntToStr(gCurrentPlayer.Stamina);
     lblSanityValue.Caption := IntToStr(gCurrentPlayer.Sanity);
@@ -905,14 +907,14 @@ begin
     pbStamina.Position := gCurrentPlayer.Stamina;
     lblCurPhase.Caption := aPhasesNames[gCurrentPhase];
   end;
-  // Отрисовка карт в наличии у игрока
+  // РћС‚СЂРёСЃРѕРІРєР° РєР°СЂС‚ РІ РЅР°Р»РёС‡РёРё Сѓ РёРіСЂРѕРєР°
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
   SelectCards(selected_cards, player_current_card[current_player] - 1);
 
-  frmMain.lblMonCount.Caption := IntToStr(uMonster.DeckMobCount);
+  MainForm.lblMonCount.Caption := IntToStr(uMonster.DeckMobCount);
 end;
 
-procedure TfrmMain.btnPrevCardsClick(Sender: TObject);
+procedure TMainForm.btnPrevCardsClick(Sender: TObject);
 begin
   if player_current_card[current_player] > 1 then
     player_current_card[current_player] := player_current_card[current_player] - 1;
@@ -922,14 +924,14 @@ begin
 
 end;
 
-procedure TfrmMain.btnNextCardsClick(Sender: TObject);
+procedure TMainForm.btnNextCardsClick(Sender: TObject);
 begin
   player_current_card[current_player] := player_current_card[current_player] + 1;
   ShowPlayerCards(gCurrentPlayer, player_current_card[current_player]);
   SelectCards(selected_cards, player_current_card[current_player] - 1);
 end;
 
-procedure TfrmMain.btnProcessClick(Sender: TObject);
+procedure TMainForm.btnProcessClick(Sender: TObject);
 var
   i: integer;
   mythos_card_num: integer;
@@ -955,11 +957,11 @@ begin
     PH_MOVE: begin
       if cbLocation.ItemIndex < 0 then
       begin
-        ShowMessage('Нужно выбрать локацию!');
+        ShowMessage('РќСѓР¶РЅРѕ РІС‹Р±СЂР°С‚СЊ Р»РѕРєР°С†РёСЋ!');
         Exit;
       end;
       // TODO: point to null
-      if gCurrentPlayer.Location mod 1000 = 0 then // С улицы
+      if gCurrentPlayer.Location mod 1000 = 0 then // РЎ СѓР»РёС†С‹
       begin
         pl_lok.lok_id := 0;
         pl_st.StreetId := gCurrentPlayer.Location;
@@ -978,7 +980,7 @@ begin
             if lok_id > 1000 then
               gCurrentPlayer.MoveToLocation(pl_lok, Arkham_Streets[ton(lok_id)].Lok[hon(lok_id)]);
         except
-          MessageDlg('Не удалось перейти в локацию!', mtWarning, [mbOK], 0);
+          MessageDlg('РќРµ СѓРґР°Р»РѕСЃСЊ РїРµСЂРµР№С‚Рё РІ Р»РѕРєР°С†РёСЋ!', mtWarning, [mbOK], 0);
         end;
 
         if gCurrentPlayer.Location >= 1000 then // If not in other world anyway
@@ -991,8 +993,8 @@ begin
             for i := 1 to pl_lok.lok_mon_count do
               if pl_lok.lok_monsters[i] <> nil then
               begin
-                frmMonster.PrepareMonster(pl_lok.lok_monsters[i], gCurrentPlayer);
-                frmMonster.ShowModal;
+                MonsterForm.PrepareMonster(pl_lok.lok_monsters[i], gCurrentPlayer);
+                MonsterForm.ShowModal;
               end;
           end
           else
@@ -1003,8 +1005,8 @@ begin
             for i := 1 to pl_st.st_mob_count do
               if pl_st.Monsters[i] <> nil then
               begin
-                frmMonster.PrepareMonster(pl_st.Monsters[i], gCurrentPlayer);
-                frmMonster.ShowModal;
+                MonsterForm.PrepareMonster(pl_st.Monsters[i], gCurrentPlayer);
+                MonsterForm.ShowModal;
               end;
           end;
         end;
@@ -1013,9 +1015,9 @@ begin
       end
       else // in mythos
       begin
-        if ((gCurrentPlayer.Location mod 100) mod 10) = 1 then // В начале иного мира
+        if ((gCurrentPlayer.Location mod 100) mod 10) = 1 then // Р’ РЅР°С‡Р°Р»Рµ РёРЅРѕРіРѕ РјРёСЂР°
           gCurrentPlayer.Location := gCurrentPlayer.Location + 1
-        else  // Игрок возвращается
+        else  // РРі СЂРѕРє РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ
         begin
           gCurrentPlayer.Location := FindGate(gCurrentPlayer.Location - 1);
           gCurrentPlayer.Explored; // Give marker
@@ -1024,15 +1026,15 @@ begin
 
       if pl_lok.clues > 0 then
       begin
-        gCurrentPlayer.GiveClue(1); // Сбор улик :)
+        gCurrentPlayer.GiveClue(1); // РЎР±РѕСЂ СѓР»РёРє :)
         Arkham_Streets[ton(gCurrentPlayer.Location)].RemoveClue(gCurrentPlayer.Location, 1);
-        MessageDlg('Игрок нашел улики! Аааа-а-аа-аа-ааа супер круто. *Игрок бегает по-кругу в порывах радости.*', mtInformation, [mbOK], 0);
+        MessageDlg('РРіСЂРѕРє РЅР°С€РµР» СѓР»РёРєРё! РђР°Р°Р°-Р°-Р°Р°-Р°Р°-Р°Р°Р° СЃСѓРїРµ РєСЂСѓС‚Рѕ. *РРіСЂРѕРє Р±РµРіР°РµС‚ РїРѕ РєСЂСѓРіСѓ РІ РїРѕСЂС‹РІР°С… СЂР°РґРѕСЃС‚Рё.*', mtInformation, [mbOK], 0);
       end;
     end;
     PH_ENCOUNTER: begin
       if (gCurrentPlayer.Location mod 1000 = 0) or (gCurrentPlayer.Location < 1000) then
       begin
-        MessageDlg('Неправильная локация для контакта!', mtInformation, [mbOK], 0);
+        MessageDlg('РќРµРїСЂР°РІРёР»СЊРЅР°СЏ Р»РѕРєР°С†РёСЏ РґР»СЏ РєРѕРЅС‚Р°РєС‚Р°!', mtInformation, [mbOK], 0);
         Exit;
       end;
 
@@ -1058,7 +1060,7 @@ begin
       randomize;
       mythos_card_num := random(Mythos_Cards_Count) + 2;
       gCurrentMythosCard := Mythos_Deck.card[mythos_card_num];
-      frmMain.imgEncounter.Picture.LoadFromFile(path_to_exe + 'CardsData\Mythos\0' + IntToStr(mythos_card_num) + '.jpg');
+      MainForm.imgEncounter.Picture.LoadFromFile(path_to_exe + 'CardsData\Mythos\0' + IntToStr(mythos_card_num) + '.jpg');
 
       MoveMonsters(); // move all monsters
 
@@ -1066,16 +1068,16 @@ begin
       if not Arkham_Streets[ton(gCurrentMythosCard.fGateSpawn)].Lok[hon(gCurrentMythosCard.fGateSpawn)].HasGate then
       begin
         if Arkham_Streets[ton(gCurrentMythosCard.fGateSpawn)].SpawnGate(gCurrentMythosCard.fGateSpawn, gates[random(8)+1]) then
-          frmMain.lstLog.Items.Add('Появились ворота: ' + GetLokNameByID(gCurrentMythosCard.fGateSpawn));
+          MainForm.lstLog.Items.Add('РџРѕСЏРІРёР»РёСЃСЊ РІРѕСЂРѕС‚Р°: ' + GetLokNameByID(gCurrentMythosCard.fGateSpawn));
       end;
       drawn_monster := DrawMonsterCard(Monsters);
       if drawn_monster <> nil then
         if Arkham_Streets[ton(gCurrentMythosCard.fGateSpawn)].AddMonster(gCurrentMythosCard.fGateSpawn, drawn_monster) then
-          frmMain.lstLog.Items.Add('Появился монстр: ' + GetMonsterNameByID(drawn_monster.id));
+          MainForm.lstLog.Items.Add('РџРѕСЏРІРёР»СЃСЏ РјРѕРЅСЃС‚СЂ: ' + GetMonsterNameByID(drawn_monster.id));
 
       // Spawn clue
       if Arkham_Streets[ton(gCurrentMythosCard.fClueSpawn)].AddClue(gCurrentMythosCard.fClueSpawn, 1) then
-        frmMain.lstLog.Items.Add('Улика появилась: ' + GetLokNameByID(gCurrentMythosCard.fClueSpawn));
+        MainForm.lstLog.Items.Add('РЈР»РёРєР° РїРѕСЏРІРёР»Р°СЃСЊ: ' + GetLokNameByID(gCurrentMythosCard.fClueSpawn));
 //      btnContinueClick(Sender);
     end;
   end;
@@ -1102,39 +1104,39 @@ begin
   UpdStatus;
 end;
 
-procedure TfrmMain.FormShow(Sender: TObject);
+procedure TMainForm.FormShow(Sender: TObject);
 begin
-  frmInv.ShowModal;  
+  InvestigatorSelectorForm.ShowModal;
   //UpdStatus;
 end;
 
-procedure TfrmMain.imgPlaCard1Click(Sender: TObject);
+procedure TMainForm.imgPlaCard1Click(Sender: TObject);
 begin
   selected_cards[1 + (3 * (player_current_card[current_player] - 1))] := not selected_cards[1 + (3 * (player_current_card[current_player] - 1))];
   SelectCards(selected_cards, player_current_card[current_player] - 1);
 end;
 
-procedure TfrmMain.imgPlaCard2Click(Sender: TObject);
+procedure TMainForm.imgPlaCard2Click(Sender: TObject);
 begin
   selected_cards[2 + (3 * (player_current_card[current_player] - 1))] := not selected_cards[2 + (3 * (player_current_card[current_player] - 1))];
   SelectCards(selected_cards, player_current_card[current_player] - 1);
 end;
 
-procedure TfrmMain.imgPlaCard3Click(Sender: TObject);
+procedure TMainForm.imgPlaCard3Click(Sender: TObject);
 begin
   if not exposed_cards[3 + (3 * (player_current_card[current_player] - 1))] then
     selected_cards[3 + (3 * (player_current_card[current_player] - 1))] := not selected_cards[3 + (3 * (player_current_card[current_player] - 1))];
   SelectCards(selected_cards, player_current_card[current_player] - 1);
 end;
 
-procedure TfrmMain.btn1Click(Sender: TObject);
+procedure TMainForm.btn1Click(Sender: TObject);
 begin
 
   Common_Items_Deck.AddCardToDeck(1);
   ShowMessage(IntToStr(gCurrentPlayer.CardBonus(ST_FIGHT)));
 end;
 
-procedure TfrmMain.btn2Click(Sender: TObject);
+procedure TMainForm.btn2Click(Sender: TObject);
 var
   ptr: Pointer;
 begin
@@ -1149,12 +1151,12 @@ begin
   //MoveMonsters;
   ptr := Monsters[1];
   ShowMessage(IntToStr(Integer(ptr)));
-  frmMonster.PrepareMonster(Monsters[1], gCurrentPlayer);
+  MonsterForm.PrepareMonster(Monsters[1], gCurrentPlayer);
   //ShowMessage(Monsters[1].Name);
   UpdStatus;
 end;
 
-procedure TfrmMain.btnTakeWeaponClick(Sender: TObject);
+procedure TMainForm.btnTakeWeaponClick(Sender: TObject);
 var
   i: integer;
 begin
@@ -1166,12 +1168,12 @@ begin
       gCurrentPlayer.TakeWeapon(gCurrentPlayer.Cards[i]);
     end;
   end;
-  ShowMessage('Бонус от оружия: ' + IntToStr(gCurrentPlayer.BonusWeapon));
+  ShowMessage('Р‘РѕРЅСѓСЃ РѕС‚ РѕСЂСѓР¶РёСЏ: ' + IntToStr(gCurrentPlayer.BonusWeapon));
 
 
 end;
 
-procedure TfrmMain.btnContinueClick(Sender: TObject);
+procedure TMainForm.btnContinueClick(Sender: TObject);
 var
   fp, i: integer;
 begin
@@ -1182,7 +1184,7 @@ begin
     //fp := GetFirstPlayer;
     if players[fp + 1].Delayed then
     begin
-      frmMain.lstLog.Items.Add('Игрок задержан. Пропуск хода.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє Р·Р°РґРµСЂР¶Р°РЅ. РџСЂРѕРїСѓСЃРє С…РѕРґР°.');
       players[fp].bFirstPlayer := False;
       players[fp + 1].bFirstPlayer := true;
       btnContinueClick(Sender);
@@ -1190,7 +1192,7 @@ begin
     end;
     players[fp].bFirstPlayer := False;
     players[fp + 1].bFirstPlayer := true;
-    frmMain.lstLog.Items.Add('След. игрок.');
+    MainForm.lstLog.Items.Add('РЎР»РµРґ. РёРіСЂРѕРє.');
     //current_player := fp + 1;
   end
   else
@@ -1198,7 +1200,7 @@ begin
     players[1].bFirstPlayer := true;
     for i := 2 to player_count do
       players[i].bFirstPlayer := false;
-    frmMain.lstLog.Items.Add('Все игроки походили. След. фаза.');
+    MainForm.lstLog.Items.Add('Р’СЃРµ РёРіСЂРѕРєРё РїРѕС…РѕРґРёР»Рё. РЎР»РµРґ. С„Р°Р·Р°.');
     gCurrentPhase := gCurrentPhase + 1;
     if gCurrentPhase > 5 then
       gCurrentPhase := 1;
@@ -1211,18 +1213,18 @@ begin
   current_player := GetFirstPlayer;
   //btnEncounter.Enabled := true;
 
-  //frmMain.btn17Click(Sender);
+  //MainForm.btn17Click(Sender);
   UpdStatus;
 end;
 
-procedure TfrmMain.FormPaint(Sender: TObject);
+procedure TMainForm.FormPaint(Sender: TObject);
 var
   i: integer;
 begin
 
 end;
 
-// Проверяет, подходит ли цвет карты
+// РџСЂРѕРІРµСЂСЏРµС‚, РїРѕРґС…РѕРґРёС‚ Р»Рё С†РІРµС‚ РєР°СЂС‚С‹
 function MatchColors(lok_id: Integer; col: integer): boolean;
 var
   ii, kk: integer;
@@ -1236,7 +1238,7 @@ begin
   end;
 end;
 
-// id локации другого мира
+// id Р»РѕРєР°С†РёРё РґСЂСѓРіРѕРіРѕ РјРёСЂР°
 function FindGate(id: integer): integer;
 var
   i, j: integer;
@@ -1250,7 +1252,7 @@ begin
       end;
 end;
 
-// Контакт в другом мире
+// РљРѕРЅС‚Р°РєС‚ РІ РґСЂСѓРіРѕРј РјРёСЂРµ
 procedure OWEncounter(lok_id: integer; crd_num: integer);
 var
   //lok: TOWLocationCard;
@@ -1269,7 +1271,7 @@ begin
   if card.crd_head <> nil then
   begin
     crd_name := path_to_exe + 'CardsData\OtherWorlds\' + IntToStr(card.ID) + '.jpg';
-    frmMain.imgEncounter.Picture.LoadFromFile(crd_name);
+    MainForm.imgEncounter.Picture.LoadFromFile(crd_name);
     c_node := card.crd_head;
 
     ShowMessage(Copy(c_node.mnChild[0].data, 7, 3));
@@ -1296,7 +1298,7 @@ begin
       ProcessNode(c_node.mnChild[i]);
   end
   else
-    MessageDlg('Карта почему-то пустая :('+#10+#13+'Или вы не перешли на локацию.', mtError, [mbOK], 0);
+    MessageDlg('РљР°СЂС‚Р° РїРѕС‡РµРјСѓ-С‚Рѕ РїСѓСЃС‚Р°СЏ :('+#10+#13+'РР»Рё РІС‹ РЅРµ РїРµСЂРµС€Р»Рё РЅР° Р»РѕРєР°С†РёСЋ.', mtError, [mbOK], 0);
 
 end;
 
@@ -1314,12 +1316,12 @@ begin
       if (lok_id <> 0) and (lok_id <> old_lok_id) then
       begin
 
-        frmMain.lstLog.Items.Add('Монстр ' + Monsters[m].Name + ' перешел в локацию ' + GetLokNameByID(lok_id));
+        MainForm.lstLog.Items.Add('РњРѕРЅСЃС‚СЂ ' + Monsters[m].Name + ' РїРµСЂРµС€РµР» РІ Р»РѕРєР°С†РёСЋ ' + GetLokNameByID(lok_id));
       end;
     end;
 end;
 
-procedure TfrmMain.edtMovesExit(Sender: TObject);
+procedure TMainForm.edtMovesExit(Sender: TObject);
 begin
   try
     gCurrentPlayer.Moves := StrToInt(edtMoves.Text);

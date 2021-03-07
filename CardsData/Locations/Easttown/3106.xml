@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <actions>
 	<condition data="|3|2|6|-1|1|">
 		<true>
@@ -13,7 +13,7 @@
 					<action data="|4|5|1|"></action>
 					<action data="|4|34|1|"></action>
 				</false>
-			</condition>						
+			</condition>
 		</false>
 	</condition>
 </actions>

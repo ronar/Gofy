@@ -46,7 +46,7 @@ var
       if HasAttribute('data') then
         tn.data := tn.data + Attributes['data'];
     end;
-    
+
     cNode := Node.ChildNodes.First;
     while cNode <> nil do
     begin
@@ -55,7 +55,7 @@ var
     end;
 
   end; (*ProcessNode*)
-  
+
 begin
   XMLDoc := TXMLDocument.Create(nil);
   try

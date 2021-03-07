@@ -1,9 +1,9 @@
-object frmDrop: TfrmDrop
+object DropForm: TDropForm
   Left = 346
   Top = 230
-  Width = 385
-  Height = 526
-  Caption = 'frmDrop'
+  Caption = 'DropForm'
+  ClientHeight = 487
+  ClientWidth = 369
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

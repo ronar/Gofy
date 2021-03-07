@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, jpeg, ExtCtrls, uPlayer;
 
 type
-  TfrmDrop = class(TForm)
+  TDropForm = class(TForm)
     img1: TImage;
     lbl1: TLabel;
     btn1: TButton;
@@ -23,7 +23,7 @@ type
   end;
 
 var
-  frmDrop: TfrmDrop;
+  DropForm: TDropForm;
   n, dropped: integer;
   cur_crd: Integer;
   pl_cards: array [1..20] of Integer;
@@ -62,7 +62,7 @@ var
 begin
     if (indx = 0) or (pl_cards[indx] = 0) then
     begin
-      frmDrop.img1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\CardsData\Spells\30.jpg');
+      DropForm.img1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\CardsData\Spells\30.jpg');
       exit;
     end;
 
@@ -78,24 +78,24 @@ begin
     if ton(pl_cards[indx]) = 4 then
       file_path := ExtractFilePath(Application.ExeName) + 'CardsData\Skills\';
 
-  frmDrop.img1.Picture.LoadFromFile(file_path + IntToStr(pl_cards[indx]) + '.jpg');
+  DropForm.img1.Picture.LoadFromFile(file_path + IntToStr(pl_cards[indx]) + '.jpg');
 end;
 
-procedure TfrmDrop.btn1Click(Sender: TObject);
+procedure TDropForm.btn1Click(Sender: TObject);
 begin
   cur_crd := cur_crd - 1;
   if cur_crd < 1 then cur_crd := 1;
   ShowCard(cur_crd);
 end;
 
-procedure TfrmDrop.btn2Click(Sender: TObject);
+procedure TDropForm.btn2Click(Sender: TObject);
 begin
   cur_crd := cur_crd + 1;
   if cur_crd > 20 then cur_crd := 20;
   ShowCard(cur_crd);
 end;
 
-procedure TfrmDrop.btn3Click(Sender: TObject);
+procedure TDropForm.btn3Click(Sender: TObject);
 var
   i: Integer;
 begin

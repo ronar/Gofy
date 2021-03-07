@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, jpeg, ExtCtrls;
 
 type
-  TfrmCard = class(TForm)
+  TCardForm = class(TForm)
     Image1: TImage;
     cbCard: TComboBox;
     lbCard: TLabel;
@@ -22,7 +22,7 @@ type
   end;
 
 var
-  frmCard: TfrmCard;
+  CardForm: TCardForm;
   card_to_load: integer;
 
 implementation
@@ -31,7 +31,7 @@ uses uMainForm, uCommon;
 
 {$R *.dfm}
 
-procedure TfrmCard.btnTakeClick(Sender: TObject);
+procedure TCardForm.btnTakeClick(Sender: TObject);
 begin
   if cbCard.ItemIndex = -1 then
     ShowMessage('Please choose a card.')
@@ -39,7 +39,7 @@ begin
     Close;
 end;
 
-procedure TfrmCard.FormShow(Sender: TObject);
+procedure TCardForm.FormShow(Sender: TObject);
 var
   i: integer;
 begin
@@ -52,7 +52,7 @@ begin
   end;
 end;
 
-procedure TfrmCard.cbCardChange(Sender: TObject);
+procedure TCardForm.cbCardChange(Sender: TObject);
 begin
   case card_to_load of
   CT_COMMON_ITEM: Image1.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\CardsData\CommonItems\' + cbCard.Text + '.jpg');

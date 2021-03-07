@@ -1,4 +1,4 @@
-unit uTradeForm;
+п»їunit uTradeForm;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, jpeg, ExtCtrls, uCommon, uMainForm;
 
 type
-  TfrmTrade = class(TForm)
+  TTradeForm = class(TForm)
     Image1: TImage;
     btnTrade: TButton;
     Image2: TImage;
@@ -28,7 +28,7 @@ type
   end;
 
 var
-  frmTrade: TfrmTrade;
+  TradeForm: TTradeForm;
   crds: array [1..3] of integer;
   gAvailable_to_buy: integer;
   gHow: integer;
@@ -54,31 +54,31 @@ begin
       case what of
         CT_COMMON_ITEM: begin
 
-          frmTrade.lbl2.Caption := 'Взять простую вещь (' + IntToStr(how_many) + ')';
+          TradeForm.lbl2.Caption := 'Р’Р·СЏС‚СЊ РїСЂРѕСЃС‚СѓСЋ РІРµС‰СЊ (' + IntToStr(how_many) + ')';
           Reset_ChkBoxes;
           for i := 1 to how_many do
           begin
             crds[i] := Common_Items_Deck.DrawCard;
-            //(frmTrade.FindComponent('Image' + IntToStr(i)) as TImage).Tag := crds[i];
-            (frmTrade.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
+            //(TradeForm.FindComponent('Image' + IntToStr(i)) as TImage).Tag := crds[i];
+            (TradeForm.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
           end;
         end;
         CT_UNIQUE_ITEM: begin
-          frmTrade.lbl2.Caption := 'Взять уникальную вещь (' + IntToStr(how_many) + ')';
+          TradeForm.lbl2.Caption := 'Р’Р·СЏС‚СЊ СѓРЅРёРєР°Р»СЊРЅСѓСЋ РІРµС‰СЊ (' + IntToStr(how_many) + ')';
         end;
         CT_SPELL: begin
-          frmTrade.lbl2.Caption := 'Взять заклинание (' + IntToStr(how_many) + ')';
+          TradeForm.lbl2.Caption := 'Р’Р·СЏС‚СЊ Р·Р°РєР»РёРЅР°РЅРёРµ (' + IntToStr(how_many) + ')';
         end;
         CT_SKILL: begin
-          frmTrade.lbl2.Caption := 'Взять умение (' + IntToStr(how_many) + ')';
+          TradeForm.lbl2.Caption := 'Р’Р·СЏС‚СЊ СѓРјРµРЅРёРµ (' + IntToStr(how_many) + ')';
         end;
         CT_WEAPON: begin
-          frmTrade.lbl2.Caption := 'Взять первое попавшееся оружие';
+          TradeForm.lbl2.Caption := 'Р’Р·СЏС‚СЊ РїРµСЂРІРѕРµ РїРѕРїР°РІС€РµРµСЃСЏ РѕСЂСѓР¶РёРµ';
           Reset_ChkBoxes;
           gAvailable_to_buy := 1;
           crds[1] := Common_Items_Deck.DrawWeaponCard;
           if crds[1] <> 0 then
-            (frmTrade.FindComponent('Image1') as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[1]) + '.jpg');
+            (TradeForm.FindComponent('Image1') as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[1]) + '.jpg');
         end;
         CT_TOME: begin
 
@@ -96,13 +96,13 @@ begin
     TR_BUY_NOM_PRICE: begin
       case what of
         CT_COMMON_ITEM: begin
-          frmTrade.lbl2.Caption := 'Купить простую вещь по номинальной цене (' + IntToStr(how_many) + ')';
+          TradeForm.lbl2.Caption := 'РљСѓРїРёС‚СЊ РїСЂРѕСЃС‚СѓСЋ РІРµС‰СЊ РїРѕ РЅРѕРјРёРЅР°Р»СЊРЅРѕР№ С†РµРЅРµ (' + IntToStr(how_many) + ')';
           Reset_ChkBoxes;
           gavailable_to_buy := 1;
           for i := 1 to how_many do
           begin
             crds[i] := Common_Items_Deck.DrawCard;
-            (frmTrade.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
+            (TradeForm.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
           end;
         end; //CT_COMMON_ITEM
       end; // case
@@ -110,13 +110,13 @@ begin
     TR_BUY_ONE_ABOVE: begin
       case what of
         CT_COMMON_ITEM: begin
-          frmTrade.lbl2.Caption := 'Купить простую вещь по цене на 1$ выше номинальной цены (' + IntToStr(how_many) + ')';
+          TradeForm.lbl2.Caption := 'РљСѓРїРёС‚СЊ РїСЂРѕСЃС‚СѓСЋ РІРµС‰СЊ РїРѕ С†РµРЅРµ РЅР° 1$ РІС‹С€Рµ РЅРѕРјРёРЅР°Р»СЊРЅРѕР№ С†РµРЅС‹ (' + IntToStr(how_many) + ')';
           Reset_ChkBoxes;
           gavailable_to_buy := 1;
           for i := 1 to how_many do
           begin
             crds[i] := Common_Items_Deck.DrawCard;
-            (frmTrade.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
+            (TradeForm.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
           end;
         end; //CT_COMMON_ITEM
       end; // case
@@ -125,13 +125,13 @@ begin
     TR_BUY_ONE_BELOW: begin
       case what of
         CT_COMMON_ITEM: begin
-          frmTrade.lbl2.Caption := 'Купить простую вещь по цене на 1$ ниже номинальной цены (' + IntToStr(how_many) + ')';
+          TradeForm.lbl2.Caption := 'РљСѓРїРёС‚СЊ РїСЂРѕСЃС‚СѓСЋ РІРµС‰СЊ РїРѕ С†РµРЅРµ РЅР° 1$ РЅРёР¶Рµ РЅРѕРјРёРЅР°Р»СЊРЅРѕР№ С†РµРЅС‹ (' + IntToStr(how_many) + ')';
           Reset_ChkBoxes;
           gavailable_to_buy := 1;
           for i := 1 to how_many do
           begin
             crds[i] := Common_Items_Deck.DrawCard;
-            (frmTrade.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
+            (TradeForm.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
           end;
         end; //CT_COMMON_ITEM
       end; // case
@@ -140,14 +140,14 @@ begin
     TR_BUY_ANY_ONE_ABOVE: begin
       case what of
         CT_COMMON_ITEM: begin
-          frmTrade.lbl2.Caption := 'Купить простые вещь по цене на 1$ выше номинальной цены, любые или все';
+          TradeForm.lbl2.Caption := 'РљСѓРїРёС‚СЊ РїСЂРѕСЃС‚С‹Рµ РІРµС‰СЊ РїРѕ С†РµРЅРµ РЅР° 1$ РІС‹С€Рµ РЅРѕРјРёРЅР°Р»СЊРЅРѕР№ С†РµРЅС‹, Р»СЋР±С‹Рµ РёР»Рё РІСЃРµ';
           Reset_ChkBoxes;
           gavailable_to_buy := 3;
           for i := 1 to how_many do
           begin
             crds[i] := Common_Items_Deck.DrawCard;
-            //(frmTrade.FindComponent('Image' + IntToStr(i)) as TImage).tag := crds[i];
-            (frmTrade.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
+            //(TradeForm.FindComponent('Image' + IntToStr(i)) as TImage).tag := crds[i];
+            (TradeForm.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
           end;
         end; //CT_COMMON_ITEM
       end; // case
@@ -155,13 +155,13 @@ begin
     TR_BUY_ANY_ONE_BELOW: begin
       case what of
         CT_COMMON_ITEM: begin
-          frmTrade.lbl2.Caption := 'Купить простые вещь по цене на 1$ ниже номинальной цены, любые или все';
+          TradeForm.lbl2.Caption := 'РљСѓРїРёС‚СЊ РїСЂРѕСЃС‚С‹Рµ РІРµС‰СЊ РїРѕ С†РµРЅРµ РЅР° 1$ РЅРёР¶Рµ РЅРѕРјРёРЅР°Р»СЊРЅРѕР№ С†РµРЅС‹, Р»СЋР±С‹Рµ РёР»Рё РІСЃРµ';
           Reset_ChkBoxes;
           gavailable_to_buy := 3;
           for i := 1 to how_many do
           begin
             crds[i] := Common_Items_Deck.DrawCard;
-            (frmTrade.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
+            (TradeForm.FindComponent('Image' + IntToStr(i)) as TImage).Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + 'CardsData\CommonItems\' + IntToStr(crds[i]) + '.jpg');
           end;
         end; //CT_COMMON_ITEM
       end; // case
@@ -170,14 +170,14 @@ begin
     TR_TAKE_COMMON_TOME: ;
     TR_TAKE_UNIQUE_OTEM: ;
   end;
-  frmTrade.ShowModal;
+  TradeForm.ShowModal;
 end;
 
 procedure Reset_ChkBoxes;
 begin
-  frmTrade.CheckBox1.Checked := False;
-  frmTrade.CheckBox2.Checked := False;
-  frmTrade.CheckBox3.Checked := False;
+  TradeForm.CheckBox1.Checked := False;
+  TradeForm.CheckBox2.Checked := False;
+  TradeForm.CheckBox3.Checked := False;
 end;
 
 function BuyItems(): boolean;
@@ -185,7 +185,7 @@ var
   price: integer;
 begin
   result := false;
-  with frmTrade do
+  with TradeForm do
   begin
     if not CheckBox1.Checked and not CheckBox2.Checked and not CheckBox3.Checked then
     begin
@@ -200,7 +200,7 @@ begin
         begin
           if CheckBox2.Checked or CheckBox3.Checked then
           begin
-            ShowMessage('Выбрано неправильное количество!');
+            ShowMessage('Р’С‹Р±СЂР°РЅРѕ РЅРµРїСЂР°РІРёР»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ!');
             Exit;
           end;
         end
@@ -209,7 +209,7 @@ begin
           begin
             if CheckBox1.Checked or CheckBox3.Checked then
             begin
-              ShowMessage('Выбрано неправильное количество!');
+              ShowMessage('Р’С‹Р±СЂР°РЅРѕ РЅРµРїСЂР°РІРёР»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ!');
               Exit;
             end;
           end;
@@ -224,7 +224,7 @@ begin
         if (gHow = TR_TAKE_ITEMS) or (gHow = TR_TAKE_REST_DISCARD) then
         begin
           gCurrentPlayer.AddItem(Common_Items_Deck, crds[1]);
-          frmMain.lstLog.Items.Add('Игрок получил карту: ' + GetCommonItemNamebyId(crds[1]));
+          MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕР»СѓС‡РёР» РєР°СЂС‚Сѓ: ' + GetCommonItemNamebyId(crds[1]));
         end
         else
         begin
@@ -232,12 +232,12 @@ begin
           begin
             gCurrentPlayer.AddItem(Common_Items_Deck, crds[1]);
             gCurrentPlayer.Money := gCurrentPlayer.Money - price;
-            frmMain.lstLog.Items.Add('Игрок купил карту: ' + GetCommonItemNamebyId(crds[1]));
+            MainForm.lstLog.Items.Add('РРіСЂРѕРє РєСѓРїРёР» РєР°СЂС‚Сѓ: ' + GetCommonItemNamebyId(crds[1]));
             result := true;
           end
           else
           begin
-            ShowMessage('Не хватает денег!');
+            ShowMessage('РќРµ С…РІР°С‚Р°РµС‚ РґРµРЅРµРі!');
             Exit;
           end;
         end;
@@ -252,7 +252,7 @@ begin
         if (gHow = TR_TAKE_ITEMS) or (gHow = TR_TAKE_REST_DISCARD) then
         begin
           gCurrentPlayer.AddItem(Common_Items_Deck, crds[2]);
-          frmMain.lstLog.Items.Add('Игрок получил карту: ' + GetCommonItemNamebyId(crds[2]));
+          MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕР»СѓС‡РёР» РєР°СЂС‚Сѓ: ' + GetCommonItemNamebyId(crds[2]));
         end
         else
         begin
@@ -260,12 +260,12 @@ begin
           begin
             gCurrentPlayer.AddItem(Common_Items_Deck, crds[2]);
             gCurrentPlayer.Money := gCurrentPlayer.Money - price;
-            frmMain.lstLog.Items.Add('Игрок купил карту: ' + GetCommonItemNamebyId(crds[2]));
+            MainForm.lstLog.Items.Add('РРіСЂРѕРє РєСѓРїРёР» РєР°СЂС‚Сѓ: ' + GetCommonItemNamebyId(crds[2]));
             result := true;
           end
           else
           begin
-            ShowMessage('Не хватает денег!');
+            ShowMessage('РќРµ С…РІР°С‚Р°РµС‚ РґРµРЅРµРі!');
             Exit;
           end;
         end;
@@ -280,7 +280,7 @@ begin
         if (gHow = TR_TAKE_ITEMS) or (gHow = TR_TAKE_REST_DISCARD) then
         begin
           gCurrentPlayer.AddItem(Common_Items_Deck, crds[3]);
-          frmMain.lstLog.Items.Add('Игрок получил карту: ' + GetCommonItemNamebyId(crds[3]));
+          MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕР»СѓС‡РёР» РєР°СЂС‚Сѓ: ' + GetCommonItemNamebyId(crds[3]));
         end
         else
         begin
@@ -288,12 +288,12 @@ begin
           begin
             gCurrentPlayer.AddItem(Common_Items_Deck, crds[3]);
             gCurrentPlayer.Money := gCurrentPlayer.Money - price;
-            frmMain.lstLog.Items.Add('Игрок купил карту: ' + GetCommonItemNamebyId(crds[3]));
+            MainForm.lstLog.Items.Add('РРіСЂРѕРє РєСѓРїРёР» РєР°СЂС‚Сѓ: ' + GetCommonItemNamebyId(crds[3]));
             result := true;
           end
           else
           begin
-            ShowMessage('Не хватает денег!');
+            ShowMessage('РќРµ С…РІР°С‚Р°РµС‚ РґРµРЅРµРі!');
             Exit;
           end;
         end;
@@ -302,7 +302,7 @@ begin
   end;
 end;
 
-procedure TfrmTrade.btnTradeClick(Sender: TObject);
+procedure TTradeForm.btnTradeClick(Sender: TObject);
 
 begin
   if BuyItems then

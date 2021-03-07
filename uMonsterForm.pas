@@ -1,4 +1,4 @@
-unit uMonsterForm;
+п»їunit uMonsterForm;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, ExtCtrls, uMonster, uPlayer, jpeg, uStreet;
 
 type
-  TfrmMonster = class(TForm)
+  TMonsterForm = class(TForm)
     imgMonster: TImage;
     btnBattle: TButton;
     btnEvade: TButton;
@@ -28,7 +28,7 @@ type
   end;
 
 var
-  frmMonster: TfrmMonster;
+  MonsterForm: TMonsterForm;
   gMonster: TMonster;
   //gPlayer: TPlayer;
   mon_pic: boolean = false;
@@ -40,17 +40,17 @@ uses uMainForm, uCommon;
 
 {$R *.dfm}
 
-procedure TfrmMonster.PrepareMonster(monster: TMonster; player: TPlayer);
+procedure TMonsterForm.PrepareMonster(monster: TMonster; player: TPlayer);
 var
   p_addr: ^Integer;
 begin
   if monster.Id = 0 then
   begin
     imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\'+IntToStr(monster.Id)+'-1.jpg');
-    ShowMessage('Чето нету монстра!');
+    ShowMessage('Р§РµС‚Рѕ РЅРµС‚Сѓ РјРѕРЅСЃС‚СЂР°!');
     exit;
   end;
-  
+
   gMonster := monster;
   if monster.Id < 100 then
     imgMonster.Picture.LoadFromFile(ExtractFilePath(Application.ExeName)+'\CardsData\Monsters\0'+IntToStr(monster.Id)+'-1.jpg')
@@ -72,61 +72,61 @@ begin
   //ShowMessage(IntToStr(Integer(gMonster)));
 end;
 
-procedure TfrmMonster.btnEvadeClick(Sender: TObject);
+procedure TMonsterForm.btnEvadeClick(Sender: TObject);
 begin
   if Arkham_Streets[ton(gCurrentPlayer.Location)].GetLokByID(gCurrentPlayer.Location).lok_mon_count = 0 then
   begin
-    ShowMessage('Уходить уже не от кого :('+#10+#13+'Все монстры вышли.');
+    ShowMessage('РЈС…РѕРґРёС‚СЊ СѓР¶Рµ РЅРµ РѕС‚ РєРѕРіРѕ :('+#10+#13+'Р’СЃРµ РјРѕРЅСЃС‚СЂС‹ РІС‹С€Р»Рё.');
     exit;
   end;
 
   if gMonster.LocationId = 0 then
   begin
-    ShowMessage('Биться не с кем :('+#10+#13+'Видимо вы их победили.');
+    ShowMessage('Р‘РёС‚СЊСЃСЏ РЅРµ СЃ РєРµРј :('+#10+#13+'Р’РёРґРёРјРѕ РІС‹ РёС… РїРѕР±РµРґРёР»Рё.');
     exit;
-  end;  
+  end;
 
   if gCurrentPlayer.RollADice(gCurrentPlayer.Stats[ST_SNEAK] + gMonster.Awareness, 1) > 0 then
   begin
     gCurrentPlayer.evadedmosnters[1] := gMonster.Id;
-    frmMain.lstLog.Items.Add('Ушел от моба!!');
+    MainForm.lstLog.Items.Add('РЈС€РµР» РѕС‚ РјРѕР±Р°!!');
     close;
   end
   else
   begin
-    lst1.Items.Add('Не ушел от моба!!');
+    lst1.Items.Add('РќРµ СѓС€РµР» РѕС‚ РјРѕР±Р°!!');
     gCurrentPlayer.Stamina := gCurrentPlayer.Stamina - gMonster.CmbtDmg;
-    lst1.Items.Add('Игроку нанесено урона: ' + IntToStr(gMonster.CmbtDmg) + '!!');
+    lst1.Items.Add('РРіСЂРѕРєСѓ РЅР°РЅРµСЃРµРЅРѕ СѓСЂРѕРЅР°: ' + IntToStr(gMonster.CmbtDmg) + '!!');
     btnBattleClick(sender);
   end;
 
 end;
 
-procedure TfrmMonster.btnBattleClick(Sender: TObject);
+procedure TMonsterForm.btnBattleClick(Sender: TObject);
 var
   empty_lok: TLocation;
 begin
   if gCurrentPlayer.Stamina < 1 then
   begin
-    ShowMessage('Игрок не может драться!!');
+    ShowMessage('РРіСЂРѕРє РЅРµ РјРѕР¶РµС‚ РґСЂР°С‚СЊСЃСЏ!!');
     exit;
   end;
 
   if (gCurrentPlayer.Location mod 1000 <> 0) and (Arkham_Streets[ton(gCurrentPlayer.Location)].Lok[hon(gCurrentPlayer.Location)].lok_mon_count = 0) then
   begin
-    ShowMessage('Биться не с кем :('+#10+#13+'Все монстры вышли.');
+    ShowMessage('Р‘РёС‚СЊСЃСЏ РЅРµ СЃ РєРµРј :('+#10+#13+'Р’СЃРµ РјРѕРЅСЃС‚СЂС‹ РІС‹С€Р»Рё.');
     exit;
   end;
 
   if (gCurrentPlayer.Location mod 1000 = 0) and (Arkham_Streets[ton(gCurrentPlayer.Location)].st_mob_count = 0) then
   begin
-    ShowMessage('Биться не с кем :('+#10+#13+'Все монстры вышли.');
+    ShowMessage('Р‘РёС‚СЊСЃСЏ РЅРµ СЃ РєРµРј :('+#10+#13+'Р’СЃРµ РјРѕРЅСЃС‚СЂС‹ РІС‹С€Р»Рё.');
     exit;
   end;
 
   if gMonster.LocationId = 0 then
   begin
-    ShowMessage('Биться не с кем :('+#10+#13+'Видимо вы их победили.');
+    ShowMessage('Р‘РёС‚СЊСЃСЏ РЅРµ СЃ РєРµРј :('+#10+#13+'Р’РёРґРёРјРѕ РІС‹ РёС… РїРѕР±РµРґРёР»Рё.');
     exit;
   end;
 
@@ -138,7 +138,7 @@ begin
   else
   begin
     gCurrentPlayer.Sanity := gCurrentPlayer.Sanity - gMonster.HorrorDmg;
-    lst1.Items.Add('Игрок потерял разум: ' + IntToStr(gMonster.HorrorDmg) + '!!');
+    lst1.Items.Add('РРіСЂРѕРє РїРѕС‚РµСЂСЏР» СЂР°Р·СѓРј: ' + IntToStr(gMonster.HorrorDmg) + '!!');
   end;
 
   // Monster fight!
@@ -146,8 +146,8 @@ begin
   begin
     gCurrentPlayer.AddMonsterTrophies(gMonster.Id);
     Arkham_Streets[ton(gCurrentPlayer.Location)].TakeAwayMonster(gCurrentPlayer.Location, gMonster);
-    lst1.Items.Add('Убил моба!!');
-    lst1.Items.Add('Гирок получил монстр-трофеюшек!!');
+    lst1.Items.Add('РЈР±РёР» РјРѕР±Р°!!');
+    lst1.Items.Add('Р“РёСЂРѕРє РїРѕР»СѓС‡РёР» РјРѕРЅСЃС‚СЂ-С‚СЂРѕС„РµСЋС€РµРє!!');
   end
   else
   begin
@@ -157,10 +157,10 @@ begin
 
 
     gCurrentPlayer.Stamina := gCurrentPlayer.Stamina - gMonster.CmbtDmg;
-    lst1.Items.Add('Игроку нанесено урона: ' + IntToStr(gMonster.CmbtDmg) + '!!');
+    lst1.Items.Add('РРіСЂРѕРєСѓ РЅР°РЅРµСЃРµРЅРѕ СѓСЂРѕРЅР°: ' + IntToStr(gMonster.CmbtDmg) + '!!');
     if gCurrentPlayer.Stamina < 1 then
     begin
-      lst1.Items.Add('Гирок без сознания, и перемещен в больницу Св. Марии');
+      lst1.Items.Add('Р“РёСЂРѕРє Р±РµР· СЃРѕР·РЅР°РЅРёСЏ, Рё РїРµСЂРµРјРµС‰РµРЅ РІ Р±РѕР»СЊРЅРёС†Сѓ РЎРІ. РњР°СЂРёРё');
       with empty_lok do
       begin
         lok_id := 0;
@@ -179,7 +179,7 @@ begin
 
 end;
 
-procedure TfrmMonster.imgMonsterClick(Sender: TObject);
+procedure TMonsterForm.imgMonsterClick(Sender: TObject);
 begin
   mon_pic := not mon_pic;
   if mon_pic then

@@ -1,9 +1,9 @@
-object frmCard: TfrmCard
+object CardForm: TCardForm
   Left = 980
   Top = 229
-  Width = 478
-  Height = 510
-  Caption = 'frmCard'
+  Caption = 'CardForm'
+  ClientHeight = 471
+  ClientWidth = 462
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -23076,7 +23076,6 @@ object frmCard: TfrmCard
     Top = 24
     Width = 145
     Height = 21
-    ItemHeight = 13
     TabOrder = 0
     Text = 'cbCard'
     OnChange = cbCardChange

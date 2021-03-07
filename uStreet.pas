@@ -1,26 +1,61 @@
+п»ї{***************************************************************************}
+{                                                                           }
+{  This file is part of the Gofy "Arkham Horror: The Board Game" migration  }
+{  and implementation.                                                      }
+{                                                                           }
+{  Licensed under GPL License, Version 3.0 (the "License");                 }
+{  you may not use this file except in compliance with the License.         }
+{  You should have received a copy of the GNU General Public License        }
+{  along with Gofy "Arkham Horror: The Board Game" migration Source Code.   }
+{  If not, see                                                              }
+{                                                                           }
+{      <http://www.gnu.org/licenses/>                                       }
+{                                                                           }
+{  Gofy "Arkham Horror: The Board Game" migration Source Code is free       }
+{  software: you can redistribute it and/or modify it under the terms       }
+{  of the GNU General Public License as published by the                    }
+{  Free Software Foundation, either version 3 of the License, or            }
+{  (at your option) any later version.                                      }
+{                                                                           }
+{  Gofy "Arkham Horror: The Board Game" migration Source Code is            }
+{  distributed in the hope that it will be useful,                          }
+{  but WITHOUT ANY WARRANTY; without even the implied warranty of           }
+{  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the             }
+{  GNU General Public License for more details.                             }
+{                                                                           }
+{ The Original Code is Street.pas.                                          }
+{                                                                           }
+{ Contains logic for handling monster, gates, clues appearing and           }
+{ interaction.                                                              }
+{                                                                           }
+{ Unit owner:    Ronar                                                      }
+{ Last modified: March 7, 2021                                              }
+{                                                                           }
+{***************************************************************************}
+
 unit uStreet;
 
 interface
-uses uCommon, uCardDeck, uCardXML, SysUtils, Dialogs, Controls, uMonster;
+uses Winapi.Windows, Graphics, uCommon, uLocationCardDeck, uCardXML, SysUtils, Dialogs, Controls, uMonster;
 
 type
   TLocation = record
     lok_id: integer; // id of location (2100, 2200, 2300, etc..)
     lok_name: string;
-    clues: integer; // Улики на локации
-    gate: TGate; // Врата открытые на локации
+    clues: integer; // РЈР»РёРєРё РЅР° Р»РѕРєР°С†РёРё
+    gate: TGate; // Р’СЂР°С‚Р° РѕС‚РєСЂС‹С‚С‹Рµ РЅР° Р»РѕРєР°С†РёРё
     HasGate: Boolean;
     lok_monsters: array [1..MONSTER_MAX_ON_LOK] of TMonster;
     lok_mon_count: integer;
   end;
 
-  TStreet = class
+  TStreet = class(TObject)
   private
     fId: integer; // id of streets (1000, 2000, 3000, etc..)
     fLok: array [1..3] of TLocation;
     fDeck: TLocationCardsDeck;
-    fAdjacent: array [1..6] of integer; // Прилегающие локации
-    fMonsters: array [1..MONSTER_MAX_ON_LOK] of TMonster; // Mobs in streets :)
+    fAdjacent: array [1..6] of integer; // РџСЂРёР»РµРіР°СЋС‰РёРµ Р»РѕРєР°С†РёРё
+    fMonsters: array [1..MONSTER_MAX_ON_LOK] of TMonster; // Mobs in the streets :)
     fStreetMonsterCount: integer;
     function GetDeck: TLocationCardsDeck;
     function GetLok(i: integer): TLocation;
@@ -44,11 +79,11 @@ type
     procedure MoveMonsters;
   end;
 
-  function GetLokIDByName(lok_name: string): integer; // Получение ID локации по названию
+  function GetLokIDByName(lok_name: string): integer; // РџРѕР»СѓС‡РµРЅРёРµ ID Р»РѕРєР°С†РёРё РїРѕ РЅР°Р·РІР°РЅРёСЋ
   function GetStreetIDByName(street_name: string): integer;
   //function GetStreetIndxByLokID(id: integer): integer; // Searches the array for location that matches the id param
   function GetStreetNameByID(id: integer): string;
-  function GetLokNameByID(id: integer): string;  
+  function GetLokNameByID(id: integer): string;
 //  function ProcessCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): boolean;
 //  function ProcessMultiCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): integer;
 //  procedure ProcessAction(action: integer; action_value: integer; suxxess: string = '0');
@@ -57,7 +92,7 @@ type
 
 implementation
 
-uses uTradeForm, uMainForm, Choise, uDrop, uChsLok, uCardForm, Classes;
+uses uTradeForm, uMainForm, uEncounterInquiryForm, uDrop, uLocationSelectorForm, uCardForm, Classes;
 
 constructor TStreet.Create(street_id: integer);
 var
@@ -115,23 +150,23 @@ begin
   result := fLok[hon(id)];
 end;
 
-// Проверка выполнилось ли условие на карте
+// РџСЂРѕРІРµСЂРєР° РІС‹РїРѕР»РЅРёР»РѕСЃСЊ Р»Рё СѓСЃР»РѕРІРёРµ РЅР° РєР°СЂС‚Рµ
 function ProcessCondition(cond: integer; prm: integer; n: Integer; suxxess: integer): boolean;
 var
   skill_test: integer;
 begin
   ProcessCondition := False;
   case cond of
-    1: begin // Если True
+    1: begin // Р•СЃР»Рё True
       ProcessCondition := True;
     end;
-    2: begin // Проверка скила
-      frmMain.lstLog.Items.Add('Проверяется навык ' + aStats[prm] + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(n) + ')..');
-      skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n, 1); // Choise - номер скилла
+    2: begin // РџСЂРѕРІРµСЂРєР° СЃРєРёР»Р°
+      MainForm.lstLog.Items.Add('РџСЂРѕРІРµСЂСЏРµС‚СЃСЏ РЅР°РІС‹Рє ' + aStats[prm] + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(n) + ')..');
+      skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n, 1); // Choise - РЅРѕРјРµСЂ СЃРєРёР»Р»Р°
       { TODO -oRonar : Choise is in dependence with structure of construction
         of program. In another words if indices have been changed, program
         will be broken }
-      frmMain.lstLog.Items.Add('Проверка навыка ' + aStats[prm] + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
+      MainForm.lstLog.Items.Add('РџСЂРѕРІРµСЂРєР° РЅР°РІС‹РєР° ' + aStats[prm] + ' РІС‹РїР°Р»Рѕ: ' + IntToStr(skill_test) + ' СѓСЃРїРµС…(РѕРІ)');
       if (skill_test >= suxxess) then
         ProcessCondition := True
       else
@@ -139,31 +174,31 @@ begin
         ProcessCondition := False;
       end;
     end;
-    3: begin // Проверка наличия
-      frmMain.lstLog.Items.Add('Проверка наличия чего-либо у игрока');
+    3: begin // РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ
+      MainForm.lstLog.Items.Add('РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ С‡РµРіРѕ-Р»РёР±Рѕ Сѓ РёРіСЂРѕРєР°');
       if gCurrentPlayer.CheckAvailability(prm, N) then //
         ProcessCondition := True
       else
       begin
         ProcessCondition := False;
-        frmMain.lstLog.Items.Add('Не хватат!');
+        MainForm.lstLog.Items.Add('РќРµ С…РІР°С‚Р°С‚!');
       end;
 
     end; // case 3
-    4: begin // Проверка наличия карты в колоде
+    4: begin // РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ РєР°СЂС‚С‹ РІ РєРѕР»РѕРґРµ
       case (prm div 1000) of // Extract 1st digit
         1: begin // Common item
-          if Common_Items_Deck.CheckAvailability(prm) then // Временно карты простых вещей
+          if Common_Items_Deck.CheckAvailability(prm) then // Р’СЂРµРјРµРЅРЅРѕ РєР°СЂС‚С‹ РїСЂРѕСЃС‚С‹С… РІРµС‰РµР№
             ProcessCondition := True
           else
             ProcessCondition := False;
         end;
       end;
       //ProcessCondition := True;
-      frmMain.lstLog.Items.Add('Проверка наличия карты в колоде');
+      MainForm.lstLog.Items.Add('РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ РєР°СЂС‚С‹ РІ РєРѕР»РѕРґРµ');
     end; // case 4
-    5: begin // Отдать что-либо
-      if MessageDlg('Отдать ' + things[prm] + IntToStr(N) + '?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    5: begin // РћС‚РґР°С‚СЊ С‡С‚Рѕ-Р»РёР±Рѕ
+      if MessageDlg('РћС‚РґР°С‚СЊ ' + things[prm] + IntToStr(N) + '?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         ProcessCondition := True
       else
         ProcessCondition := False;
@@ -171,9 +206,9 @@ begin
   {7: begin // Spec. card
     if MessageDlg('Confirm?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     begin
-      frmMain.lstLog.Items.Add('Проверяется навык ' + IntToStr(Choise - 1) + '(=' + IntToStr(gCurrentPlayer.Stats[Choise - 1]) + ')..');
-      skill_test := gPlayer.RollADice(gCurrentPlayer.Stats[Choise - 1] - N); // Choise - номер скилла
-      frmMain.lstLog.Items.Add('Проверка навыка ' + IntToStr(Choise - 1) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
+      frmMain.lstLog.Items.Add('РџСЂРѕРІРµСЂСЏРµС‚СЃСЏ РЅР°РІС‹Рє ' + IntToStr(Choise - 1) + '(=' + IntToStr(gCurrentPlayer.Stats[Choise - 1]) + ')..');
+      skill_test := gPlayer.RollADice(gCurrentPlayer.Stats[Choise - 1] - N); // Choise - РЅРѕРјРµСЂ СЃРєРёР»Р»Р°
+      frmMain.lstLog.Items.Add('РџСЂРѕРІРµСЂРєР° РЅР°РІС‹РєР° ' + IntToStr(Choise - 1) + ' РІС‹РїР°Р»Рѕ: ' + IntToStr(skill_test) + ' СѓСЃРїРµС…(РѕРІ');
       if (skill_test >= min) then
         ProcessCondition := True
       else
@@ -190,32 +225,32 @@ var
   skill_test: integer;
 begin
   ProcessMultiCondition := 0;
-  // Проверка скила
-  frmMain.lstLog.Items.Add('Проверяется навык ' + aStats[prm] + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(n) + ')..');
+  // РџСЂРѕРІРµСЂРєР° СЃРєРёР»Р°
+  MainForm.lstLog.Items.Add('РџСЂРѕРІРµСЂСЏРµС‚СЃСЏ РЅР°РІС‹Рє ' + aStats[prm] + '(=' + IntToStr(gCurrentPlayer.Stats[prm]) + ' -' + IntToStr(n) + ')..');
   skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[prm] + n, 1); // prm - order num of skill (1 - speed, ...)
-  frmMain.lstLog.Items.Add('Проверка навыка ' + aStats[prm] + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
+  MainForm.lstLog.Items.Add('РџСЂРѕРІРµСЂРєР° РЅР°РІС‹РєР° ' + aStats[prm] + ' РІС‹РїР°Р»Рѕ: ' + IntToStr(skill_test) + ' СѓСЃРїРµСЉ(РѕРІ)');
   ProcessMultiCondition := skill_test;
 end;
 
 function Choise2(act1: string; act2: string): integer;
 begin
-  ChoiseForm.Choise2(act1, act2);
-  ChoiseForm.ShowModal;
-  if ChoiseForm.RadioButton1.Checked then
+  EncounterInquiryForm.Choise2(act1, act2);
+  EncounterInquiryForm.ShowModal;
+  if EncounterInquiryForm.RadioButton1.Checked then
     Choise2 := 1
   else
-    if ChoiseForm.RadioButton2.Checked then
+    if EncounterInquiryForm.RadioButton2.Checked then
       Choise2 := 2;
 end;
 
 function Choise3(act1: string; act2: string; act3: string): integer;
 begin
-  ChoiseForm.Choise3(act1, act2, act3);
-  ChoiseForm.ShowModal;
-  if ChoiseForm.RadioButton1.Checked then
+  EncounterInquiryForm.Choise3(act1, act2, act3);
+  EncounterInquiryForm.ShowModal;
+  if EncounterInquiryForm.RadioButton1.Checked then
     Choise3 := 1
   else
-    if ChoiseForm.RadioButton2.Checked then
+    if EncounterInquiryForm.RadioButton2.Checked then
       Choise3 := 2
     else
       Choise3 := 3;
@@ -223,21 +258,21 @@ end;
 
 function Choise4(act1: string; act2: string; act3: string; act4: string): integer;
 begin
-  ChoiseForm.Choise4(act1, act2, act3, act4);
-  ChoiseForm.ShowModal;
-  if ChoiseForm.RadioButton1.Checked then
+  EncounterInquiryForm.Choise4(act1, act2, act3, act4);
+  EncounterInquiryForm.ShowModal;
+  if EncounterInquiryForm.RadioButton1.Checked then
     Choise4 := 1
   else
-    if ChoiseForm.RadioButton2.Checked then
+    if EncounterInquiryForm.RadioButton2.Checked then
       Choise4 := 2
     else
-      if ChoiseForm.RadioButton3.Checked then
+      if EncounterInquiryForm.RadioButton3.Checked then
         Choise4 := 3
       else
         Choise4 := 4;
 end;
 
-// Выполнение действия согласно карте
+// Р’С‹РїРѕР»РЅРµРЅРёРµ РґРµР№СЃС‚РІРёСЏ СЃРѕРіР»Р°СЃРЅРѕ РєР°СЂС‚Рµ
 procedure ProcessAction(action: integer; action_value: integer; suxxess: string = '0');
 var
   i: integer;
@@ -256,7 +291,7 @@ begin
         action_value := random(6)+1 + random(6)+1;
       end;
       gPlayer.Money := gPlayer.Money + action_value;
-      frmMain.lstLog.Items.Add('Игрок получил деньги: ' + IntToStr(action_value) + '.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕР»СѓС‡РёР» РґРµРЅСЊРіРё: ' + IntToStr(action_value) + '.');
     end;
     2: begin
       if action_value = 88 then
@@ -272,13 +307,13 @@ begin
       if action_value > 99 then
       begin
         gPlayer.Money := 0;
-        frmMain.lstLog.Items.Add('Игрок потерял все деньги.');
+        MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕС‚РµСЂСЏР» РІСЃРµ РґРµРЅСЊРіРё.');
 
       end
       else
       begin
         gPlayer.Money := gPlayer.Money - action_value;
-        frmMain.lstLog.Items.Add('Игрок потерял деньги: ' + IntToStr(action_value) + '.');
+        MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕС‚РµСЂСЏР» РґРµРЅСЊРіРё: ' + IntToStr(action_value) + '.');
       end;
     end;
     3: begin // Take stamina
@@ -293,7 +328,7 @@ begin
         action_value := random(6)+1 + random(6)+1;
       end;
       gPlayer.Stamina := gPlayer.Stamina + action_value;
-      frmMain.lstLog.Items.Add('Игрок получил тело: ' + IntToStr(action_value) + '.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕР»СѓС‡РёР» С‚РµР»Рѕ: ' + IntToStr(action_value) + '.');
     end;
     4: begin // Take sanity
     if action_value = 88 then
@@ -307,7 +342,7 @@ begin
         action_value := random(6)+1 + random(6)+1;
       end;
       gPlayer.Stamina := gPlayer.Sanity + action_value;
-      frmMain.lstLog.Items.Add('Игрок получил разум: ' + IntToStr(action_value) + '.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕР»СѓС‡РёР» СЂР°Р·СѓРј: ' + IntToStr(action_value) + '.');
     end;
     5: begin // Lose stamina
     if action_value = 88 then
@@ -321,7 +356,7 @@ begin
         action_value := random(6)+1 + random(6)+1;
       end;
       gCurrentPlayer.Stamina := gCurrentPlayer.Stamina - action_value;
-      frmMain.lstLog.Items.Add('Игрок потерял тело: ' + IntToStr(action_value) + '.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕС‚РµСЂСЏР» С‚РµР»Рѕ: ' + IntToStr(action_value) + '.');
     end; // case 5
     6: begin // Lose sanity
     if action_value = 88 then
@@ -335,7 +370,7 @@ begin
         action_value := random(6)+1 + random(6)+1;
       end;
       gCurrentPlayer.Sanity := gCurrentPlayer.Sanity - action_value;
-      frmMain.lstLog.Items.Add('Игрок потерял разум: ' + IntToStr(action_value) + '.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕС‚РµСЂСЏР» СЂР°Р·СѓРј: ' + IntToStr(action_value) + '.');
     end; // case 6
     7: begin // Take clues
       if action_value = 88 then
@@ -349,11 +384,11 @@ begin
         action_value := random(6)+1 + random(6)+1;
       end;
       gCurrentPlayer.Clues := gCurrentPlayer.Clues + action_value;
-      frmMain.lstLog.Items.Add('Игрок получил улику(и): ' + IntToStr(action_value) + '.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕР»СѓС‡РёР» СѓР»РёРєСѓ(Рё): ' + IntToStr(action_value) + '.');
     end; // case 7
     8: begin // Lose clues
       gCurrentPlayer.Clues := gCurrentPlayer.Clues - action_value;
-      frmMain.lstLog.Items.Add('Игрок потерял улику(и): ' + IntToStr(action_value) + '.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕС‚РµСЂСЏР» СѓР»РёРєСѓ(Рё): ' + IntToStr(action_value) + '.');
     end; // case 8
     9: begin // Draw common item
       if action_value > 1000 then // id of card is defined
@@ -363,7 +398,7 @@ begin
         for i := 1 to action_value do
           gCurrentPlayer.AddItem(Common_Items_Deck, Common_Items_Deck.DrawCard);
       end;
-      frmMain.lstLog.Items.Add('Игрок вытянул карту простого предмета: ' + IntToStr(action_value));
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РІС‹С‚СЏРЅСѓР» РєР°СЂС‚Сѓ РїСЂРѕСЃС‚РѕРіРѕ РїСЂРµРґРјРµС‚Р°: ' + IntToStr(action_value));
     end; // case 9
     10: begin // Draw unique item
       if action_value > 1000 then // id of card is defined
@@ -374,43 +409,43 @@ begin
           //gCurrentPlayer.AddItem(Unique_Items_Deck.DrawCard);
           gCurrentPlayer.AddItem(Common_Items_Deck, Common_Items_Deck.DrawCard);
       end;
-      frmMain.lstLog.Items.Add('Игрок вытянул карту уникального предмета.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РІС‹С‚СЏРЅСѓР» РєР°СЂС‚Сѓ СѓРЅРёРєР°Р»СЊРЅРѕРіРѕ РїСЂРµРґРјРµС‚Р°.');
     end; // case 10
     11: begin // Draw spell
       //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
-      frmMain.lstLog.Items.Add('Игрок вытянул карту закла.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РІС‹С‚СЏРЅСѓР» РєР°СЂС‚Сѓ Р·Р°РєР»Р°.');
     end; // case 11
     12: begin // Draw skill
       //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
-      frmMain.lstLog.Items.Add('Игрок берет карту навыка.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє Р±РµСЂРµС‚ РєР°СЂС‚Сѓ РЅР°РІС‹РєР°.');
     end; // case 12
     13: begin // Draw ally card
       //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
       for i := 1 to ALLIES_MAX do
         if StrToInt(Allies[i, 1]) = action_value then
-          frmMain.lstLog.Items.Add('Игрок вытянул карту союзника: ' + Allies[i, 2] + '.');
+          MainForm.lstLog.Items.Add('РРіСЂРѕРє РІС‹С‚СЏРЅСѓР» РєР°СЂС‚Сѓ СЃРѕСЋР·РЅРёРєР°: ' + Allies[i, 2] + '.');
     end; // case 13
     15: begin // Drop item of player's choise
       PrepareCardsToDrop(gCurrentPlayer, action_value);
-      frmDrop.ShowModal;
+      DropForm.ShowModal;
       //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
-      frmMain.lstLog.Items.Add('Игрок потерял предмет (на выбор).');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕС‚РµСЂСЏР» РїСЂРµРґРјРµС‚ (РЅР° РІС‹Р±РѕСЂ).');
     end; // case 15
     16: begin // Drop weapon of player's choise or amt.
       //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
-      frmMain.lstLog.Items.Add('Игрок потерял оружие ' + IntToStr(action_value));
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕС‚РµСЂСЏР» РѕСЂСѓР¶РёРµ ' + IntToStr(action_value));
     end; // case 16
     18: begin // Drop spell
       //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
-      frmMain.lstLog.Items.Add('Игрок потерял закл.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕС‚РµСЂСЏР» Р·Р°РєР».');
     end; // case 18
     19: begin // Drop skill
       //gCurrentPlayer.AddItem(Spells_Deck.DrawCard);
-      frmMain.lstLog.Items.Add('Игрок потерял навык.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕС‚РµСЂСЏР» РЅР°РІС‹Рє.');
     end; // case 19
     20: begin // Move to street
       //gCurrentPlayer.Blessed := True;
-      frmMain.lstLog.Items.Add('Игрок вышел на улицу (overlapping).');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РІС‹С€РµР» РЅР° СѓР»РёС†Сѓ (overlapping).');
     end; // case 20
 
     22: begin //
@@ -419,31 +454,31 @@ begin
     25: begin // Busted
       //gCurrentPlayer.MoveToLocation(3200);
       gCurrentPlayer.Location := 3200;
-      frmMain.lstLog.Items.Add('Игрок арестован.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє Р°СЂРµСЃС‚РѕРІР°РЅ.');
     end; // case 25
 {    21: begin // Draw another card for encounter
-      frmMain.lstLog.Items.Add('Игрок тянет другую карту контакта для локации');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє С‚СЏРЅРµС‚ РґСЂСѓРіСѓСЋ РєР°СЂС‚Сѓ РєРѕРЅС‚Р°РєС‚Р° РґР»СЏ Р»РѕРєР°С†РёРё');
     end; // case 25
 }    26: begin // Draw common items, buy for 1 above of it's price, any or all
-      frmMain.lstLog.Items.Add('Encounter');
+      MainForm.lstLog.Items.Add('Encounter');
     end; // case 26
     30: begin // Move to lok/street (ID or 0 - to street, -1 - to any lok/street)
       if action_value = 0 then
       begin
         gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
-        frmMain.lstLog.Items.Add('Игрок вышел на улицу');
+        MainForm.lstLog.Items.Add('РРіСЂРѕРє РІС‹С€РµР» РЅР° СѓР»РёС†Сѓ');
       end
       else
         if action_value = -1 then
         begin
-          frmChsLok.ShowModal;
-          gCurrentPlayer.Location := StrToInt(frmChsLok.edtLok.text);
-          frmMain.lstLog.Items.Add('Игрок перешел на локацию: ' + GetLokNameByID(StrToInt(frmChsLok.edtLok.text)));
+          LocationSelectorForm.ShowModal;
+          gCurrentPlayer.Location := StrToInt(LocationSelectorForm.edtLocationId.text);
+          MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРµСЂРµС€РµР» РЅР° Р»РѕРєР°С†РёСЋ: ' + GetLokNameByID(StrToInt(LocationSelectorForm.edtLocationId.text)));
         end
         else
         begin
           gCurrentPlayer.Location := action_value;
-          frmMain.lstLog.Items.Add('Игрок перешел на локацию: ' + GetLokNameByID(action_value));
+          MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРµСЂРµС€РµР» РЅР° Р»РѕРєР°С†РёСЋ: ' + GetLokNameByID(action_value));
         end;
 
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
@@ -451,45 +486,45 @@ begin
     end; // case 30
     32: begin // Encounter
       //TODO: top card in deck, not 7
-      frmMain.lstLog.Items.Add('Игрок вступает в контакт');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РІСЃС‚СѓРїР°РµС‚ РІ РєРѕРЅС‚Р°РєС‚');
       //Encounter(gCurrentPlayer, Arkham_Streets[ton(gCurrentPlayer.Location)].deck.cards[7, hon(gCurrentPlayer.Location)]);
     end; // case 32
     33: begin // Blessed
       gCurrentPlayer.Blessed := True;
-      frmMain.lstLog.Items.Add('Игрок благословен.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє Р±Р»Р°РіРѕСЃР»РѕРІРµРЅ.');
     end; // case 33
     34: begin //
 
     end; // case 34
     35: begin // Sucked into gate
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
-      frmMain.lstLog.Items.Add('Игрока затянуло во врата.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРєР° Р·Р°С‚СЏРЅСѓР»Рѕ РІРѕ РІСЂР°С‚Р°.');
     end; // case 35
     36: begin // Monster apeeared
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
       drawn_monster := DrawMonsterCard(Monsters);
       Arkham_Streets[ton(gCurrentPlayer.Location)].AddMonster(gCurrentPlayer.Location, drawn_monster);
-      frmMain.lstLog.Items.Add('Появился монстр: ' + IntToStr(drawn_monster.id));
+      MainForm.lstLog.Items.Add('РџРѕСЏРІРёР»СЃСЏ РјРѕРЅСЃС‚СЂ: ' + IntToStr(drawn_monster.id));
     end; // case 36
     37: begin // Gate appeared
       Arkham_Streets[ton(gCurrentPlayer.Location)].SpawnGate(gCurrentPlayer.Location, gates[random(8)+1]);
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
-      frmMain.lstLog.Items.Add('Появились врата.');
+      MainForm.lstLog.Items.Add('РџРѕСЏРІРёР»РёСЃСЊ РІСЂР°С‚Р°.');
     end; // case 37
     38: begin // Pass turn
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
-      frmMain.lstLog.Items.Add('Игрок пропускает ход.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїСЂРѕРїСѓСЃРєР°РµС‚ С…РѕРґ.');
       gCurrentPlayer.Moves := 0;
     end; // case 38
     39: begin // Lost in time and space
       //gCurrentPlayer.Location := ton(gCurrentPlayer.Location) * 1000;
-      frmMain.lstLog.Items.Add('Игрок потерян во сремени и пространстве.');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕС‚РµСЂСЏРЅ РІРѕ РІСЂРµРјРµРЅРё Рё РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРµ.');
     end; // case 39
 
  { 41: begin // Check skill
-    frmMain.lstLog.Items.Add('Проверяется навык ' + IntToStr(Choise - 1) + '(=' + IntToStr(gCurrentPlayer.Stats[Choise - 1]) + ' -' + IntToStr(N) + ')..');
-    skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[Choise - 1] - N); // Choise - номер скилла
-    frmMain.lstLog.Items.Add('Проверка навыка ' + IntToStr(Choise - 1) + ' выпало: ' + IntToStr(skill_test) + ' успех(ов)');
+    MainForm.lstLog.Items.Add('РџСЂРѕРІРµ СЏРµС‚СЃСЏ РЅР°РІС‹Рє ' + IntToStr(Choise - 1) + '(=' + IntToStr(gCurrentPlayer.Stats[Choise - 1]) + ' -' + IntToStr(N) + ')..');
+    skill_test := gCurrentPlayer.RollADice(gCurrentPlayer.Stats[Choise - 1] - N); // Choise - РЅРѕРјРµСЂ СЃРєРёР»Р»Р°
+    MainForm.lstLog.Items.Add('РџСЂРѕРІРµСЂРєР° РЅР°РІС‹РєР° ' + IntToStr(Choise - 1) + ' РІС‹РїР°Р»Рѕ: ' + IntToStr(skill_test) + ' СѓСЃРїРµС…(РѕРІ)');
     if (skill_test >= min) then
       Take_Action();
     else
@@ -497,45 +532,45 @@ begin
      Take_Action();
     end;
   end; }// case 41
-    40: // Игрок тянет 1 простую вещь бесплатно из n
+    40: // РРіСЂРѕРє С‚СЏРЅРµС‚ 1 РїСЂРѕСЃС‚СѓСЋ РІРµС‰СЊ Р±РµСЃРїР»Р°С‚РЅРѕ РёР· n
       begin
         Trade(TR_TAKE_ITEMS, CT_COMMON_ITEM, action_value);
-        frmMain.lstLog.Items.Add('Игрок тянет 1 простую вещь бесплатно из ' + IntToStr(action_value));
+        MainForm.lstLog.Items.Add('РРіСЂРѕРє С‚СЏРЅРµС‚ 1 РїСЂРѕСЃС‚СѓСЋ РІРµС‰СЊ Р±РµСЃРїР»Р°С‚РЅРѕ РёР· ' + IntToStr(action_value));
       end; // case 42
-    42: // Игрок тянет 1 заклинание бесплатно из n
+    42: // РРіСЂРѕРє С‚СЏРЅРµС‚ 1 Р·Р°РєР»РёРЅР°РЅРёРµ Р±РµСЃРїР»Р°С‚РЅРѕ РёР· n
       begin
-        frmMain.lstLog.Items.Add('Игрок тянет 1 заклинание бесплатно из ' + IntToStr(action_value));
+        MainForm.lstLog.Items.Add('РРіСЂРѕРє С‚СЏРЅРµС‚ 1 Р·Р°РєР»РёРЅР°РЅРёРµ Р±РµСЃРїР»Р°С‚РЅРѕ РёР· ' + IntToStr(action_value));
       end; // case 42
     43: begin
-      frmMain.lstLog.Items.Add('Игрок берет верхнюю карту из любой колоды локаций. Она достанется тому сыщику, кто первый получит контакт в этой локации :)');
+      MainForm.lstLog.Items.Add('РРіСЂРѕРє Р±РµСЂРµС‚ РІРµСЂС…РЅСЋ РєР°СЂС‚Сѓ РёР· Р»СЋР±РѕР№ РєРѕР»РѕРґС‹ Р»РѕРєР°С†РёР№. РћРЅР° РґРѕСЃС‚Р°РЅРµС‚СЃСЏ С‚РѕРјСѓ СЃС‹С‰РёРєСѓ, РєРѕС‚РѕСЂС‹Р№ РїРµСЂРІС‹Р№ РїРѕР»СѓС‡РёС‚ РєРѕРЅС‚Р°РєС‚ РІ С‚РѕР№ Р»РѕРєР°С†РёРё :)');
     end; // case 43
     51: // Take common weapon
       begin
-        frmMain.lstLog.Items.Add('Игрок берет простое оружие бесплатно: ' + IntToStr(action_value));
+        MainForm.lstLog.Items.Add('РРіСЂРѕРє Р±РµСЂРµС‚ РїСЂРѕСЃС‚РѕРµ РѕСЂСѓР¶РёРµ Р±РµСЃРїР»Р°С‚РЅРѕ: ' + IntToStr(action_value));
       end; // case 51
     53: // Take common tome
       begin
-        frmMain.lstLog.Items.Add('Игрок берет первую попавшеюся простую книгу: ' + IntToStr(action_value));
+        MainForm.lstLog.Items.Add('РРіСЂРѕРє Р±РµСЂРµС‚ РїРµСЂРІСѓСЋ РїРѕРїР°РІС€РµСЋСЃСЏ РїСЂРѕСЃС‚Сѓ РєРЅРёРіСѓ: ' + IntToStr(action_value));
       end; // case 51
       55: // Sell an item for 2x price
       begin
         card_to_load := CT_COMMON_ITEM;
-        frmCard.ShowModal;
-        frmMain.lstLog.Items.Add('Игрок может продать любую вещь в 2 раза дороже: ' + IntToStr(action_value));
+        CardForm.ShowModal;
+        MainForm.lstLog.Items.Add('РРіСЂРѕРє РјРѕР¶РµС‚ РїСЂРѕРґР°С‚СЊ Р»СЋР±СѓСЋ РІРµС‰СЊ РІ 2 СЂР°Р·Р° РґРѕСЂРѕР¶Рµ: ' + IntToStr(action_value));
       end; // case 51
       66: begin // Cursed
         gCurrentPlayer.Cursed := True;
-        frmMain.lstLog.Items.Add('Игрок проклят.');
+        MainForm.lstLog.Items.Add('РРіСЂРѕРє РїСЂРѕРєР»СЏС‚.');
       end; // case 66
 
     28: // Move to location, enc
       if action_value = 0 then
       begin
-        frmChsLok.ShowModal;
+        LocationSelectorForm.ShowModal;
 
       end
       else
-        frmMain.lstLog.Items.Add('Ничего не произошло.'); //gPlayer.Location := StrToInt(IntToStr(Round(action_value / 3 + 0.4)) + IntToStr(action_value - (Round(action_value / 3 + 0.4) - 1) * 3));
+        MainForm.lstLog.Items.Add('РќРёС‡РµРіРѕ РЅРµ РїСЂРѕРёР·РѕС€Р»Рѕ.'); //gPlayer.Location := StrToInt(IntToStr(Round(action_value / 3 + 0.4)) + IntToStr(action_value - (Round(action_value / 3 + 0.4) - 1) * 3));
   end; // case
 
   UpdStatus;
@@ -550,7 +585,7 @@ var
   i, j: integer;
   st, rolls, pl_choise: Integer; // skill_test
   tmp_str: string;
-  
+
   procedure SplitData(delimiter: Char; str: string; var output_data: TStringList);
   var
     tmp: StrDataArray;
@@ -568,10 +603,10 @@ begin
 
   if output_data[1] = '0' then // Action
   begin
-    frmMain.lstLog.Items.Add('Ничего не произошло.');
+    MainForm.lstLog.Items.Add('РќРёС‡РµРіРѕ РЅРµ РїСЂРѕРёР·РѕС€Р»Рѕ.');
   end;
 
-  if output_data[1] = '3' then // Условие
+  if output_data[1] = '3' then // РЈСЃР»РѕРІРёРµ
   begin
     b := ProcessCondition(StrToInt(output_data[2]), StrToInt(output_data[3]), StrToInt(output_data[4]), StrToInt(output_data[5]));
     if b then
@@ -741,6 +776,8 @@ var
   i: integer;
   c_node: PLLData;
   crd_name: string;
+  PrevStretchBltMode : Integer;
+  bmp: TBitmap;
 begin
   //if lok_id mod 1000 = 0 then exit; // No encounters on streets
 
@@ -748,12 +785,12 @@ begin
 
   if lok.HasGate then
   begin
-    if MessageDlg('Закрыть врата ведущие в иной мир?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    if MessageDlg('Р—Р°РєСЂС‹С‚СЊ РІСЂР°С‚Р° РІРµРґСѓС‰РёРµ РІ РёРЅРѕР№ РјРёСЂ?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     begin
       if gCurrentPlayer.CloseGate then
-        frmMain.lstLog.Items.Add('Игрок подзакрыл врата!')
+        MainForm.lstLog.Items.Add('РРіСЂРѕРє РїРѕРґР·Р°РєСЂС‹Р» РІСЂР°С‚Р°!')
       else
-        frmMain.lstLog.Items.Add('Игрок не смог подзакрыть врата!')
+        MainForm.lstLog.Items.Add('РРіСЂРѕРє РЅРµ СЃРјРѕРі РїРѕРґР·Р°РєСЂС‹С‚СЊ РІСЂР°С‚Р°!')
 
     end;
     Exit;
@@ -767,39 +804,80 @@ begin
         Trade(TR_BUY_NOM_PRICE, CT_COMMON_ITEM, 3);
         Exit;
       end
-        // Получили данные карты
+        // РџРѕР»СѓС‡РёР»Рё РґР°РЅРЅС‹Рµ РєР°СЂС‚С‹
     end;
   end;
 
-  // TODO: таблицу с картами | N | ID_Card |, чтобы находить карты для условия
-  // и добавлять новые
+  // TODO: С‚Р°Р±Р»РёС†Сѓ СЃ РєР°СЂС‚Р°РјРё | N | ID_Card |, С‡С‚РѕР±С‹ РЅР°С…РѕРґРёС‚СЊ РєР°СЂС‚С‹ РґР»СЏ СѓСЃР»РѕРІРёСЏ
+  // Рё РґРѕР±Р°РІР»СЏС‚СЊ РЅРѕРІС‹Рµ
 
   card := fDeck.cards[crd_num, hon(lok_id)];
 
   if card.crd_head <> nil then
   begin
     crd_name := path_to_exe + 'CardsData\Locations\' + aNeighborhoodsNames[ton(card.id), 2] + '\' + IntToStr((ton(card.ID) * 1000) + StrToInt(IntToStr(card.ID)[4])) + '.jpg';
-    frmMain.imgEncounter.Picture.LoadFromFile(crd_name);
+    MainForm.imgEncounter.AutoSize := True;
+    MainForm.imgEncounter.Picture.LoadFromFile(crd_name);
+//    bmp := MainForm.imgEncounter.Picture.Bitmap;
+
+
+    bmp := TBitmap.Create;
+
+//
+    try
+        with bmp do begin
+//          bmp.Assign(MainForm.imgEncounter.Bitmap);
+          Width := MainForm.imgEncounter.Width;
+          Height := MainForm.imgEncounter.Height;
+          Canvas.Draw(0, 0, MainForm.imgEncounter.Picture.Graphic);
+          MainForm.imgEncounter.Picture := nil;
+//          Transparent := True;
+//          TransParentColor := bmp.canvas.pixels[50,50];
+//          MainForm.Canvas.Draw(0, 0, bmp);
+          MainForm.imgEncounter.AutoSize := False;
+          MainForm.imgEncounter.Width := 273;
+          MainForm.imgEncounter.Height := 428;
+//          TransparentMode := tmAuto;
+//          MainForm.Canvas.StretchDraw(rect(0, 0, 500, 500), MainForm.imgEncounter.Picture.Graphic);
+PrevStretchBltMode := SetStretchBltMode(bmp.Canvas.Handle, STRETCH_HALFTONE);// СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂРµР¶РёРј СЃРіР»Р°Р¶РёРІР°РЅРёСЏ
+StretchBlt(MainForm.imgEncounter.Canvas.Handle, 0, 0, 273, 428, bmp.Canvas.handle,
+     0, 0, bmp.Width, bmp.Height, SRCCOPY);
+                 SetStretchBltMode(bmp.Canvas.Handle, PrevStretchBltMode);// Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїСЂРµРґС‹РґСѓС‰РёР№ СЂР°Р¶РёРј СЃРіР»Р°Р¶РёРІР°РЅРёСЏ
+        end;
+      finally
+        bmp.Free;
+      end;
+
+//    PrevStretchBltMode := SetStretchBltMode(MainForm.imgEncounter.Picture.Bitmap.Canvas.Handle, STRETCH_HALFTONE);// СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂРµР¶РёРј СЃРіР»Р°Р¶РёРІР°РЅРёСЏ
+//    StretchBlt(MainForm.imgEncounter.Canvas.Handle, 0, 0, 300, 300, bmp.Canvas.handle,
+//     0, 0, MainForm.imgEncounter.Width, MainForm.imgEncounter.Height, SRCCOPY);
+//    Canvas.CopyRect(
+//      rect(0, 0, ClientWidth, ClientHeight),
+//      Image1.Picture.Bitmap.Canvas,
+//      Rect(0,0, Image1.Picture.Bitmap.Width, Image1.Picture.Bitmap.Height));
+//
+//    SetStretchBltMode(Canvas.Handle, PrevStretchBltMode );// Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїСЂРµРґС‹РґСѓС‰РёР№ СЂР°Р¶РёРј СЃРіР»Р°Р¶РёРІР°РЅРёСЏ
+
     c_node := card.crd_head;
 
     for i := 0 to c_node.mnChildCount-1 do
       processnode(c_node.mnChild[i]);
   end
   else
-    MessageDlg('Карта почему-то пустая :('+#10+#13+'Или вы не перешли на локацию.', mtError, [mbOK], 0);
+    MessageDlg('РљР°СЂС‚Р° РїРѕС‡РµРјСѓ-С‚Рѕ РїСѓСЃС‚Р°СЏ :('+#10+#13+'РР»Рё РІС‹ РЅРµ РїРµСЂРµС€Р»Рё РЅР° Р»РѕРєР°С†РёСЋ.', mtError, [mbOK], 0);
 
 
   //Arkham_Streets[GetStreetIndxByLokID(gCurrentPlayer.Location)].deck.Shuffle;
 end;
 
 
-// Берет назв. локи из массива LocationsNames
+// Р‘РµСЂРµС‚ РЅР°Р·РІ. Р»РѕРєРё РёР· РјР°СЃСЃРёРІР° LocationsNames
 function GetLokIDByName(lok_name: string): integer;
 var
   i: integer;
 begin
   result := 0;
-  
+
   for i := 1 to NUMBER_OF_STREETS do
   begin
     if (AnsiCompareText(aNeighborhoodsNames[i, 2], lok_name) = 0) then
@@ -901,7 +979,7 @@ var
 begin
   if mob = nil then
   begin
-    ShowMessage('Невозможно добавить моба! Nil');
+    ShowMessage('РќРµРІРѕР·РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ РјРѕР±Р°! Nil');
     Result := false;
     exit;
   end;
@@ -919,7 +997,7 @@ begin
       mob.LocationId := to_lok;
       uMonster.DeckMobCount := uMonster.DeckMobCount - 1;
 
-     // ShowMessage('Добавлен на локацию: ' + IntToStr(to_lok));
+     // ShowMessage('Р”РѕР±Р°РІР»РµРЅ РЅР° Р»РѕРєР°С†РёСЋ: ' + IntToStr(to_lok));
     end
     else
     begin
@@ -929,12 +1007,12 @@ begin
       mob.LocationId := to_lok;
       uMonster.DeckMobCount := uMonster.DeckMobCount - 1;
 
-     // ShowMessage('Добавлен на локацию: ' + IntToStr(to_lok));
+     // ShowMessage('Р”РѕР±Р°РІР»РµРЅ РЅР° Р»РѕРєР°С†РёСЋ: ' + IntToStr(to_lok));
     end;
 
     result := true;
   except
-    ShowMessage('Невозможно добавить монстра! Except');
+    ShowMessage('РќРµРІРѕР·РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ РјРѕРЅСЃС‚СЂР°! Except');
     Result := false;
   end;
 
@@ -946,7 +1024,7 @@ begin
   try
     fLok[hon(lok_id)].clues := fLok[hon(lok_id)].clues + n;
   except
-    ShowMessage('Невозможно добавить улику!');
+    ShowMessage('РќРµРІРѕР·РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ СѓР»РёРєСѓ!');
     Result := false;
   end;
 end;
@@ -966,7 +1044,7 @@ begin
     fLok[hon(lok_id)].HasGate := true;
     result := true;
   except
-    ShowMessage('Невозможно добавить врата!');
+    ShowMessage('РќРµРІРѕР·РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ РІСЂР°С‚Р°!');
     Result := false;
   end;
 
@@ -1003,7 +1081,7 @@ begin
         mob.LocationId := 0;
         fStreetMonsterCount := fStreetMonsterCount - 1;
         uMonster.DeckMobCount := uMonster.DeckMobCount + 1;
-       // ShowMessage('Убран с локации: ' + IntToStr(from_lok));
+       // ShowMessage('РЈР±СЂР°РЅ СЃ Р»РѕРєР°С†РёРё: ' + IntToStr(from_lok));
       end;
     end;
     AlignArray(Self.fMonsters);
@@ -1023,7 +1101,7 @@ begin
         mob.LocationId := 0;
         fLok[lok_num].lok_mon_count := fLok[lok_num].lok_mon_count - 1;
         uMonster.DeckMobCount := uMonster.DeckMobCount + 1;
-       // ShowMessage('Убран с локации: ' + IntToStr(from_lok));
+       // ShowMessage('РЈР±СЂР°РЅ СЃ Р»РѕРєР°С†РёРё: ' + IntToStr(from_lok));
       end;
     end;
     AlignArray(fLok[lok_num].lok_monsters);
